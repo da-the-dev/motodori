@@ -18,7 +18,7 @@ const voiceAct = () => {
             if(now.getHours() >= 0 && now.getHours() <= 6)
                 update.$inc.nightVoiceTime = 1
 
-            db.updateMany('836297404260155432', { $or: prepedVoiceActs }, update).then(() => {
+            db.updateMany('836297404260155432', { $or: prepedVoiceActs || [] }, update).then(() => {
                 db.close()
             })
         })
