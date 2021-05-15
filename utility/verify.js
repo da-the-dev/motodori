@@ -50,7 +50,6 @@ const takeRole = (client, id) => {
     const member = client.guilds.cache.first().member(id)
 
     member.roles.remove(constants.roles.verify)
-    member.roles.add(constants.roles.man)
     console.log(`[VR] Verified user '${member.user.tag}'`)
 
     utl.roles.reapplyRoles(member)
@@ -58,8 +57,8 @@ const takeRole = (client, id) => {
     reward = true
 
     const emb = new Discord.MessageEmbed()
-        .setTitle(`${dot}Тепло приветствуем`)
-        .setDescription(`Надеемся, что тебе понравится у нас и ты останешься.\nЧтобы легче было ориентироваться, прочитай <#810202155079696414>`)
+        .setTitle(`Тепло приветствуем`)
+        .setDescription(`Надеемся, что тебе понравится у нас и ты останешься.\nЧтобы легче было ориентироваться, прочитай <#842098512896065577> и <#836366594674130985>`)
         .setColor('#2F3136')
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 
@@ -120,7 +119,7 @@ const formCaptcha = () => {
 
         resolve({
             text: text,
-            obj: { content: '<a:__:825834909146415135> **Напишите указанный код на картинке**', files: [canvas.toBuffer()] }
+            obj: { content: '**Напишите указанный код на картинке**', files: [canvas.toBuffer()] }
         })
     })
 }
@@ -135,7 +134,7 @@ module.exports.welcomeReward = (msg, client) => {
     if(reward) {
         var c = msg.content.toLocaleLowerCase()
         if(welcomeWords.find(w => c.includes(w)))
-            msg.react('<:__:824359401895886908>')
+            msg.react('<a:ilikeu:843190562478620713>')
     }
 }
 

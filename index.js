@@ -35,6 +35,7 @@ client.login(process.env.BOTTOKEN)
 client.once('ready', () => {
     console.log("[BOT] BOT is online")
 
+    utl.scanServer(client)
     utl.redisUnmute(client)
     utl.activity.voiceActivityInit(client)
     utl.elderlyRole(client.guilds.cache.first())
@@ -52,7 +53,7 @@ client.on('roleDelete', role => {
 
 // Member events
 client.on('guildMemberAdd', (member) => {
-    console.log('+1 member')
+    console.log('GOT ONE')
     utl.verify.mark(member, client)
     utl.roles.reapplyRoles(member)
     if(member.user.bot)
@@ -68,9 +69,6 @@ client.on('guildMemberRemove', member => {
 })
 client.on('presenceUpdate', (oldPresence, newPresence) => {
     utl.gameRoles(oldPresence, newPresence)
-})
-client.on('guildMemberUpdate', (oldMember, newMember) => {
-    utl.boosterTracker(oldMember, newMember)
 })
 
 // Channel events

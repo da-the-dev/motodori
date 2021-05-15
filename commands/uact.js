@@ -10,14 +10,14 @@ module.exports =
     * @description Usage: .uact
     */
     (args, msg, client) => {
-        utl.db.createClient(process.env.MURL).then(db => {
-            db.update(msg.guild.id, msg.author.id, [{ $set: { notActivity: { $not: "$notActivity" } } }])
-                .then(() => {
-                    db.get(msg.guild.id, msg.author.id).then(userData => {
-                        utl.embed(msg, sMsg, `Вы успешно ${userData.notActivity ? '**отключили**' : '**включили**'} роли за активность на сервере`)
-                        userData.notActivity ? msg.member.roles.remove([constants.roles.daylyActive, constants.roles.nightActive]) : null
-                        db.close()
-                    })
-                })
-        })
+        // utl.db.createClient(process.env.MURL).then(db => {
+        //     db.update(msg.guild.id, msg.author.id, [{ $set: { notActivity: { $not: "$notActivity" } } }])
+        //         .then(() => {
+        //             db.get(msg.guild.id, msg.author.id).then(userData => {
+        //                 utl.embed(msg, sMsg, `Вы успешно ${userData.notActivity ? '**отключили**' : '**включили**'} роли за активность на сервере`)
+        //                 userData.notActivity ? msg.member.roles.remove([constants.roles.daylyActive, constants.roles.nightActive]) : null
+        //                 db.close()
+        //             })
+        //         })
+        // })
     }

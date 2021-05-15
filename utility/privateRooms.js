@@ -10,7 +10,7 @@ const sMsg = 'Приватные комнаты'
  */
 module.exports.createRoom = (client) => {
     var privateRoomCategory = client.guilds.cache.first().channels.cache.get(constants.categories.privateRooms)
-    client.guilds.cache.first().channels.create('[﹢]．Создать',
+    client.guilds.cache.first().channels.create('Join To Create',
         {
             type: "voice",
             permissionOverwrites:
@@ -56,7 +56,6 @@ module.exports.roomDeletion = (oldState, newState, client) => {
         var guild = newState.member.guild
         /**@type {Discord.CategoryChannel} */
         var category = guild.channels.cache.get(constants.categories.privateRooms)
-        console.log(newState.channel.position)
         guild.channels.create(newState.member.user.username,
             {
                 type: 'voice',
@@ -85,10 +84,6 @@ module.exports.roomDeletion = (oldState, newState, client) => {
                         {
                             id: newState.member.user.id,
                             allow: ['VIEW_CHANNEL', 'CONNECT', 'CREATE_INSTANT_INVITE']
-                        },
-                        {
-                            id: constants.roles.bot,
-                            allow: ['MANAGE_CHANNELS', 'CONNECT', 'SPEAK', 'MOVE_MEMBERS']
                         }
                     ],
                 parent: category,
@@ -109,19 +104,20 @@ module.exports.roomDeletion = (oldState, newState, client) => {
 
         if(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE') && channel.permissionOverwrites.get(oldOwner.id)) {
             channel.permissionOverwrites.get(oldOwner.id).delete() // Delete old owner perms
-                .then(c => {
-                    var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
-                    if(!newOwner) return
-                    channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
 
-                    newOwner.guild.channels.cache.get(constants.channels.cmd).send(`<@${newOwner.id}>`, {
-                        embed: new Discord.MessageEmbed()
-                            .setTitle(`${dot}${sMsg}`)
-                            .setDescription(`Вы были назначены овнером приватной комнаты **${channel.name}**`)
-                            .setThumbnail(newOwner.user.displayAvatarURL({ dynamic: true }))
-                            .setColor('#2F3136')
-                    })
-                })
+            var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
+            !newOwner ? newOwner = channel.members.first() : null
+
+            channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
+
+            newOwner.guild.channels.cache.get(constants.channels.cmd).send(`<@${newOwner.id}>`, {
+                embed: new Discord.MessageEmbed()
+                    .setTitle(`${sMsg}`)
+                    .setDescription(`Вы были назначены овнером приватной комнаты **${channel.name}**`)
+                    .setThumbnail(newOwner.user.displayAvatarURL({ dynamic: true }))
+                    .setColor('#2F3136')
+            })
+
         }
     }
 }

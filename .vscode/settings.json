@@ -9,7 +9,7 @@
         "**/package.json": true,
         "**/package-lock.json": true,
         "**/.gitignore": true,
-        "**/.env": false,
+        "**/.env": true,
         "**/Procfile": true,
         "**/Emotes": true
     },

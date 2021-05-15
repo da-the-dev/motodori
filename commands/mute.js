@@ -140,7 +140,7 @@ module.exports =
                         rClient.quit()
                     }
                 })
-                utl.embed(msg, 'Выдача мута', `${pillar}${mute}${pillar} <@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                utl.embed(msg, 'Выдача мута', `<@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             }
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет прав для этой команды!')
