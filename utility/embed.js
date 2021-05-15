@@ -85,7 +85,7 @@ module.exports.def = (msg, value) => {
 module.exports.sus = (client, reason) => {
     return new Discord.MessageEmbed()
         .setColor('#2F3136')
-        .setTitle(`${dot}Подозрительная деятельность`)
+        .setTitle(`Подозрительная деятельность`)
         .setDescription(`С Вас были сняты все роли с правами администратора за подозрительную деятельность: **${reason}**`)
         .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
 }

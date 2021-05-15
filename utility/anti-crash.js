@@ -2,6 +2,9 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
 
+// Me, collector & felix
+const whitelist = [process.env.MYID, '820196535940939806', '677923814914523144']
+
 /**
  * Checks is "defenses" key value is "true" and then runs "func"
  */
@@ -30,10 +33,10 @@ const takeAndNotify = (member, reason) => {
             })
         console.log('anticrash 1')
     })
-
+    console.log("would've")
     member.user.createDM()
         .then(c => {
-            c.send(utl.embed.build(member.client, reason).setThumbnail())
+            c.send(utl.embed.sus(member.client, reason).setThumbnail())
         })
 }
 
@@ -51,7 +54,7 @@ module.exports.monitorBotInvites = member => {
                     var executorID = Array.from(audit.entries.values())[0].executor.id
                     var executor = member.guild.members.cache.get(executorID)
 
-                    if(executor.id == process.env.VICID || executor.id == process.env.MYID)
+                    if(whitelist.includes(executorID))
                         return
 
                     takeAndNotify(executor, 'несанкцианированное добавление бота')
@@ -70,17 +73,16 @@ module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
     getDef(async () => {
         if(!oldRole.permissions.has('ADMINISTRATOR') && newRole.permissions.has('ADMINISTRATOR')) {
             var audit = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' })
-            var executorID = Array.from(audit.entries.values())[0].executor.id
+            var executor = Array.from(audit.entries.values())[0].executor
 
-            if(executorID != newRole.client.id) {
-                var executor = newRole.guild.members.cache.get(executorID)
+            if(whitelist.includes(executor.id))
+                return
 
-                await newRole.edit({
-                    permissions: newRole.permissions.remove('ADMINISTRATOR'),
-                }, 'В роль были добавлены администраторские права, поэтому я их убрала ;)')
+            await newRole.edit({
+                permissions: newRole.permissions.remove('ADMINISTRATOR'),
+            }, 'В роль были добавлены администраторские права, поэтому я их убрала ;)')
 
-                takeAndNotify(executor, 'выдача роли администраторских прав')
-            }
+            takeAndNotify(newRole.guild.member(executor), 'выдача роли администраторских прав')
         }
     })
 }
@@ -96,7 +98,7 @@ module.exports.monitorBans = (guild, member) => {
         guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' })
             .then(audit => {
                 var executor = audit.entries.first().executor
-                if(executor.id == process.env.VICID || executor.id == process.env.MYID)
+                if(whitelist.includes(executor.id))
                     return
 
                 // Executor Ban Entries
@@ -132,7 +134,7 @@ module.exports.monitorKicks = (member) => {
         guild.fetchAuditLogs({ type: 'MEMBER_KICK' })
             .then(audit => {
                 var executor = audit.entries.first().executor
-                if(executor.id == process.env.VICID || executor.id == process.env.MYID)
+                if(whitelist.includes(executor.id))
                     return
 
                 // Executor Kick Entries
@@ -168,8 +170,9 @@ module.exports.monitorRoleDelete = role => {
         guild.fetchAuditLogs({ type: 'ROLE_DELETE' })
             .then(audit => {
                 var executor = audit.entries.first().executor
-                if(executor.id == process.env.MYID || executor.id == executor.client.user.id)
+                if(whitelist.includes(executor.id))
                     return
+
                 // Executor Role Delete Entries
                 var eRDE = audit.entries.filter(e => e.executor.id == executor.id)
                 eRDE = eRDE.sort((a, b) => { // Sort from OLD to NEW
@@ -207,7 +210,7 @@ module.exports.monitorChannelDelete = channel => {
             guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
                 .then(audit => {
                     var executor = audit.entries.first().executor
-                    if(executor.id == process.env.MYID || executor.id == executor.client.user.id)
+                    if(whitelist.includes(executor.id))
                         return
 
                     // Executor Role Delete Entries
