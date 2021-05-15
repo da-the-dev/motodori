@@ -12,14 +12,14 @@ module.exports =
 
     //!!!GAMEROLES TRUE - DONT GIVE ROLE; GAMEROLES FALSE - GIVE ROLES!!!
     (args, msg, client) => {
-        utl.db.createClient(process.env.MURL).then(db => {
-            db.update(msg.guild.id, msg.author.id, [{ $set: { gameRoles: { $not: "$gameRoles" } } }])
-                .then(() => {
-                    db.get(msg.guild.id, msg.author.id).then(userData => {
-                        utl.embed(msg, sMsg, `Вы успешно ${!userData.gameRoles ? '**включили**' : '**отключили**'} роли за игровую активность`)
-                        userData.gameRoles ? msg.member.roles.remove(constants.gameRolesArray) : null
-                        db.close()
-                    })
-                })
-        })
+        // utl.db.createClient(process.env.MURL).then(db => {
+        //     db.update(msg.guild.id, msg.author.id, [{ $set: { gameRoles: { $not: "$gameRoles" } } }])
+        //         .then(() => {
+        //             db.get(msg.guild.id, msg.author.id).then(userData => {
+        //                 utl.embed(msg, sMsg, `Вы успешно ${!userData.gameRoles ? '**включили**' : '**отключили**'} роли за игровую активность`)
+        //                 userData.gameRoles ? msg.member.roles.remove(constants.gameRolesArray) : null
+        //                 db.close()
+        //             })
+        //         })
+        // })
     }

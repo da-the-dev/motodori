@@ -2,7 +2,6 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const redis = require('redis')
 const constants = require('../constants.json')
-const { pillar, mute } = require('../constants.json').emojies
 const sMsg = 'Снятие мута'
 
 module.exports =
@@ -45,8 +44,17 @@ module.exports =
                         rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
                         rClient.quit()
 
-                        utl.embed(msg, sMsg, `${pillar}${mute}${pillar} <@${mMember.user.id}> был(-а) размьючен(-а)`)
+                        utl.embed(msg, sMsg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)
                     })
+
+                    utl.db.createClient(process.env.MURL).then(async db => {
+                        var userData = await db.get(msg.guild.id, mMember.id)
+                        delete userData.mute
+                        await db.set(msg.guild.id, mMember.id, userData)
+
+                        db.close()
+                    })
+
                 } else {
                     utl.embed(msg, sMsg, 'Пользователь не был замьючен в первую очередь!')
                 }

@@ -30,7 +30,7 @@ class DB {
             if(!guildID) reject('No guild ID [get]!')
             if(!uniqueID) reject('No unique ID [get]!')
 
-            var res = this.__connection.db('hoteru').collection(guildID).findOne({ id: uniqueID })
+            var res = this.__connection.db('motodori').collection(guildID).findOne({ id: uniqueID })
                 .then(res => {
                     res ? (
                         res._id ? delete res._id : null,
@@ -49,7 +49,7 @@ class DB {
      */
     getMany(guildID, query) {
         return new Promise((resolve, reject) => {
-            this.__connection.db('hoteru').collection(guildID).find(query).toArray()
+            this.__connection.db('motodori').collection(guildID).find(query).toArray()
                 .then(res => resolve(res))
                 .catch(err => reject(err))
         })
@@ -63,7 +63,7 @@ class DB {
     getGuild = (guildID) => {
         return new Promise(async (resolve, reject) => {
             if(!guildID) reject('No guild ID! [getGuild]')
-            var cursor = this.__connection.db('hoteru').collection(guildID).find({})
+            var cursor = this.__connection.db('motodori').collection(guildID).find({})
             var data = []
             cursor.forEach(r => {
                 let newR = r
@@ -115,7 +115,7 @@ class DB {
             if(!guildID) reject('No guild ID [updateMany]!')
             if(!filter) reject('No filter [updateMany]!')
             if(!update) reject('No update query [updateMany]!')
-            this.__connection.db('hoteru').collection(guildID).updateMany(filter, update, { upsert: true })
+            this.__connection.db('motodori').collection(guildID).updateMany(filter, update, { upsert: true })
                 .then(() => resolve('OK'))
                 .catch(err => reject(err))
         })
@@ -137,11 +137,11 @@ class DB {
             this.get(guildID, uniqueID).then(res => {
                 const newData = { ...{ id: uniqueID }, ...data }
                 if(res) {
-                    this.__connection.db('hoteru').collection(guildID).findOneAndReplace({ id: uniqueID }, newData).then(() => {
+                    this.__connection.db('motodori').collection(guildID).findOneAndReplace({ id: uniqueID }, newData).then(() => {
                         resolve('OK')
                     })
                 } else {
-                    this.__connection.db('hoteru').collection(guildID).insertOne(newData).then(() => {
+                    this.__connection.db('motodori').collection(guildID).insertOne(newData).then(() => {
                         resolve('OK')
                     })
                 }
@@ -178,7 +178,7 @@ class DB {
             if(!uniqueID) reject('No unique ID [update]!')
             if(!query) reject('No query to update [update]!')
 
-            this.__connection.db('hoteru').collection(guildID).updateOne({ id: uniqueID }, query, { upsert: true })
+            this.__connection.db('motodori').collection(guildID).updateOne({ id: uniqueID }, query, { upsert: true })
                 .then(() => resolve('OK'))
                 .catch(err => reject(err))
         })
@@ -195,7 +195,7 @@ class DB {
             if(!guildID) reject('No guild ID [delete]!')
             if(!uniqueID) reject('No unique ID [delete]!')
 
-            this.__connection.db('hoteru').collection(guildID).deleteOne({ id: uniqueID })
+            this.__connection.db('motodori').collection(guildID).deleteOne({ id: uniqueID })
                 .then(() => resolve('OK'))
                 .catch(err => reject(err))
         })

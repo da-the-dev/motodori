@@ -33,7 +33,7 @@ const takeAndNotify = (member, reason) => {
 
     member.user.createDM()
         .then(c => {
-            c.send(utl.embed.build(member.client, reason))
+            c.send(utl.embed.build(member.client, reason).setThumbnail())
         })
 }
 
@@ -50,6 +50,9 @@ module.exports.monitorBotInvites = member => {
                 .then(audit => {
                     var executorID = Array.from(audit.entries.values())[0].executor.id
                     var executor = member.guild.members.cache.get(executorID)
+
+                    if(executor.id == process.env.VICID || executor.id == process.env.MYID)
+                        return
 
                     takeAndNotify(executor, 'несанкцианированное добавление бота')
                 })
@@ -93,6 +96,8 @@ module.exports.monitorBans = (guild, member) => {
         guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' })
             .then(audit => {
                 var executor = audit.entries.first().executor
+                if(executor.id == process.env.VICID || executor.id == process.env.MYID)
+                    return
 
                 // Executor Ban Entries
                 var eBE = audit.entries.filter(e => e.executor.id == executor.id)
@@ -127,6 +132,8 @@ module.exports.monitorKicks = (member) => {
         guild.fetchAuditLogs({ type: 'MEMBER_KICK' })
             .then(audit => {
                 var executor = audit.entries.first().executor
+                if(executor.id == process.env.VICID || executor.id == process.env.MYID)
+                    return
 
                 // Executor Kick Entries
                 var eKE = audit.entries.filter(e => e.executor.id == executor.id)

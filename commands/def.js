@@ -8,7 +8,7 @@ module.exports =
     * @description Usage: .def
     */
     (args, msg, client) => {
-        if(msg.author.id == process.env.MYID || msg.author.id == process.env.SERID) {
+        if(msg.author.id == process.env.MYID || msg.author.id == process.env.VICID) {
             utl.db.createClient(process.env.MURL).then(db => {
                 db.get(msg.guild.id, 'serverSettings').then(serverData => {
                     console.log(serverData)

@@ -1,7 +1,6 @@
 const Discord = require('discord.js')
 const redis = require('redis')
 const constants = require('../constants.json')
-const { dot, pillar, mute } = require('../constants.json').emojies
 const utl = require('../utility')
 /**
  * Listens to expired "mute" keys in database and unmutes members accordingly
@@ -36,8 +35,8 @@ module.exports = (client) => {
                         rClient.quit()
 
                         var embed = new Discord.MessageEmbed()
-                            .setTitle(`${dot}Снятие мута`)
-                            .setDescription(`${pillar}${mute}${pillar} <@${member.user.id}> был(-а) размьючен(-а)`)
+                            .setTitle(`Снятие мута`)
+                            .setDescription(`<@${member.user.id}> был(-а) размьючен(-а)`)
                             .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
                             .setColor('#2F3136')
 
