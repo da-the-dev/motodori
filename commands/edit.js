@@ -36,13 +36,17 @@ module.exports =
         msg.channel.messages.fetch(messageID)
             .then(m => {
                 if(m) {
-                    const embed = new Discord.MessageEmbed(jsonData)
-                        .setThumbnail(jsonData.thumbnail)
-                        .setImage(jsonData.image)
-                    m.edit({
-                        content: jsonData.plainText,
-                        embed: embed
-                    })
+                    if(jsonData.plainText && Object.keys(jsonData).length == 1) {
+                        m.edit(jsonData.plainText)
+                    } else {
+                        const embed = new Discord.MessageEmbed(jsonData)
+                            .setThumbnail(jsonData.thumbnail)
+                            .setImage(jsonData.image)
+                        m.edit({
+                            content: jsonData.plainText,
+                            embed: embed
+                        })
+                    }
                 } else
                     utl.embed.ping(msg, sMsg, 'не найдено сообщение! Проверьте ID!')
             })

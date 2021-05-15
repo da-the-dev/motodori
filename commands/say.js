@@ -26,13 +26,17 @@ module.exports =
             return
         }
 
-        const embed = new Discord.MessageEmbed(jsonData)
-            .setThumbnail(jsonData.thumbnail)
-            .setImage(jsonData.image)
-        msg.channel.send({
-            content: jsonData.plainText,
-            embed: embed
-        })
+        if(jsonData.plainText && Object.keys(jsonData).length == 1) {
+            msg.channel.send(jsonData.plainText)
+        } else {
+            const embed = new Discord.MessageEmbed(jsonData)
+                .setThumbnail(jsonData.thumbnail)
+                .setImage(jsonData.image)
+            msg.channel.send({
+                content: jsonData.plainText,
+                embed: embed
+            })
+        }
         // if(jsonData.plainText) msg.channel.send(jsonData.plainText)
         // else msg.channel.send(embed)
     }
