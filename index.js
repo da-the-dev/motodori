@@ -1,0 +1,107 @@
+// Libraries
+const Discord = require('discord.js')
+const fs = require('fs')
+require('dotenv').config()
+
+// Constants
+const constants = require('./constants.json')
+
+// Utilities
+const utl = require('./utility')
+
+// Client
+const prefix = "."
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
+client.prefix = prefix
+
+// Commands
+var commandNames = fs.readdirSync(__dirname + '/commands')
+client.commands = new Array()
+console.log('[F] Bot functions')
+commandNames.forEach(c => {
+    client.commands.push({
+        'name': c.slice(0, c.length - 3),
+        'foo': require(__dirname + '/commands/' + c),
+        'allowedInGeneral': require(__dirname + '/commands/' + c).allowedInGeneral
+    })
+    console.log(
+        `[F] Name: ${c.slice(0, c.length - 3)}; 'allowedInGeneral': ${require(__dirname + '/commands/' + c).allowedInGeneral}`
+    )
+})
+
+// General events
+client.login(process.env.BOTTOKEN)
+client.once('ready', () => {
+    console.log("[BOT] BOT is online")
+
+    // utl.redisUnmute(client)
+    // utl.activity.voiceActivityInit(client)
+    // utl.elderlyRole(client.guilds.cache.first())
+    // utl.scanServer(client)
+    // utl.bannerUpdate(client.guilds.cache.first())
+    // utl.loveroomMonitor.initPayment(client)
+})
+
+// // Role events
+// client.on('roleUpdate', (oldRole, newRole) => {
+//     utl.anticrash.monitorRoleAdminPriviligeUpdate(oldRole, newRole)
+// })
+// client.on('roleDelete', role => {
+//     utl.anticrash.monitorRoleDelete(role)
+// })
+
+// // Member events
+// client.on('guildMemberAdd', (member) => {
+//     console.log('+1 member')
+//     utl.verify.mark(member, client)
+//     utl.roles.reapplyRoles(member)
+//     if(member.user.bot)
+//         utl.anticrash.monitorBotInvites(member)
+// })
+// client.on('guildBanAdd', (guild, member) => {
+//     utl.anticrash.monitorBans(guild, member)
+// })
+// client.on('guildMemberRemove', member => {
+//     console.log('-1 member :(')
+//     utl.loveroomMonitor.roomDeletion(member)
+//     utl.anticrash.monitorKicks(member)
+// })
+// client.on('presenceUpdate', (oldPresence, newPresence) => {
+//     utl.gameRoles(oldPresence, newPresence)
+// })
+// client.on('guildMemberUpdate', (oldMember, newMember) => {
+//     utl.boosterTracker(oldMember, newMember)
+// })
+
+// // Channel events
+// client.on('channelDelete', channel => {
+//     utl.anticrash.monitorChannelDelete(channel)
+// })
+
+// // Voice events
+// client.on('voiceStateUpdate', (oldState, newState) => {
+//     utl.privateRooms.roomDeletion(oldState, newState, client)
+//     utl.activity.voiceActivity(oldState, newState)
+// })
+
+// Message events
+client.on('messageReactionAdd', (reaction, user) => {
+    utl.fetch.fetchReactions(reaction)
+
+    if(reaction.message.channel.id == constants.channels.dev)
+        utl.shop(reaction, user, client)
+    // utl.reportHandler.reportAssignmentHandler(reaction, user, client)
+})
+client.on('message', msg => {
+    if(msg.channel.id == constants.channels.dev) {
+        var args = msg.content.slice(1).split(" ")
+        args.forEach(a => a.trim())
+
+        var command = client.commands.find(c => c.name == args[0])
+        if(command)
+            msg.delete()
+                .then(() => {
+                    command.foo(args, msg, client)
+                })
+    }
+})
