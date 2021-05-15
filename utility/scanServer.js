@@ -6,7 +6,7 @@ const utl = require('../utility')
  * @param {Discord.Client} client - Bot client
  */
 module.exports = async (client) => {
-    var server = client.guilds.cache.first()
+    var server = client.guilds.cache.get('836297404260155432')
 
     // Scan for private room creator channel
     /**@type {Discord.CategoryChannel} */
