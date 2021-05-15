@@ -41,16 +41,16 @@ module.exports.roomDeletion = async (member) => {
  */
 const payment = (guild) => {
     utl.db.createClient(process.env.MURL).then(db => {
-        db.updateMany('718537792195657798', { loveroom: { $exists: true } }, { $inc: { 'loveroom.bal': -3000 } })
+        db.updateMany('836297404260155432', { loveroom: { $exists: true } }, { $inc: { 'loveroom.bal': -3000 } })
             .then(() => {
-                db.getMany('718537792195657798', { loveroom: { $exists: true } }).then(async data => {
+                db.getMany('836297404260155432', { loveroom: { $exists: true } }).then(async data => {
                     for(i = 0; i < data.length; i++) {
                         if(data[i].loveroom.bal <= 0) {
                             var channel = guild.channels.cache.get(data[i].loveroom.id)
                             channel ? channel.delete() : null
                             guild.member(data[i].id).roles.remove(constants.roles.loveroom)
 
-                            await db.update('718537792195657798', data[i].id, { $unset: { 'loveroom': '' } })
+                            await db.update('836297404260155432', data[i].id, { $unset: { 'loveroom': '' } })
                         }
                     }
                     db.close()

@@ -7,7 +7,7 @@ const constants = require('../constants.json')
  */
 const getDef = (func) => {
     utl.db.createClient(process.env.MURL).then(db => {
-        db.get('718537792195657798', 'serverSettings').then(serverData => {
+        db.get('836297404260155432', 'serverSettings').then(serverData => {
             if(serverData.def) {
                 func()
             }

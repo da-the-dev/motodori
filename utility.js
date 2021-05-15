@@ -18,7 +18,6 @@ module.exports.reactionSelector = require('./utility/reactionSelector')
 module.exports.redisUnmute = require('./utility/redisUnmute')
 module.exports.reportHandler = require('./utility/reportHandler')
 module.exports.roles = require('./utility/roles')
-module.exports.scanServer = require('./utility/scanServer')
 module.exports.shop = require('./utility/shopPages')
 module.exports.time = require('./utility/time')
 

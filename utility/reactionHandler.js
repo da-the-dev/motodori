@@ -12,8 +12,9 @@ const buildMessage = (msg, reactions, description) => {
     if(!msg.deleted) msg.delete()
     var rand = Math.floor(Math.random() * reactions.length)
 
-    return utl.embed.build(msg, `<@${msg.member.id}> ${description}`)
+    return utl.embed.build(msg, 'Реакции', `<@${msg.member.id}> ${description}`)
         .setImage(reactions[rand])
+        .setThumbnail()
 }
 
 /**

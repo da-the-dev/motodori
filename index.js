@@ -38,7 +38,6 @@ client.once('ready', () => {
     utl.redisUnmute(client)
     utl.activity.voiceActivityInit(client)
     utl.elderlyRole(client.guilds.cache.first())
-    utl.scanServer(client)
     utl.bannerUpdate(client.guilds.cache.first())
     utl.loveroomMonitor.initPayment(client)
 })
@@ -116,43 +115,49 @@ client.on('message', msg => {
                 }
 
             const command = client.commands.find(c => c.name == args[0])
-            if(command)
+            if(command) {
                 if(msg.channel.id == constants.channels.general && command.allowedInGeneral) {
                     msg.delete()
                         .then(() => {
                             command.foo(args, msg, client)
                         })
                 }
+
                 else if(args[0] == 'duel' && msg.channel.id == constants.channels.duels) {
                     msg.delete()
                         .then(() => {
                             command.foo(args, msg, client)
                         })
+                    return
                 }
                 else if(args[0] != 'duel' && msg.channel.id != constants.channels.general) {
                     msg.delete()
                         .then(() => {
                             command.foo(args, msg, client)
                         })
+                    return
                 } else {
                     msg.delete()
+                    return
                 }
-
+            } else {
+                utl.reactionHandler(args, msg, client)
+            }
 
             // Reactions
-            // utl.reactionHandler(args, msg, client)
-        }
-        // Selfy moderation
-        if(msg.channel.id == constants.channels.selfie && !msg.author.bot) {
-            const checkFile = (msg) => {
-                if(msg.attachments.array().length != 1) return false
-                const name = msg.attachments.array()[0].name
-                return ['.png', '.gif', '.mp4', '.jpeg', '.jpg'].includes(name.slice(name.lastIndexOf('.')))
-            }
-            if(checkFile(msg))
-                msg.react(heart)
-            else
-                msg.delete()
         }
     }
+    // Selfy moderation
+    if(msg.channel.id == constants.channels.selfie && !msg.author.bot) {
+        const checkFile = (msg) => {
+            if(msg.attachments.array().length != 1) return false
+            const name = msg.attachments.array()[0].name
+            return ['.png', '.gif', '.mp4', '.jpeg', '.jpg'].includes(name.slice(name.lastIndexOf('.')))
+        }
+        if(checkFile(msg))
+            msg.react(heart)
+        else
+            msg.delete()
+    }
+
 })

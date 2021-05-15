@@ -13,11 +13,11 @@ var currentTimeout = null
 module.exports = (msg, client) => {
     if(msg.channel.type == 'dm') {
         utl.db.createClient(process.env.MURL).then(async db => {
-            const captchaData = await db.get('718537792195657798', `verify-${msg.author.id}`)
+            const captchaData = await db.get('836297404260155432', `verify-${msg.author.id}`)
             if(captchaData) {
                 if(msg.content == captchaData.captcha) {
                     takeRole(client, msg.author.id)
-                    db.delete('718537792195657798', `verify-${msg.author.id}`)
+                    db.delete('836297404260155432', `verify-${msg.author.id}`)
                     msg.channel.messages.fetch()
                         .then(msgs => {
                             msgs.forEach(m => {
@@ -30,7 +30,7 @@ module.exports = (msg, client) => {
                     await msg.channel.send(new Discord.MessageEmbed().setDescription(`${dot}*Неверно введена капча, генерирую новую** . . . `).setColor('#2F3136'))
                     const captcha = await formCaptcha()
                     utl.db.createClient(process.env.MURL).then(async db => {
-                        await db.set('718537792195657798', `verify-${msg.author.id}`, { captcha: captcha.text })
+                        await db.set('836297404260155432', `verify-${msg.author.id}`, { captcha: captcha.text })
                         db.close()
                         msg.channel.send(captcha.obj)
                     })
@@ -148,7 +148,7 @@ module.exports.mark = async (member) => {
     console.log(`[VR] Marked user '${member.user.username}'`)
     const captcha = await formCaptcha()
     utl.db.createClient(process.env.MURL).then(async db => {
-        await db.set('718537792195657798', `verify-${member.id}`, { captcha: captcha.text })
+        await db.set('836297404260155432', `verify-${member.id}`, { captcha: captcha.text })
         db.close()
         member.send(captcha.obj)
     })

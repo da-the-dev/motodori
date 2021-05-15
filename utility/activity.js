@@ -18,7 +18,7 @@ const voiceAct = () => {
             if(now.getHours() >= 0 && now.getHours() <= 6)
                 update.$inc.nightVoiceTime = 1
 
-            db.updateMany('718537792195657798', { $or: prepedVoiceActs }, update).then(() => {
+            db.updateMany('836297404260155432', { $or: prepedVoiceActs }, update).then(() => {
                 db.close()
             })
         })
@@ -125,14 +125,14 @@ module.exports.chatActivity = (msg) => {
     //                 })
 
     //                 // Update member
-    //                 await db.update('718537792195657798', arrayMap[i][0], update)
+    //                 await db.update('836297404260155432', arrayMap[i][0], update)
     //             }
     //             // Reset map and counter
     //             messages.clear()
     //             messagesCounter = 1
 
     //             // Give out activity roles to those who want them
-    //             db.getMany('718537792195657798', {
+    //             db.getMany('836297404260155432', {
     //                 $or: [
     //                     { dayMsgs: { $exists: true } },
     //                     { nightMsgs: { $exists: true } }

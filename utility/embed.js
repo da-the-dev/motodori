@@ -12,7 +12,7 @@ module.exports =
      */
     (msg, title, message = '') => {
         return msg.channel.send(new Discord.MessageEmbed()
-            .setTitle(`${dot}${title}`)
+            .setTitle(`${title}`)
             .setDescription(message)
             .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
             .setColor('#2F3136')
@@ -64,7 +64,7 @@ module.exports.calculateTime = (source) => {
  */
 module.exports.build = (msg, title, message = '') => {
     return new Discord.MessageEmbed()
-        .setTitle(`${dot}${title}`)
+        .setTitle(`${title}`)
         .setDescription(message)
         .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
         .setColor('#2F3136')

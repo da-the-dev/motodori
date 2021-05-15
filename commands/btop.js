@@ -13,7 +13,7 @@ module.exports =
      */
     async (args, msg, client) => {
         utl.db.createClient(process.env.MURL).then(db => {
-            db.getGuild('718537792195657798').then(data => {
+            db.getGuild('836297404260155432').then(data => {
                 db.close()
 
                 data = data.filter(d => d.money)
