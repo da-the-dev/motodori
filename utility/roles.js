@@ -7,25 +7,24 @@ const utl = require('../utility')
  * @param {Discord.GuildMember} member 
  */
 module.exports.reapplyRoles = (member) => {
-    utl.db.createClient(process.env.MURL).then(db => {
-        db.get(member.guild.id, member.id).then(userData => {
-            db.close()
-            if(userData) {
-                var collectedRoles = []
-                // Reapply roles
-                if(userData.mute)
-                    collectedRoles.push(constants.roles.muted)
-                if(userData.toxic)
-                    collectedRoles.push(constants.roles.toxic)
-                if(userData.ban)
-                    collectedRoles.push(constants.roles.localban)
-                if(userData.pic)
-                    collectedRoles.push(constants.roles.pics)
+    utl.db.createClient(process.env.MURL).then(async db => {
+        const userData = await db.get(member.guild.id, member.id)
+        db.close()
+        if(userData) {
+            var collectedRoles = []
+            // Reapply roles
+            if(userData.mute)
+                collectedRoles.push(constants.roles.muted)
+            if(userData.toxic)
+                collectedRoles.push(constants.roles.toxic)
+            if(userData.ban)
+                collectedRoles.push(constants.roles.localban)
+            if(userData.pic)
+                collectedRoles.push(constants.roles.pics)
 
-                member.roles.add(collectedRoles).then(() => {
-                    console.log(member.displayName, 'applied roles:', collectedRoles != [] ? collectedRoles : 'none')
-                })
-            }
-        })
+            member.roles.add(collectedRoles).then(() => {
+                console.log(member.displayName, 'applied roles:', collectedRoles != [] ? collectedRoles : 'none')
+            })
+        }
     })
 }

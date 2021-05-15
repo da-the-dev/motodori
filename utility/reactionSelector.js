@@ -7,16 +7,15 @@ const emojies = ['1️⃣', '2️⃣', '3️⃣']
  * Reacts to a message with 2 reactions and executes provided functions accordingly
  * @param {Discord.Message} msg - Messsage to react to
  * @param {string} id - ID of the only user who can react
- * @param {yes} yes - "Yes" funciton
- * @param {*} no - "No" function
- * @param {*} fail - If timer runs out
+ * @param {Function} yes - "Yes" funciton
+ * @param {Function} no - "No" function
+ * @param {Function} fail - If timer runs out
  */
 module.exports.yesNo = async (msg, id, yes, no, fail) => {
     await msg.react('✅')
     await msg.react('❌')
 
     const filter = (reaction, user) => {
-        console.log(user.username, user.id, id)
         return ['✅', '❌'].includes(reaction.emoji.name) && user.id == id
     }
     msg.awaitReactions(filter, { max: 1, time: 60000, errors: 'time' })

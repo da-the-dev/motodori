@@ -8,16 +8,12 @@ const { scheduleJob } = require("node-schedule")
  */
 module.exports = (guild) => {
     scheduleJob('0 0 * * *', () => {
-        console.log('elderly job start')
         guild.members.fetch({ cache: true })
             .then(() => {
-                guild.members.cache.forEach(async m => {
-                    console.log(m.displayName, Date.now() - m.joinedTimestamp, Date.now() - m.joinedTimestamp > 7.884e+9)
-                    if(Date.now() - m.joinedTimestamp > 7884000 * 1000 && !m.user.bot) {
-                        await m.roles.add(constants.roles.elderly)
-                    }
-                })
+                Promise.all(guild.members.cache.map(async m => {
+                    if(Date.now() - m.joinedTimestamp > 7884000 * 3 * 1000 && !m.user.bot)
+                        return m.roles.add(constants.roles.elderly)
+                }))
             })
-        console.log('elderly job end')
     })
 }

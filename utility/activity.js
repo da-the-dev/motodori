@@ -91,67 +91,68 @@ const amountOfMessages = 10
  * @param {Discord.Message} msg - Message
  */
 module.exports.chatActivity = (msg) => {
-    // Register only if in general and not a bot
-    if(msg.channel.id == constants.channels.general && !msg.author.bot) {
-        // Form message data
-        var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-        var message = {
-            dayTime: timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16,
-            nightTime: timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6
-        }
+    // // Register only if in general and not a bot
+    // if(msg.channel.id == constants.channels.general && !msg.author.bot) {
+    //     // Form message data
+    //     var timezonedDate = new Date(msg.createdAt.toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+    //     var message = {
+    //         dayTime: timezonedDate.getHours() >= 9 && timezonedDate.getHours() <= 16,
+    //         nightTime: timezonedDate.getHours() >= 0 && timezonedDate.getHours() <= 6
+    //     }
 
-        // Save it in the map
-        if(messages.get(msg.author.id)) {
-            var arr = messages.get(msg.author.id)
-            arr.push(message)
-            messages.set(msg.author.id, arr)
-        } else
-            messages.set(msg.author.id, [message])
+    //     // Save it in the map
+    //     if(messages.get(msg.author.id)) {
+    //         var arr = messages.get(msg.author.id)
+    //         arr.push(message)
+    //         messages.set(msg.author.id, arr)
+    //     } else
+    //         messages.set(msg.author.id, [message])
 
-        // Check if enough messages have been collected
-        if(messagesCounter < amountOfMessages) {
-            messagesCounter++
-        }
-        else {
-            utl.db.createClient(process.env.MURL).then(async db => {
-                var arrayMap = Array.from(messages.entries())
-                for(i = 0; i < arrayMap.length; i++) {
-                    // Form update query based on message info
-                    var update = { $inc: {} }
-                    arrayMap[i][1].forEach(mI => {
-                        mI.dayTime ? update.$inc.dayMsgs ? update.$inc.dayMsgs++ : update.$inc.dayMsgs = 1 : null
-                        mI.nightTime ? update.$inc.nightMsgs ? update.$inc.nightMsgs++ : update.$inc.nightMsgs = 1 : null
-                        update.$inc.msgs ? update.$inc.msgs++ : update.$inc.msgs = 1
-                    })
+    //     // Check if enough messages have been collected
+    //     if(messagesCounter < amountOfMessages) {
+    //         messagesCounter++
+    //     }
+    //     else {
+    //         utl.db.createClient(process.env.MURL).then(async db => {
+    //             var arrayMap = Array.from(messages.entries())
+    //             for(i = 0; i < arrayMap.length; i++) {
+    //                 // Form update query based on message info
+    //                 var update = { $inc: {} }
+    //                 arrayMap[i][1].forEach(mI => {
+    //                     mI.dayTime ? update.$inc.dayMsgs ? update.$inc.dayMsgs++ : update.$inc.dayMsgs = 1 : null
+    //                     mI.nightTime ? update.$inc.nightMsgs ? update.$inc.nightMsgs++ : update.$inc.nightMsgs = 1 : null
+    //                     update.$inc.msgs ? update.$inc.msgs++ : update.$inc.msgs = 1
+    //                 })
 
-                    // Update member
-                    await db.update('718537792195657798', arrayMap[i][0], update)
-                }
-                // Reset map and counter
-                messages.clear()
-                messagesCounter = 1
+    //                 // Update member
+    //                 await db.update('718537792195657798', arrayMap[i][0], update)
+    //             }
+    //             // Reset map and counter
+    //             messages.clear()
+    //             messagesCounter = 1
 
-                // Give out activity roles to those who want them
-                db.getMany('718537792195657798', {
-                    $or: [
-                        { dayMsgs: { $exists: true } },
-                        { nightMsgs: { $exists: true } }
-                    ]
-                }).then(validData => {
-                    validData.forEach(d => {
-                        if(!d.notActivity) {
-                            var member = msg.guild.member(d.id)
-                            if(member) {
-                                if(d.dayMsgs >= 500 && !member.roles.cache.has(constants.roles.daylyActive))
-                                    member.roles.add(constants.roles.daylyActive)
-                                else if(d.nightMsgs >= 500 && !member.roles.cache.has(constants.roles.nightActive))
-                                    member.roles.add(constants.roles.nightActive)
-                            }
-                        }
-                    })
-                    db.close()
-                })
-            })
-        }
-    }
+    //             // Give out activity roles to those who want them
+    //             db.getMany('718537792195657798', {
+    //                 $or: [
+    //                     { dayMsgs: { $exists: true } },
+    //                     { nightMsgs: { $exists: true } }
+    //                 ]
+    //             }).then(validData => {
+    //                 validData.forEach(d => {
+    //                     if(!d.notActivity) {
+    //                         var member = msg.guild.member(d.id)
+    //                         if(member) {
+    //                             if(d.dayMsgs >= 500 && !member.roles.cache.has(constants.roles.daylyActive))
+    //                                 null
+    //                             // member.roles.add(constants.roles.daylyActive)
+    //                             else if(d.nightMsgs >= 500 && !member.roles.cache.has(constants.roles.nightActive))
+    //                                 member.roles.add(constants.roles.nightActive)
+    //                         }
+    //                     }
+    //                 })
+    //                 db.close()
+    //             })
+    //         })
+    //     }
+    // }
 }

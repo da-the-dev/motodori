@@ -7,10 +7,13 @@ const Discord = require('discord.js')
 const updateBanner = async guild => {
     const { createCanvas, loadImage, registerFont } = require('canvas')
     const path = require('path')
-    const canvas = createCanvas(1202, 676)
+
+    registerFont(path.resolve(path.join('./', 'fonts', 'EngraversGothic.ttf')), { family: 'Engravers Gothic' })
+    const img = await loadImage(path.resolve(path.join('./', 'imgs', 'banner.png')))
+    const canvas = createCanvas(img.width, img.height)
+
     const ctx = canvas.getContext('2d')
 
-    const img = await loadImage(path.resolve(path.join('./', 'imgs', 'banner.png')))
     ctx.drawImage(img, 0, 0, img.width, img.height)
 
     var members = 0
@@ -19,10 +22,10 @@ const updateBanner = async guild => {
             members += c.members.size
         })
     const text = members.toString()
-    const font = 'bold 90px "Sans"'
-    const args = [text, img.width / 5, img.height / 2 + 35]
+    const font = 'bold 200px "Engravers Gothic"'
+    const args = [text, img.width / 2 + 30, img.height / 2 + 403]
 
-    ctx.fillStyle = '#CDDAF3'
+    ctx.fillStyle = '#ffffff'
     ctx.font = font
     ctx.textAlign = 'left'
     ctx.fillText(...args)

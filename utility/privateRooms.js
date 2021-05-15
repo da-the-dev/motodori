@@ -1,6 +1,8 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
+const { dot } = constants.emojies
 const utl = require('../utility')
+const sMsg = 'Приватные комнаты'
 
 /**
  * @description Create the "creator" voice channel
@@ -105,22 +107,21 @@ module.exports.roomDeletion = (oldState, newState, client) => {
         }
         var oldOwner = oldState.member
 
-        console.log(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
-        if(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE')) {
-            if(channel.permissionOverwrites.get(oldOwner.id))
-                channel.permissionOverwrites.get(oldOwner.id).delete() // Delete old owner perms
-                    .then(c => {
-                        var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
-                        if(!newOwner.id) return
-                        channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
+        if(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE') && channel.permissionOverwrites.get(oldOwner.id)) {
+            channel.permissionOverwrites.get(oldOwner.id).delete() // Delete old owner perms
+                .then(c => {
+                    var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
+                    if(!newOwner) return
+                    channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })
 
-                        newOwner.guild.channels.cache.get(constants.channels.cmd).send(`<@${newOwner.id}>`, {
-                            embed: new Discord.MessageEmbed()
-                                .setColor('#2F3136')
-                                .setDescription(`Вы были назначены овнером приватной комнаты • \`${channel.name}\``)
-                                .setFooter(`Hoteru • ${utl.embed.calculateTime(Date.now())}`, client.user.avatarURL())
-                        })
+                    newOwner.guild.channels.cache.get(constants.channels.cmd).send(`<@${newOwner.id}>`, {
+                        embed: new Discord.MessageEmbed()
+                            .setTitle(`${dot}${sMsg}`)
+                            .setDescription(`Вы были назначены овнером приватной комнаты **${channel.name}**`)
+                            .setThumbnail(newOwner.user.displayAvatarURL({ dynamic: true }))
+                            .setColor('#2F3136')
                     })
+                })
         }
     }
 }

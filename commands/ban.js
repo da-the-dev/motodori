@@ -10,7 +10,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .ban <member>
     */
-    async (args, msg, client) => {
+    (args, msg, client) => {
         var curatorRole = msg.guild.roles.cache.get(constants.roles.curator)
         if(msg.member.roles.cache.find(r => r.position >= curatorRole.position)) {
             var mMember = msg.mentions.members.first()
@@ -19,13 +19,13 @@ module.exports =
                 return
             }
 
-            var user = await new utl.db.DBUser(msg.guild.id, mMember.id)
-            user.ban = true
-            await user.save()
-
-            mMember.roles.remove(mMember.roles.cache)
-                .then(() => { mMember.roles.add(constants.roles.localban) })
-            utl.embed(msg, sMsg, `${pillar}${ban}${pillar} Пользователю <@${mMember.id}> была выдана локальная блокировка`)
+            utl.db.createClient(process.env.MURL).then(async db => {
+                await db.update(msg.guild.id, mMember.user.id, { $set: { ban: true } })
+                mMember.roles.remove(mMember.roles.cache)
+                    .then(() => { mMember.roles.add(constants.roles.localban) })
+                utl.embed(msg, sMsg, `${pillar}${ban}${pillar} Пользователю <@${mMember.id}> была выдана локальная блокировка`)
+                db.close()
+            })
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет доступа к этой команде!')
     }

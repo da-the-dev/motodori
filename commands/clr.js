@@ -1,8 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
-const { sweet } = constants.emojies
-const { DBUser, DB } = utl.db
+const { sweet } = require('../constants.json').emojies
 const sMsg = 'Любовная комната'
 const ssMsg = 'Создание любовной комнаты'
 module.exports =
@@ -23,95 +22,103 @@ module.exports =
             return
         }
 
-        var user = await new DBUser(msg.guild.id, msg.author.id)
-        if(user) {
-            if(!user.money || user.money < 10000) {
-                utl.embed(msg, sMsg, `У Вас недостачно ${sweet} для покупки любовной комнаты!`)
-                DB.saveAll()
-                return
-            }
-            if(user.loveroom) {
-                utl.embed(msg, sMsg, 'У Вас уже есть любовная комната!')
-                DB.saveAll()
-                return
-            }
+        utl.db.createClient(process.env.MURL).then(db => {
+            db.get(msg.guild.id, msg.author.id).then(async userData => {
+                if(userData) {
+                    if(!userData.money || userData.money < 10000) {
+                        utl.embed(msg, sMsg, `У Вас недостачно ${sweet} для покупки любовной комнаты!`)
+                        db.close()
+                        return
+                    }
+                    if(userData.loveroom) {
+                        utl.embed(msg, sMsg, 'У Вас уже есть любовная комната!')
+                        db.close()
+                        return
+                    }
 
-            var partner = await new DBUser(msg.guild.id, msg.author.id)
-            if(partner) {
-                if(partner.loveroom) {
-                    utl.embed(msg, sMsg, 'У партнера уже есть любовная комната!')
-                    DB.saveAll()
-                    return
-                }
-            }
+                    var d = await db.get(msg.guild.id, mMember.id)
+                    if(d) {
+                        if(d.loveroom) {
+                            utl.embed(msg, sMsg, 'У партнера уже есть любовная комната!')
+                            await db.close()
+                            return
+                        }
+                    }
 
-            const m = await utl.embed(msg, ssMsg, `<@${mMember.id}>, <@${msg.member.id}> хочет создать с тобой любовную комнату, что ответишь?\nСтоимость комнаты **10.000** ${sweet}`)
+                    utl.embed(msg, ssMsg, `<@${mMember.id}>, <@${msg.member.id}> хочет создать с тобой любовную комнату, что ответишь?\nСтоимость комнаты **10.000** ${sweet}`)
+                        .then(async m => {
+                            utl.reactionSelector.yesNo(m, mMember.id,
+                                () => {
+                                    m.guild.channels.create(`${msg.author.username} ❤ ${mMember.user.username}`, {
+                                        type: 'voice',
+                                        permissionOverwrites:
+                                            [
+                                                {
+                                                    id: msg.guild.id,
+                                                    deny: ["CONNECT"]
+                                                },
+                                                {
+                                                    id: constants.roles.verify,
+                                                    deny: ["VIEW_CHANNEL", "CONNECT"]
+                                                },
+                                                {
+                                                    id: constants.roles.muted,
+                                                    deny: ["VIEW_CHANNEL", "CONNECT"]
+                                                },
+                                                {
+                                                    id: constants.roles.toxic,
+                                                    deny: ["VIEW_CHANNEL", "CONNECT"]
+                                                },
+                                                {
+                                                    id: constants.roles.localban,
+                                                    deny: ["VIEW_CHANNEL", "CONNECT"]
+                                                },
+                                                {
+                                                    id: msg.author.id,
+                                                    allow: ["VIEW_CHANNEL", 'CONNECT']
+                                                },
+                                                {
+                                                    id: mMember.id,
+                                                    allow: ["VIEW_CHANNEL", 'CONNECT']
+                                                }
+                                            ],
+                                        parent: constants.categories.loverooms,
+                                        userLimit: 2
+                                    })
+                                        .then(c => {
+                                            mMember.roles.add(constants.roles.loveroom)
+                                            msg.member.roles.add(constants.roles.loveroom)
 
-            utl.reactionSelector.yesNo(m, mMember.id,
-                async () => {
-                    const c = await m.guild.channels.create(`${msg.author.username} ❤ ${mMember.user.username}`, {
-                        type: 'voice',
-                        permissionOverwrites:
-                            [
-                                {
-                                    id: msg.guild.id,
-                                    deny: ["CONNECT"]
+                                            userData.money -= 10000
+                                            userData.loveroom = { 'id': c.id, 'partner': mMember.id, 'creationDate': Date.now(), 'bal': 6000 }
+
+                                            db.set(msg.guild.id, msg.author.id, userData).then(() => {
+                                                db.update(msg.guild.id, mMember.id, { $set: { 'loveroom': { 'id': c.id, 'partner': msg.author.id, 'creationDate': Date.now(), 'bal': 6000 } } }).then(() => {
+                                                    db.close()
+                                                    m.edit(utl.embed.build(msg, ssMsg, `<@${msg.member.id}> и <@${mMember.id}> теперь пара!`))
+                                                })
+                                            })
+                                        })
+                                    m.reactions.removeAll()
+                                    return
                                 },
-                                {
-                                    id: constants.roles.verify,
-                                    deny: ["VIEW_CHANNEL", "CONNECT"]
+                                () => {
+                                    m.edit(utl.embed.build(msg, sMsg, `<@${mMember.id}> тебе отказал(-а)`))
+                                    m.reactions.removeAll()
+                                    db.close()
                                 },
-                                {
-                                    id: constants.roles.muted,
-                                    deny: ["VIEW_CHANNEL", "CONNECT"]
-                                },
-                                {
-                                    id: constants.roles.toxic,
-                                    deny: ["VIEW_CHANNEL", "CONNECT"]
-                                },
-                                {
-                                    id: constants.roles.localban,
-                                    deny: ["VIEW_CHANNEL", "CONNECT"]
-                                },
-                                {
-                                    id: msg.author.id,
-                                    allow: ["VIEW_CHANNEL", 'CONNECT']
-                                },
-                                {
-                                    id: mMember.id,
-                                    allow: ["VIEW_CHANNEL", 'CONNECT']
+                                () => {
+                                    m.edit(utl.embed.build(msg, sMsg, `<@${mMember.id}> тебя проигнорировал(-а)`))
+                                    m.reactions.removeAll()
+                                    db.close()
                                 }
-                            ],
-                        parent: constants.categories.loverooms,
-                        userLimit: 2
-                    })
-
-                    mMember.roles.add(constants.roles.loveroom)
-                    msg.member.roles.add(constants.roles.loveroom)
-
-                    user.money -= 10000
-                    const date = Date.now()
-                    user.loveroom = { 'id': c.id, 'partner': mMember.id, 'creationDate': date, 'bal': 6000 }
-                    partner.loveroom = { 'id': c.id, 'partner': msg.author.id, 'creationDate': date, 'bal': 6000 }
-                    DB.saveAll()
-
-                    m.edit(utl.embed.build(msg, ssMsg, `<@${msg.member.id}> и <@${mMember.id}> теперь пара!`))
-                    m.reactions.removeAll()
-                },
-                () => {
-                    m.edit(utl.embed.build(msg, sMsg, `<@${mMember.id}> тебе отказал(-а)`))
-                    m.reactions.removeAll()
-                    DB.saveAll()
-                },
-                () => {
-                    m.edit(utl.embed.build(msg, sMsg, `<@${mMember.id}> тебя проигнорировал(-а)`))
-                    m.reactions.removeAll()
-                    DB.saveAll()
+                            )
+                        })
+                } else {
+                    utl.embed(msg, 'У Вас недостачно конфет для покупки любовной комнаты!')
+                    db.close()
                 }
-            )
-        } else {
-            utl.embed(msg, 'У Вас недостачно конфет для покупки любовной комнаты!')
-            DB.saveAll()
-        }
+            })
+        })
     }
 module.exports.allowedInGeneral = true

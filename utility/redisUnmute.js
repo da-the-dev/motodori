@@ -23,7 +23,8 @@ module.exports = (client) => {
                     var data = msg.split('-')
                     data.shift()
                     var guild = client.guilds.cache.first()
-                    var member = guild.members.cache.get(data[0])
+                    var member = guild.member(data[0])
+                    if(!member) return
                     const rClient = redis.createClient(process.env.RURL)
                     rClient.get(data[0], (err, res) => {
                         if(err) console.log(err)

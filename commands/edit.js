@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const sMsg = 'Редактирование эмбеда'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -14,34 +15,36 @@ module.exports =
         var messageID = args[0]
         args.shift()
         if(!messageID) {
-            utl.embed(msg, 'Не указан ID эмбеда!')
+            utl.embed.ping(msg, sMsg, 'не указан ID эмбеда!')
             return
         }
 
         var stringData = args.join('\n').trim()
         var jsonData = {}
         if(!stringData) {
-            utl.embed(msg, 'Вы не указали данные для эмбеда!')
+            utl.embed.ping(msg, sMsg, 'Вы не указали данные для эмбеда!')
             return
         }
 
         try {
             jsonData = JSON.parse(stringData)
         } catch(err) {
-            utl.embed(msg, 'Некорректные данные для эмбеда!')
+            utl.embed.ping(msg, sMsg, 'некорректные данные для эмбеда!')
             return
         }
 
         msg.channel.messages.fetch(messageID)
-            .then(c => {
-                if(c) {
-                    var embed = new Discord.MessageEmbed(jsonData)
-                    if(jsonData.image) embed.setImage(jsonData.image)
-                    if(jsonData.plainText) c.edit(jsonData.plainText, embed)
-                    else c.edit(embed)
-                } else {
-                    utl.embed(msg, 'Не найдено сообщение! Проверьте ID!')
-                }
+            .then(m => {
+                if(m) {
+                    const embed = new Discord.MessageEmbed(jsonData)
+                        .setThumbnail(jsonData.thumbnail)
+                        .setImage(jsonData.image)
+                    m.edit({
+                        content: jsonData.plainText,
+                        embed: embed
+                    })
+                } else
+                    utl.embed.ping(msg, sMsg, 'не найдено сообщение! Проверьте ID!')
             })
     }
 module.exports.allowedInGeneral = true

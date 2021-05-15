@@ -114,6 +114,13 @@ module.exports =
 
                 // console.log(mmD, mmH, mmM, mmS)
 
+                utl.db.createClient(process.env.MURL).then(async db => {
+                    var userData = await db.get(mMember.guild.id, mMember.id)
+                    userData.mute = true
+                    await db.set(mMember.guild.id, mMember.id, userData)
+                    db.close()
+                })
+
                 // Set shadow key
                 rClient.set('muted-' + mMember.user.id, true)
                 rClient.expire('muted-' + mMember.user.id, time)

@@ -43,7 +43,7 @@ module.exports =
                     } else {
                         db.update(msg.guild.id, msg.author.id, { $inc: { money: -amount } }).then(() => {
                             db.update(msg.guild.id, mMember.id, { $inc: { money: amount } }).then(() => {
-                                utl.embed(msg, 'Передача валюты', `Вы передали пользователю <@${mMember.user.id}> **${amount}** <${constants.emojies.sweet}> `)
+                                utl.embed(msg, 'Передача валюты', `Вы передали пользователю <@${mMember.user.id}> **${amount}** ${constants.emojies.sweet}`)
                                 db.close()
                             })
                         })
