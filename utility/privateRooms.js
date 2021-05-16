@@ -9,7 +9,7 @@ const sMsg = 'Приватные комнаты'
  */
 module.exports.createRoom = (client) => {
     var privateRoomCategory = client.guild.channels.cache.get(constants.categories.privateRooms)
-    client.guild.channels.create('Join To Create',
+    client.guild.channels.create('Tap to Create +꙳',
         {
             type: "voice",
             permissionOverwrites: [

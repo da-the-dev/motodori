@@ -8,7 +8,7 @@ const utl = require('../utility')
 module.exports = async (client) => {
     // Scan for private room creator channel
     /**@type {Discord.VoiceChannel} */
-    const creator = client.guild.channels.cache.find(c => c.name.includes('Join To Create'))
+    const creator = client.guild.channels.cache.find(c => c.name.includes('Tap to Create +꙳'))
     if(!creator)
         utl.privateRooms.createRoom(client)
     else
