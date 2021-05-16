@@ -85,12 +85,13 @@ const takeRole = (client, id) => {
  */
 const formCaptcha = () => {
     return new Promise(async (resolve, reject) => {
-        const { createCanvas, loadImage } = require('canvas')
+        const { createCanvas, loadImage, registerFont } = require('canvas')
         const path = require('path')
-        const canvas = createCanvas(1920, 1080)
+        registerFont(path.resolve(path.join('./', 'fonts', 'japan.otf')), { family: 'Japan' })
+        const img = await loadImage(path.resolve(path.join('./', 'imgs', 'captcha.png')))
+        const canvas = createCanvas(img.width, img.height)
         const ctx = canvas.getContext('2d')
 
-        const img = await loadImage(path.resolve(path.join('./', 'imgs', 'captcha.png')))
         ctx.drawImage(img, 0, 0, img.width, img.height)
 
         function makeid(length) {
@@ -103,23 +104,24 @@ const formCaptcha = () => {
             return result;
         }
         const text = makeid(4)
-        const font = 'bold 150px "Sans"'
-        const args = [text, img.width / 5 + 10, img.height / 2]
+        const font = 'bold 400px "Japan"'
+        const args = [text, img.width / 3 - 40, img.height / 2 + 150]
 
-        ctx.fillStyle = '#e5b6de'
         ctx.font = font
         ctx.textAlign = 'center'
-        ctx.fillText(...args)
+        ctx.lineWidth = 10
+        ctx.strokeStyle = '#AA0000'
+        ctx.strokeText(...args)
 
         ctx.fillStyle = 'black'
         ctx.font = font
         ctx.textAlign = 'center'
-        ctx.lineWidth = 2
-        ctx.strokeText(...args)
+        ctx.fillText(...args)
+
 
         resolve({
             text: text,
-            obj: { content: '**Напишите указанный код на картинке**', files: [canvas.toBuffer()] }
+            obj: { content: '**Приветствуем Вас! Для доступа к серверу Вам нужно пройти верификацию. Это можно сделать, написав код на картинке**', files: [canvas.toBuffer()] }
         })
     })
 }
