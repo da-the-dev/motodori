@@ -136,7 +136,7 @@ module.exports.welcomeReward = (msg, client) => {
     if(reward) {
         var c = msg.content.toLocaleLowerCase()
         if(welcomeWords.find(w => c.includes(w)))
-            msg.react('<:799037638232899584:843253792844677120>')
+            msg.react('<a:flow_m:843253792844677120>')
     }
 }
 
