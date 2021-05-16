@@ -140,14 +140,14 @@ module.exports.chatActivity = (msg) => {
                 }).then(validData => {
                     validData.forEach(d => {
                         if(!d.notActivity) {
-                            var member = msg.guild.member(d.id)
-                            if(member) {
-                                if(d.dayMsgs >= 500 && !member.roles.cache.has(constants.roles.daylyActive))
-                                    null
-                                // member.roles.add(constants.roles.daylyActive)
-                                else if(d.nightMsgs >= 500 && !member.roles.cache.has(constants.roles.nightActive))
-                                    member.roles.add(constants.roles.nightActive)
-                            }
+                            // var member = msg.guild.member(d.id)
+                            // if(member) {
+                            //     if(d.dayMsgs >= 500 && !member.roles.cache.has(constants.roles.daylyActive))
+                            //         null
+                            //     // member.roles.add(constants.roles.daylyActive)
+                            //     else if(d.nightMsgs >= 500 && !member.roles.cache.has(constants.roles.nightActive))
+                            //         member.roles.add(constants.roles.nightActive)
+                            // }
                         }
                     })
                     db.close()
