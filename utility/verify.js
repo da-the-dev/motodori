@@ -134,7 +134,7 @@ module.exports.welcomeReward = (msg, client) => {
     if(reward) {
         var c = msg.content.toLocaleLowerCase()
         if(welcomeWords.find(w => c.includes(w)))
-            msg.react('<a:ilikeu:843190562478620713>')
+            msg.react('<:799037638232899584:843253792844677120>')
     }
 }
 
