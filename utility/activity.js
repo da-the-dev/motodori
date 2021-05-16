@@ -8,20 +8,21 @@ const constants = require('../constants.json')
  */
 const voiceAct = () => {
     setInterval(() => {
-        utl.db.createClient(process.env.MURL).then(db => {
-            var prepedVoiceActs = voiceActs.map(a => { return { id: a } })
-            var update = { $inc: { money: 1, voiceTime: 1 } }
+        // utl.db.createClient(process.env.MURL).then(db => {
+        //     var prepedVoiceActs = voiceActs.map(a => { return { id: a } })
+        //     if (prepedVoiceActs.)
+        //     var update = { $inc: { money: 1, voiceTime: 1 } }
 
-            var now = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-            if(now.getHours() >= 9 && now.getHours() <= 16)
-                update.$inc.dayVoiceTime = 1
-            if(now.getHours() >= 0 && now.getHours() <= 6)
-                update.$inc.nightVoiceTime = 1
+        //     var now = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+        //     if(now.getHours() >= 9 && now.getHours() <= 16)
+        //         update.$inc.dayVoiceTime = 1
+        //     if(now.getHours() >= 0 && now.getHours() <= 6)
+        //         update.$inc.nightVoiceTime = 1
 
-            db.updateMany('836297404260155432', { $or: prepedVoiceActs || [] }, update).then(() => {
-                db.close()
-            })
-        })
+        //     db.updateMany('836297404260155432', { $or: prepedVoiceActs || [] }, update).then(() => {
+        //         db.close()
+        //     })
+        // })
     }, 60000)
 }
 
