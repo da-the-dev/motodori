@@ -21,7 +21,7 @@ module.exports = (client) => {
                     /**@type {Array<string>} */
                     var data = msg.split('-')
                     data.shift()
-                    var guild = client.guilds.cache.first()
+                    var guild = client.guilds.cache.last()
                     var member = guild.member(data[0])
                     if(!member) return
                     const rClient = redis.createClient(process.env.RURL)
@@ -46,10 +46,10 @@ module.exports = (client) => {
                     member ? member.roles.remove(constants.roles.muted) : null
                 } else if(msg.startsWith('pics')) {
                     var id = msg.split('-').pop()
-                    client.guilds.cache.first().member(id).roles.remove(constants.roles.pics)
+                    client.guilds.cache.last().member(id).roles.remove(constants.roles.pics)
 
                     utl.db.createClient(process.env.MURL).then(db => {
-                        db.update(client.guilds.cache.first().id, id, { $unset: { pic: '' } }).then(db.close())
+                        db.update(client.guilds.cache.last().id, id, { $unset: { pic: '' } }).then(db.close())
                     })
                 }
             })

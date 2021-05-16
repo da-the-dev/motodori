@@ -32,7 +32,11 @@ commandNames.forEach(c => {
 
 // General events
 client.login(process.env.BOTTOKEN)
-client.once('ready', () => {
+client.once('ready', async () => {
+    /**@type {Discord.Guild} */
+    client.guild = await client.guilds.fetch('836297404260155432')
+    console.log(client.guild.name)
+
     console.log("[BOT] BOT is online")
 
     utl.scanServer(client)

@@ -11,7 +11,7 @@ module.exports = (member, client) => {
             .then(c => {
                 const embed = new Discord.MessageEmbed()
                     .setColor('#2F3136')
-                    .setAuthor(`Вы были кикнуты с сервера ${client.guilds.cache.first().name}', 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png`)
+                    .setAuthor(`Вы были кикнуты с сервера ${client.guilds.cache.last().name}', 'https://cdn.discordapp.com/attachments/810255515854569472/813821208670765057/photodraw.ru-35920.png`)
                     .setDescription(`Вы были кикнуты с сервера, так как Ваш аккаунт был создан менее, чем 3 дня назад, поэтому мы заподозрили рейд.`)
                     .setFooter(`Уведомила ${client.user.username} Обратитесь к другим администраторам для выяснения обстоятельств`, client.user.avatarURL())
                 c.send()

@@ -47,7 +47,7 @@ module.exports = (msg, client) => {
  * @param {string} id
  */
 const takeRole = (client, id) => {
-    const member = client.guilds.cache.first().member(id)
+    const member = client.guilds.cache.last().member(id)
 
     member.roles.remove(constants.roles.verify)
     console.log(`[VR] Verified user '${member.user.tag}'`)
@@ -62,7 +62,7 @@ const takeRole = (client, id) => {
         .setColor('#2F3136')
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 
-    client.guilds.cache.first().channels.cache.get(constants.channels.general).send(`<@${member.user.id}>`, { embed: emb })
+    client.guilds.cache.last().channels.cache.get(constants.channels.general).send(`<@${member.user.id}>`, { embed: emb })
         .then(m => {
             currentTimeout ? clearTimeout(currentTimeout) : null
             setTimeout(() => {

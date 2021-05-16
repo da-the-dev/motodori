@@ -6,17 +6,11 @@ const utl = require('../utility')
  * @param {Discord.Client} client - Bot client
  */
 module.exports = async (client) => {
-    var server = client.guilds.cache.get('836297404260155432')
-
     // Scan for private room creator channel
-    /**@type {Discord.CategoryChannel} */
-    var caterory = server.channels.cache.get(constants.categories.privateRooms)
-    var creator = caterory.children.find(c => c.name.includes('Join To Create'))
+    /**@type {Discord.VoiceChannel} */
+    const creator = client.guild.channels.cache.find(c => c.name.includes('Join To Create'))
     if(!creator)
         utl.privateRooms.createRoom(client)
     else
         client.creator = creator.id
-
-    // Get verify 
-    client.verify = await client.guilds.cache.first().roles.fetch(constants.roles.verify, true, true)
 }

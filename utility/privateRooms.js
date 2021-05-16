@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
-const { dot } = constants.emojies
 const utl = require('../utility')
 const sMsg = 'Приватные комнаты'
 
@@ -9,36 +8,38 @@ const sMsg = 'Приватные комнаты'
  * @param {Discord.Client} client
  */
 module.exports.createRoom = (client) => {
-    var privateRoomCategory = client.guilds.cache.first().channels.cache.get(constants.categories.privateRooms)
-    client.guilds.cache.first().channels.create('Join To Create',
+    var privateRoomCategory = client.guild.channels.cache.get(constants.categories.privateRooms)
+    client.guild.channels.create('Join To Create',
         {
             type: "voice",
-            permissionOverwrites:
-                [
-                    {
-                        id: constants.roles.muted,
-                        deny: ["CONNECT"]
-                    },
-                    {
-                        id: constants.roles.toxic,
-                        allow: ['VIEW_CHANNEL', "CONNECT"]
-                    },
-                    {
-                        id: constants.roles.localban,
-                        deny: ['VIEW_CHANNEL', "CONNECT"]
-                    },
-                    {
-                        id: client.guilds.cache.first().id,
-                        allow: ['VIEW_CHANNEL', "CONNECT"]
-                    },
-                    {
-                        id: constants.roles.verify,
-                        deny: ['VIEW_CHANNEL', "CONNECT"]
-                    }
-                ],
+            permissionOverwrites: [
+                {
+                    id: constants.roles.muted,
+                    deny: ["CONNECT"]
+                },
+                {
+                    id: constants.roles.toxic,
+                    allow: ['VIEW_CHANNEL', "CONNECT"]
+                },
+                {
+                    id: constants.roles.localban,
+                    deny: ['VIEW_CHANNEL', "CONNECT"]
+                },
+                {
+                    id: client.guild.id,
+                    allow: ['VIEW_CHANNEL', "CONNECT"]
+                },
+                {
+                    id: constants.roles.verify,
+                    deny: ['VIEW_CHANNEL', "CONNECT"]
+                }
+            ],
             parent: privateRoomCategory,
-            userLimit: 1
+            userLimit: 1,
+            position: 0
+
         }).then(c => client.creator = c.id)
+        .catch(err => console.log(err))
 }
 
 /**

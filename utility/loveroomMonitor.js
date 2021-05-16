@@ -65,12 +65,12 @@ const payment = (guild) => {
  */
 module.exports.initPayment = (client) => {
     schedule.scheduleJob('0 0 1 * *', () => {
-        payment(client.guilds.cache.first())
+        payment(client.guilds.cache.last())
     })
     schedule.scheduleJob('0 0 12 * *', () => {
-        payment(client.guilds.cache.first())
+        payment(client.guilds.cache.last())
     })
     schedule.scheduleJob('0 0 24 * *', () => {
-        payment(client.guilds.cache.first())
+        payment(client.guilds.cache.last())
     })
 }

@@ -61,7 +61,7 @@ module.exports.voiceActivity = (oldState, newState) => {
  * @param {Discord.Client} client
  */
 module.exports.voiceActivityInit = async (client) => {
-    var guild = client.guilds.cache.first()
+    var guild = client.guilds.cache.last()
     var voiceChannels = guild.channels.cache.filter(c => c.type == 'voice')
     voiceChannels.forEach(v => {
         if(v.members.array().length > 1) {
