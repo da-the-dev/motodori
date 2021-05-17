@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { DBUser, Connection } = utl.db
 const sMsg = 'Инвентарь'
 module.exports =
     /**
@@ -8,46 +9,57 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .inv
     */
-    (args, msg, client) => {
-        utl.db.createClient(process.env.MURL).then(async db => {
-            var userData = await db.get(msg.guild.id, msg.author.id)
-            if(userData) {
-                if((!userData.inv || userData.inv.length <= 0) && (!userData.customInv || userData.customInv.length <= 0)) {
-                    utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
-                    db.close()
-                    return
-                }
-                var embed = utl.embed.build(msg, sMsg, '')
+    async (args, msg, client) => {
+        const con = await new Connection()
+        const user = await new DBUser(msg.guild.id, msg.author.id, con)
 
-                if(userData.inv && userData.inv.length > 0) {
-                    var roles = ''
-                    for(i = 0; i < userData.inv.length; i++)
-                        if(msg.member.roles.cache.has(userData.inv[i]))
-                            roles += `\`${i + 1}.\` <@&${userData.inv[i]}> — надета\n`
-                        else
-                            roles += `\`${i + 1}.\` <@&${userData.inv[i]}> — снята\n`
+        if(!user.inv && !user.customInv) {
+            utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
+            con.close()
+            return
+        }
 
-                    embed.addField('Магазинные роли', roles)
-                }
-                if(userData.customInv && userData.customInv.length > 0) {
-                    var roles = ''
-                    for(i = 0; i < userData.customInv.length; i++)
-                        if(msg.guild.roles.cache.get(userData.customInv[i]))
-                            if(msg.member.roles.cache.has(userData.customInv[i]))
-                                roles += `\`c${i + 1}.\` <@&${userData.customInv[i]}> — надета\n`
-                            else
-                                roles += `\`c${i + 1}.\` <@&${userData.customInv[i]}> — снята\n`
-                        else
-                            userData.customInv.splice(userData.customInv.findIndex(id => id == userData.customInv[i]), 1)
-                    roles.length > 0 ? embed.addField('Кастомные роли', roles) : null
-                    await db.set(msg.guild.id, msg.author.id, userData).then(() => db.close())
-                }
+        var invChanged = false
+        var customInvChanged = false
 
-                msg.channel.send(embed)
-                db.close()
-            } else {
-                utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
-                db.close()
+        user.inv.forEach(r => {
+            if(!msg.guild.roles.cache.has(r.id)) {
+                invChanged = true
+                user.inv.splice(user.inv.findIndex(id => id == user.inv[i]), 1)
             }
         })
+        user.customInv.forEach(r => {
+            if(!msg.guild.roles.cache.has(r.id)) {
+                customInvChanged = true
+                user.customInv.splice(user.customInv.findIndex(id => id == user.customInv[i]), 1)
+            }
+        })
+
+        if(invChanged || customInvChanged)
+            await user.save()
+        con.close()
+
+        var embed = utl.embed.build(msg, sMsg, '')
+
+        if(!user.inv) {
+            var roles = ''
+            for(i = 0; i < user.inv.length; i++)
+                if(msg.member.roles.cache.has(user.inv[i]))
+                    roles += `\`${i + 1}.\` <@&${user.inv[i]}> — надета\n`
+                else
+                    roles += `\`${i + 1}.\` <@&${user.inv[i]}> — снята\n`
+
+            embed.addField('Магазинные роли', roles)
+        }
+        if(user.customInv) {
+            var roles = ''
+            for(i = 0; i < user.customInv.length; i++)
+                if(msg.member.roles.cache.has(user.customInv[i]))
+                    roles += `\`c${i + 1}.\` <@&${user.customInv[i]}> — надета\n`
+                else
+                    roles += `\`c${i + 1}.\` <@&${user.customInv[i]}> — снята\n`
+            embed.addField('Кастомные роли', roles)
+        }
+
+        msg.channel.send(embed)
     }

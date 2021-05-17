@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { DBUser, Connection } = utl.db
 const sMsg = 'Статус'
 module.exports =
     /**
@@ -8,29 +9,32 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .s <?status>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         args.shift()
 
         if(args.length <= 0) {
-            utl.db.createClient(process.env.MURL).then(db => {
-                db.update(msg.guild.id, msg.author.id, { $unset: { status: '' } })
-                    .then(() => {
-                        utl.embed(msg, sMsg, `<@${msg.author.id}>, Ваш статус успешно удален`)
-                        db.close()
-                    })
-            })
+            const con = await new Connection()
+            const user = await new DBUser(msg.guild.id, msg.author.id, con)
+            user.status = ''
+            await user.save()
+            con.close()
+
+            utl.embed(msg, sMsg, `<@${msg.author.id}>, Ваш статус успешно удален`)
+
             return
         }
+
+        const con = await new Connection()
+        const user = await new DBUser(msg.guild.id, msg.author.id, con)
+
 
         var state = args.join(' ')
         state = state.slice(0, state.length <= 60 ? state.length : 60)
         state = state.replace(/[\S]+(.com|.ru|.org|.net|.info)[\S]+/g, '')
 
-        utl.db.createClient(process.env.MURL).then(db => {
-            db.update(msg.guild.id, msg.author.id, { $set: { status: state } })
-                .then(() => {
-                    utl.embed(msg, sMsg, `<@${msg.author.id}>, Ваш статус успешно установлен`)
-                    db.close()
-                })
-        })
+        user.status = state
+        await user.save()
+        con.close()
+
+        utl.embed(msg, sMsg, `<@${msg.author.id}>, Ваш статус успешно установлен`)
     }
