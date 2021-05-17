@@ -29,7 +29,7 @@ module.exports.ping =
      */
     (msg, title, message = '') => {
         return msg.channel.send(new Discord.MessageEmbed()
-            .setTitle(`${dot}${title}`)
+            .setTitle(`${title}`)
             .setDescription(`<@${msg.author.id}>, ${message}`)
             .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
             .setColor('#2F3136')
