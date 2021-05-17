@@ -28,3 +28,15 @@ module.exports.reapplyRoles = (member) => {
         }
     })
 }
+
+/**
+ * Checks if member has role or one above it in hierarchy
+ * @param {Discord.GuildMember} member 
+ * @param {Discord.Role} role 
+ */
+module.exports.privilage = (member, role) => {
+    if(member.roles.cache.find(r => r.position >= role.position))
+        return true
+    else
+        return false
+}
