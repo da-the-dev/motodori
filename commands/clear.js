@@ -7,11 +7,10 @@ module.exports =
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Handles reaction commands
+    * @description Usage: .clear <amount>
     */
     async (args, msg, client) => {
-        var chatCRole = msg.guild.roles.cache.get(constants.roles.chatControl)
-        if(msg.member.roles.cache.find(r => r.position >= chatCRole.position)) {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
             var msgAmount = Number(args[1])
             if(!msgAmount) {
                 utl.embed(msg, sMsg, 'Не указано количество сообщений!')

@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { Connection, DBUser } = utl.db
 const { sweet } = require('../constants.json').emojies
-const constants = require('../constants.json')
 const sMsg = 'Изменение баланса'
 module.exports =
     /**
@@ -28,13 +28,13 @@ module.exports =
                 return
             }
 
-            utl.db.createClient(process.env.MURL).then(db => {
-                console.log(amount)
-                db.update(msg.guild.id, mMember.user.id, { $inc: { money: amount } }).then(() => {
-                    utl.embed(msg, sMsg, `Баланс пользователя <@${mMember.user.id}> изменен на **${amount}** ${sweet}`)
-                    db.close()
-                })
-            })
+            const con = await new Connection()
+            const user = await new DBUser(msg.guild.id, msg.author.id, con)
+
+            user.money += amount
+            await user.save()
+            con.close()
+            utl.embed(msg, sMsg, `Баланс пользователя <@${mMember.user.id}> изменен на **${amount}** ${sweet}`)
         } else
             utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
     }

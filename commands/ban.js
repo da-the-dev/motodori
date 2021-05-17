@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
-const { ban, pillar } = require('../constants.json').emojies
 const utl = require('../utility')
+const { DBUser, Connection } = utl.db
 const sMsg = 'Локальная блокировка'
 module.exports =
     /**
@@ -10,22 +10,21 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .ban <member>
     */
-    (args, msg, client) => {
-        var curatorRole = msg.guild.roles.cache.get(constants.roles.curator)
-        if(msg.member.roles.cache.find(r => r.position >= curatorRole.position)) {
+    async (args, msg, client) => {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed.ping(msg, sMsg, 'не указан участник!')
                 return
             }
 
-            utl.db.createClient(process.env.MURL).then(async db => {
-                await db.update(msg.guild.id, mMember.user.id, { $set: { ban: true } })
-                mMember.roles.remove(mMember.roles.cache)
-                    .then(() => { mMember.roles.add(constants.roles.localban) })
-                utl.embed(msg, sMsg, `${pillar}${ban}${pillar} Пользователю <@${mMember.id}> была выдана локальная блокировка`)
-                db.close()
-            })
+            const con = await new Connection()
+            var user = await new DBUser(msg.guild.id, mMember.id, con)
+            user.ban = true
+            await user.save()
+            con.close()
+
+            utl.embed(msg, sMsg, `Пользователю <@${mMember.id}> была выдана локальная блокировка`)
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет доступа к этой команде!')
     }

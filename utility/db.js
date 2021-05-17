@@ -20,7 +20,8 @@ class Connection {
         })
     }
     close() {
-        this.#connection.close()
+        if(this.#connection.isConnected())
+            this.#connection.close()
     }
 
     ////// BASIC METODS \\\\\\
