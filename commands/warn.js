@@ -33,7 +33,7 @@ module.exports =
                     if(userData) {
                         if(userData.warns && userData.warns.length == 5) {
                             // Set shadow key
-                            const rClient = redis.createClient(process.env.RURL)
+                            const rClient = require('redis').createClient(process.env.RURL)
                             rClient.set('muted-' + mMember.user.id, true)
                             rClient.expire('muted-' + mMember.user.id, 3 * 24 * 60 * 60)
 
