@@ -1,6 +1,8 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { DBUser, Connection } = utl.db
 const constants = require('../constants.json')
+const sMsg = 'Передача валюты'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -8,50 +10,42 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .transfer <member> <ammount>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         var mMember = msg.mentions.members.first()
         if(!mMember) {
-            utl.embed(msg, 'Передача валюты', 'Не указан участник!')
+            utl.embed(msg, sMsg, 'Не указан участник!')
             return
         }
         if(!args[2]) {
-            utl.embed(msg, 'Передача валюты', 'Не указана сумма!')
+            utl.embed(msg, sMsg, 'Не указана сумма!')
             return
         }
         var amount = Number(args[2])
         if(!amount || !Number.isInteger(amount)) {
-            utl.embed(msg, 'Передача валюты', 'Указана неверная сумма!')
+            utl.embed(msg, sMsg, 'Указана неверная сумма!')
             return
         }
 
         if(msg.author.id == mMember.user.id) {
-            utl.embed(msg, 'Передача валюты', 'Нельзя переводить деньги самому себе!')
+            utl.embed(msg, sMsg, 'Нельзя переводить деньги самому себе!')
             return
         }
 
         if(amount <= 0) {
-            utl.embed(msg, 'Передача валюты', 'Неверная сумма!')
+            utl.embed(msg, sMsg, 'Неверная сумма!')
             return
         }
 
-        utl.db.createClient(process.env.MURL).then(db => {
-            db.get(msg.guild.id, msg.author.id).then(userData => {
-                if(userData) {
-                    if(amount > userData.money) { // If too much money is requested 
-                        utl.embed(msg, 'Передача валюты', 'У тебя недостаточно средств для перевода!')
-                        db.close()
-                    } else {
-                        db.update(msg.guild.id, msg.author.id, { $inc: { money: -amount } }).then(() => {
-                            db.update(msg.guild.id, mMember.id, { $inc: { money: amount } }).then(() => {
-                                utl.embed(msg, 'Передача валюты', `Вы передали пользователю <@${mMember.user.id}> **${amount}** ${constants.emojies.sweet}`)
-                                db.close()
-                            })
-                        })
-                    }
-                } else {
-                    utl.embed(msg, 'Передача валюты', 'У тебя нет средств для перевода!')
-                    db.close()
-                }
-            })
-        })
+        const con = await new Connection()
+        const user = await new DBUser(msg.guild.id, mMember.id, con)
+
+        if(amount > user.money) { // If too much money is requested 
+            utl.embed(msg, sMsg, 'У тебя недостаточно средств для перевода!')
+            con.close()
+        } else {
+            await user.save()
+            con.close()
+
+            utl.embed(msg, sMsg, `Вы передали пользователю <@${mMember.user.id}> **${amount}** ${constants.emojies.sweet}`)
+        }
     }

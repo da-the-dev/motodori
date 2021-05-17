@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const constants = require('../constants.json')
-const emojies = ['1️⃣', '2️⃣', '3️⃣']
+const emojies = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
 
 /**
  * Reacts to a message with 2 reactions and executes provided functions accordingly
@@ -43,7 +43,7 @@ module.exports.yesNo = async (msg, id, yes, no, fail) => {
  * @param {Function} fail - If timer runs out
  * @param {*} funcs - Functions
  */
-module.exports.multiselector = async (msg, id, cancel, fail, ...funcs) => {
+module.exports.multiselector = async (msg, id, ...funcs, cancel, fail) => {
     for(i = 0; i < funcs.length; i++)
         await msg.react(emojies[i])
     await msg.react('❌')

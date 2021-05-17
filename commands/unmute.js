@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { DBUser, Connection } = utl.db
 const redis = require('redis')
 const constants = require('../constants.json')
 const sMsg = 'Снятие мута'
@@ -12,8 +13,7 @@ module.exports =
      * @description Usage: .unmute <member>
      */
     (args, msg, client) => {
-        var moderatorRole = msg.guild.roles.cache.get(constants.roles.chatControl)
-        if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed(msg, sMsg, 'Вы не указали пользователя для мута!')
@@ -33,17 +33,15 @@ module.exports =
                         }
                     })
 
-                    utl.db.createClient(process.env.MURL).then(async db => {
-                        var userData = await db.get(msg.guild.id, mMember.id)
-                        delete userData.mute
-                        await db.set(msg.guild.id, mMember.id, userData)
+                    const con = await new Connection()
+                    const user = await new DBUser(msg.guild.id, mMember.id, con)
 
-                        mMember.roles.remove(constants.roles.muted)
-                        utl.embed(msg, sMsg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)
+                    user.mute = false
 
-                        db.close()
-                    })
+                    await user.save()
+                    con.close()
 
+                    utl.embed(msg, sMsg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)
                 } else {
                     utl.embed(msg, sMsg, 'Пользователь не был замьючен в первую очередь!')
                 }

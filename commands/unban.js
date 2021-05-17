@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
-const { pillar, ban } = require('../constants.json').emojies
+const { DBUser, Connection } = utl.db
 const utl = require('../utility')
 const sMsg = 'Снятие локальной блокировки'
 
@@ -12,30 +12,22 @@ module.exports =
     * @description Usage: .unban <member>
     */
     (args, msg, client) => {
-        var curatorRole = msg.guild.roles.cache.get(constants.roles.curator)
-        if(msg.member.roles.cache.find(r => r.position >= curatorRole.position)) {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed(msg, sMsg, 'Не указан участник!')
                 return
             }
 
-            utl.db.createClient(process.env.MURL).then(db => {
-                db.get(msg.guild.id, mMember.user.id)
-                    .then(userData => {
-                        if(userData) {
-                            if(userData.ban) {
-                                delete userData.ban
-                                db.set(msg.guild.id, mMember.user.id, userData).then(() => db.close())
-                                mMember.roles.remove(constants.roles.localban)
-                                    .then(() => utl.embed(msg, sMsg, `${pillar}${ban}${pillar} C пользователя <@${mMember.id}> была снята локальная блокировка`))
-                            }
-                        } else {
-                            utl.embed(msg, sMsg, 'Пользователь изначально не был забанен')
-                            db.close()
-                        }
-                    })
-            })
+            const con = await new Connection()
+            const user = await new DBUser(msg.guild.id, mMember.id, con)
+
+            user.ban = false
+            await user.save()
+
+            con.close()
+
+            utl.embed(msg, sMsg, `C пользователя <@${mMember.id}> была снята локальная блокировка`)
         } else
             utl.embed(msg, sMsg, 'У Вас нет доступа к этой команде!')
     }

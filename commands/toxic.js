@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
+const { DBUser, Connection } = utl.db
 const sMsg = 'Прочие роли'
 module.exports =
     /**
@@ -9,7 +10,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .toxic <member>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         var chatCRole = msg.guild.roles.cache.get(constants.roles.chatControl)
         if(msg.member.roles.cache.find(r => r.position >= chatCRole.position)) {
             var mMember = msg.mentions.members.first()
@@ -18,13 +19,15 @@ module.exports =
                 return
             }
 
-            utl.db.createClient(process.env.MURL).then(db => {
-                db.update(msg.guild.id, mMember.user.id, { $set: { toxic: true } }).then(() => {
-                    mMember.roles.add(constants.roles.toxic)
-                    utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
-                    db.close()
-                })
-            })
+            const con = await new Connection()
+            const user = await new DBUser(msg.guild.id, mMember.id, con)
+
+            user.toxic = true
+
+            await user.save()
+            con.close()
+
+            utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет доступа к этой команде!')
     }
