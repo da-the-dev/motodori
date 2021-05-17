@@ -120,7 +120,7 @@ module.exports =
                 utl.db.createClient(process.env.MURL).then(async db => {
                     var userData = await db.get(msg.guild.id, mMember.id)
                     userData.mute = true
-                    await db.set(msg.guild.id, mMember.id)
+                    await db.set(msg.guild.id, mMember.id, userData)
                     db.close()
                 })
                 utl.embed(msg, 'Выдача мута', `<@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
