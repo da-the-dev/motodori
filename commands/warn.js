@@ -30,18 +30,38 @@ module.exports =
 
             utl.db.createClient(process.env.MURL).then(db => {
                 db.get(msg.guild.id, mMember.id).then(userData => {
-                    if(userData.warns && userData.warns.length == 3)
-                        delete userData.warns
+                    if(userData) {
+                        if(userData.warns && userData.warns.length == 5) {
+                            // Set shadow key
+                            const rClient = redis.createClient(process.env.RURL)
+                            rClient.set('muted-' + mMember.user.id, true)
+                            rClient.expire('muted-' + mMember.user.id, 3 * 24 * 60 * 60)
 
-                    if(!userData.warns)
-                        userData.warns = [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }]
-                    else
-                        userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
+                            utl.db.createClient(process.env.MURL).then(async db => {
+                                var userData = await db.get(msg.guild.id, mMember.id)
+                                userData.mute = true
+                                await db.set(msg.guild.id, mMember.id)
+                                db.close()
+                            })
+                            delete userData.warns
+                        }
 
-                    db.set(msg.guild.id, mMember.user.id, userData).then(() => {
-                        utl.embed(msg, sMsg, `${pillar}${warn}${pillar}Пользователю <@${mMember.user.id}> выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
-                        db.close()
-                    })
+                        if(!userData.warns)
+                            userData.warns = [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }]
+                        else
+                            userData.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
+
+                        db.set(msg.guild.id, mMember.user.id, userData).then(() => {
+                            utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                            db.close()
+                        })
+
+                    } else {
+                        db.set(msg.guild.id, mMember.user.id, { warns: [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] }).then(() => {
+                            utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+                            db.close()
+                        })
+                    }
                 })
             })
         } else {
