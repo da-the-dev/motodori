@@ -40,10 +40,11 @@ module.exports =
                             utl.db.createClient(process.env.MURL).then(async db => {
                                 var userData = await db.get(msg.guild.id, mMember.id)
                                 userData.mute = true
-                                await db.set(msg.guild.id, mMember.id)
+                                await db.set(msg.guild.id, mMember.id, userData)
                                 db.close()
                             })
                             delete userData.warns
+                            mMember.roles.add(constants.roles.muted)
                         }
 
                         if(!userData.warns)
