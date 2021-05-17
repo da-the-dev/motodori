@@ -33,24 +33,13 @@ module.exports =
                         }
                     })
 
-                    // Shadow key means that userData exists
-                    rClient.get(mMember.user.id, (err, res) => {
-                        if(err)
-                            console.error(err)
-
-                        mMember.roles.remove(constants.roles.muted)
-                        var userData = JSON.parse(res)
-                        if(userData.mute) delete userData.mute
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
-                        rClient.quit()
-
-                        utl.embed(msg, sMsg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)
-                    })
-
                     utl.db.createClient(process.env.MURL).then(async db => {
                         var userData = await db.get(msg.guild.id, mMember.id)
                         delete userData.mute
                         await db.set(msg.guild.id, mMember.id, userData)
+
+                        mMember.roles.remove(constants.roles.muted)
+                        utl.embed(msg, sMsg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)
 
                         db.close()
                     })

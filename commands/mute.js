@@ -2,7 +2,6 @@ const Discord = require('discord.js')
 const utl = require('../utility')
 const redis = require('redis')
 const constants = require('../constants.json')
-const { pillar, mute } = require('../constants.json').emojies
 const sMsg = 'Мут'
 
 /**
@@ -125,20 +124,11 @@ module.exports =
                 rClient.set('muted-' + mMember.user.id, true)
                 rClient.expire('muted-' + mMember.user.id, time)
 
-                // Update user data accordingly 
-                rClient.get(mMember.user.id, (err, res) => {
-                    if(err) console.log(err)
-                    if(res) { // If user data exists already 
-                        var userData = JSON.parse(res)
-                        userData.mute = [msg.channel.id, reason]
-                        rClient.set(mMember.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
-                        rClient.quit()
-                    }
-                    // If no user data
-                    else {
-                        rClient.set(mMember.user.id, JSON.stringify({ 'mute': [msg.channel.id, reason] }), err => { if(err) console.log(err) })
-                        rClient.quit()
-                    }
+                utl.db.createClient(process.env.MURL).then(async db => {
+                    var userData = await db.get(msg.guild.id, mMember.id)
+                    userData.mute = true
+                    await db.set(msg.guild.id, mMember.id)
+                    db.close()
                 })
                 utl.embed(msg, 'Выдача мута', `<@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             }
