@@ -175,11 +175,7 @@ class DBUser {
 
     /**@type {number} Money */ money
     /**@type {number} Amount of messages in general*/ msgs
-    /**@type {number} Amount of messages in general in daytime*/ dayMsgs
-    /**@type {number} Amount of messages in general in nighttime*/ nightMsgs
     /**@type {number} Minutes spent in voice channels*/ voiceTime
-    /**@type {number} Minutes spent in voice channels during daytime*/ dayVoiceTime
-    /**@type {number} Minutes spent in voice channels during nighttime*/ nightVoiceTime
     /**@type {Array<Role>} Inventory of shop roles*/ inv
     /**@type {Array<CustomRole>} Inventory of custom roles*/ customInv
     /**@type {Array<Warn>}  Array of warns*/ warns
@@ -188,6 +184,8 @@ class DBUser {
     /**@type {boolean} If muted*/ mute
     /**@type {string} Custom status*/ status
     /**@type {LoveRoom} Love room*/ loveroom
+    /**@type {number} Timely streak*/ streak
+    /**@type {number} Timely reward timestamp*/ rewardTimestamp
 
     /**
     * Retrieves data about a user
@@ -199,7 +197,6 @@ class DBUser {
         return new Promise(async (resolve, reject) => {
             this.#guildID = guildID
             this.#id = id
-            // connections.push(this)
 
             this.#connection = connection
             const userData = await this.#connection.get(guildID, id)
@@ -215,6 +212,8 @@ class DBUser {
             this.mute = userData.mute
             this.status = userData.status
             this.loveroom = userData.loveroom
+            this.rewardTimestamp = userData.rewardTimestamp
+            this.streak = userData.streak
             resolve(this)
         })
     }
@@ -234,6 +233,8 @@ class DBUser {
         this.mute ? userData.mute = this.mute : null
         this.status ? userData.status = this.status : null
         this.loveroom ? userData.loveroom = this.loveroom : null
+        this.rewardTimestamp ? userData.rewardTimestamp = this.rewardTimestamp : null
+        this.streak ? userData.streak = this.streak : null
 
         return userData
     }
