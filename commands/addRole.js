@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const { getConnection, DBServer } = utl.db
+const sMsg = 'Добавление роли в магазин'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -12,23 +13,23 @@ module.exports =
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mRole = msg.mentions.roles.first()
             if(!mRole) {
-                utl.embed.ping(msg, 'не указана роль!')
+                utl.embed.ping(msg, sMsg, 'не указана роль!')
                 return
             }
 
             var pos = Number(args[2])
             if(!pos || !Number.isInteger(pos)) {
-                utl.embed.ping(msg, 'не указана позиция роли!')
+                utl.embed.ping(msg, sMsg, 'не указана позиция роли!')
                 return
             }
             if(pos == 0 || pos > 20) {
-                utl.embed.ping(msg, 'позиция роли ограничена диапозоном 1-20!')
+                utl.embed.ping(msg, sMsg, 'позиция роли ограничена диапозоном 1-20!')
                 return
             }
 
             var price = Number(args[3])
             if(!price || !Number.isInteger(price)) {
-                utl.embed.ping(msg, 'не указана цена роли!')
+                utl.embed.ping(msg, sMsg, 'не указана цена роли!')
                 return
             }
 
