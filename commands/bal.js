@@ -9,7 +9,7 @@ const { sweet } = require('../constants.json').emojies
 const getBal = async (member) => {
     const user = await new utl.db.DBUser(member.guild.id, member.id, utl.db.getConnection())
 
-    return user.money
+    return user.money || 0
 }
 
 module.exports =
