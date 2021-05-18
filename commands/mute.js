@@ -32,8 +32,7 @@ module.exports =
      * @example .mute @daym bro 5h "reason"
      */
     async (args, msg, client) => {
-        var moderatorRole = msg.guild.roles.cache.get(constants.roles.chatControl)
-        if(msg.member.roles.cache.find(r => r.position >= moderatorRole.position)) {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.eventor))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed.ping(msg, sMsg, 'Вы не указали пользователя для мута!')
