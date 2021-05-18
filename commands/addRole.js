@@ -21,8 +21,8 @@ module.exports =
                 utl.embed.ping(msg, 'не указана позиция роли!')
                 return
             }
-            if(pos == 0 || pos > 18) {
-                utl.embed.ping(msg, 'позиция роли ограничена диапозоном 1-18!')
+            if(pos == 0 || pos > 20) {
+                utl.embed.ping(msg, 'позиция роли ограничена диапозоном 1-20!')
                 return
             }
 
