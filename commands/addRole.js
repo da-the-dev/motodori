@@ -33,12 +33,14 @@ module.exports =
                 return
             }
 
-            const server = await new DBServer(msg.guild.id, getConnection)
+            const server = await new DBServer(msg.guild.id, getConnection())
+            console.log(server.roles)
             if(!server.roles)
                 server.roles = [{ id: mRole.id, price: price }]
             else
                 server.roles.splice(pos - 1, 0, { id: mRole.id, price: price })
 
+            console.log(server.roles)
             server.save()
         }
     }
