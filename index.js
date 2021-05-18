@@ -42,6 +42,7 @@ function exitHandler(options, exitCode) {
 
 //do something when app is closing
 process.on('exit', exitHandler.bind(null, { cleanup: true }));
+process.on('res', exitHandler.bind(null, { cleanup: true }));
 
 //catches ctrl+c event
 process.on('SIGINT', exitHandler.bind(null, { exit: true }));
@@ -59,7 +60,7 @@ client.login(process.env.BOTTOKEN)
 client.once('ready', async () => {
     /**@type {Discord.Guild} */
     client.guild = await client.guilds.fetch('836297404260155432')
-    await utl.connections.startconnections(5)
+    await utl.connections.startconnections(3)
     console.log(utl.db.connections)
 
     console.log("[BOT] BOT is online")

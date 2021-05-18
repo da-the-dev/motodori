@@ -44,7 +44,7 @@ module.exports =
             return
         }
 
-        if(!Number.isInteger(Number(args[1])) || (Array.from(args[1]).filter(s => s == 'c').length != 1 && args[1][0] != 'c')) {
+        if(!Number.isInteger(Number(args[1])) && (Array.from(args[1]).filter(s => s == 'c').length != 1 && args[1][0] != 'c')) {
             utl.embed.ping(msg, sMsg, 'указан неверный индекс роли!')
             return
         }

@@ -1,7 +1,8 @@
 const Discord = require('discord.js')
-const emojies = ['➡️', '⬅️']
-const { dot, sweet } = require('../constants.json').emojies
+const emojies = ['⬅️', '➡️']
+const { sweet } = require('../constants.json').emojies
 const utl = require('../utility')
+const { DBServer, getConnection } = utl.db
 
 /** 
  * Build and edit shop message
@@ -13,27 +14,29 @@ const buildPage = async (page, msg, thumbnail) => {
     msg = await msg.channel.messages.fetch(msg.id)
 
     var embed = new Discord.MessageEmbed()
-        .setTitle(`${dot}Магазин`)
-        .setFooter(`Страница ${page}/2 • ${msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('•') + 2)}`)
+        .setTitle(`Магазин`)
+        .setFooter(`Страница ${page}/3 • ${msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('•') + 2)}`)
         .setThumbnail(thumbnail)
         .setColor('#2F3136')
 
-    utl.db.createClient(process.env.MURL).then(db => {
-        db.get(msg.guild.id, 'serverSettings').then(serverSettings => {
-            if(serverSettings) {
-                db.close()
-                var length = serverSettings.roles.slice((page - 1) * 9, (page - 1) * 9 + 9).length + (page - 1) * 9
-                for(i = (page - 1) * 9; i < length; i++)
-                    embed.addField(`${i + 1}. — ${serverSettings.roles[i].price}${sweet}`, ` <@&${serverSettings.roles[i].id}>`)
+    const server = await new DBServer(msg.guild.id, getConnection())
 
-                msg.edit(embed)
-                    .then(async m => {
-                        await m.reactions.removeAll()
-                        await m.react(emojies[page - 1])
-                    })
-            }
-        })
-    })
+
+    const start = (page - 1) * 9
+    const end = server.roles.slice(start, start + 9).length + start
+
+    console.log(start, end)
+
+    var desc = ''
+    // for(i = 0; i < 20; i++)
+    //     server.roles[i] ? desc += `<@&${server.roles[i].id}>` : null
+    // msg.channel.send(desc)
+
+
+    for(i = start; i < end; i++)
+        embed.addField(`${i + 1}. — ${server.roles[i].price}${sweet}`, ` <@&${server.roles[i].id}>`, true)
+
+    return msg.edit(embed)
 }
 
 /**
@@ -49,18 +52,43 @@ module.exports = (reaction, user, client) => {
 
         const text = msg.embeds[0].footer.text
         var user = text.slice(text.indexOf('•') + 2)
-        var index1 = text.slice(0, text.indexOf('•')).indexOf('1')
+        var index = text.slice(text.indexOf('/') - 1, text.indexOf('/'))
+
+        console.log(text, user, index)
 
         if(user != reaction.users.cache.last().tag)
             return
 
-        if(reaction.emoji.name == '⬅️' && index1 == -1) { // 
-            console.log('Second page, flip to first')
-            buildPage(1, msg, thumbnail)
-        }
-        else if(reaction.emoji.name == '➡️' && index1 != -1) { // 
+        if(reaction.emoji.name == '➡️' && index == 1) { // 
             console.log('First page, flip to second')
             buildPage(2, msg, thumbnail)
+                .then(async m => {
+                    await m.reactions.removeAll()
+                    await m.react(emojies[0])
+                    await m.react(emojies[1])
+                })
+        } else if(reaction.emoji.name == '⬅️' && index == 2) { // 
+            console.log('Second page, flip to first')
+            buildPage(1, msg, thumbnail)
+                .then(async m => {
+                    await m.reactions.removeAll()
+                    await m.react(emojies[1])
+                })
+        } else if(reaction.emoji.name == emojies[1] && index == 2) { // 
+            console.log('Second page, flip to third')
+            buildPage(3, msg, thumbnail)
+                .then(async m => {
+                    await m.reactions.removeAll()
+                    await m.react(emojies[0])
+                })
+        } else if(reaction.emoji.name == emojies[0] && index == 3) { // 
+            console.log('Third page, flip to second')
+            buildPage(2, msg, thumbnail)
+                .then(async m => {
+                    await m.reactions.removeAll()
+                    await m.react(emojies[0])
+                    await m.react(emojies[1])
+                })
         }
     }
 }
