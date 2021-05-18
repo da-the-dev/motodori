@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, Connection, getConnection } = utl.db
 const sMsg = 'Прочие роли'
 module.exports =
     /**
@@ -19,13 +19,10 @@ module.exports =
                 return
             }
 
-            const con = await new Connection()
-            const user = await new DBUser(msg.guild.id, mMember.id, con)
-
+            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
             user.toxic = false
-
             await user.save()
-            con.close()
+            mMember.roles.remove(constants.roles.toxic)
 
             utl.embed(msg, sMsg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.toxic}>`)
         } else

@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { DBServer, Connection, getConnection } = require('../utility/db')
 const constants = require('../constants.json')
 
 // Me, collector & felix
@@ -8,15 +9,8 @@ const whitelist = [process.env.MYID, '820196535940939806', '677923814914523144']
 /**
  * Checks is "defenses" key value is "true" and then runs "func"
  */
-const getDef = (func) => {
-    utl.db.createClient(process.env.MURL).then(db => {
-        db.get('836297404260155432', 'serverSettings').then(serverData => {
-            if(serverData.def) {
-                func()
-            }
-            db.close()
-        })
-    })
+const getDef = async (func) => {
+    return (await new DBServer('836297404260155432', getConnection())).def
 }
 
 /**
@@ -44,10 +38,10 @@ const takeAndNotify = (member, reason) => {
  * @description Kicks an unautorised bot if protection wasn't lowered
  * @param {Discord.GuildMember} member 
  */
-module.exports.monitorBotInvites = member => {
+module.exports.monitorBotInvites = async member => {
     if(member.user.bot) {
         console.log('dis a bot')
-        getDef(() => {
+        if(await getDef()) {
             member.kick('Бот был добавлен, пока антикраш защита была включена')
             member.guild.fetchAuditLogs({ type: 28 })
                 .then(audit => {
@@ -59,7 +53,7 @@ module.exports.monitorBotInvites = member => {
 
                     takeAndNotify(executor, 'несанкцианированное добавление бота')
                 })
-        })
+        }
     }
 }
 
@@ -69,8 +63,8 @@ module.exports.monitorBotInvites = member => {
  * @param {Discord.Role} oldRole
  * @param {Discord.Role} newRole
  */
-module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
-    getDef(async () => {
+module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
+    if(await getDef()) {
         if(!oldRole.permissions.has('ADMINISTRATOR') && newRole.permissions.has('ADMINISTRATOR')) {
             var audit = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' })
             var executor = Array.from(audit.entries.values())[0].executor
@@ -84,7 +78,7 @@ module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
 
             takeAndNotify(newRole.guild.member(executor), 'выдача роли администраторских прав')
         }
-    })
+    }
 }
 
 /**
@@ -92,9 +86,9 @@ module.exports.monitorRoleAdminPriviligeUpdate = (oldRole, newRole) => {
  * @param {Discord.GuildMember}
  * @param {Discord.Guild} guild
  */
-module.exports.monitorBans = (guild, member) => {
+module.exports.monitorBans = async (guild, member) => {
     const banPool = 10
-    getDef(() => {
+    if(await getDef()) {
         guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' })
             .then(audit => {
                 var executor = audit.entries.first().executor
@@ -120,16 +114,16 @@ module.exports.monitorBans = (guild, member) => {
                     if(eBENew.createdTimestamp - eBEOld.createdTimestamp < 120000)
                         takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные баны за короткий промежуток времени')
             })
-    })
+    }
 }
 
 /**
  * @description Prevents admins from kicking too many people in a short period of time
  * @param {Discord.GuildMember} member
  */
-module.exports.monitorKicks = (member) => {
+module.exports.monitorKicks = async (member) => {
     const kickPool = 10
-    getDef(() => {
+    if(await getDef()) {
         var guild = member.guild
         guild.fetchAuditLogs({ type: 'MEMBER_KICK' })
             .then(audit => {
@@ -156,16 +150,16 @@ module.exports.monitorKicks = (member) => {
                     if(eKENew.createdTimestamp - eKEOld.createdTimestamp < 120000)
                         takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные кики за короткий промежуток времени')
             })
-    })
+    }
 }
 
 /**
  * Prevents admins from deleting too many roles
  * @param {Discord.Role} role 
  */
-module.exports.monitorRoleDelete = role => {
+module.exports.monitorRoleDelete = async role => {
     const kickPool = 2
-    getDef(() => {
+    if(await getDef()) {
         var guild = role.guild
         guild.fetchAuditLogs({ type: 'ROLE_DELETE' })
             .then(audit => {
@@ -195,17 +189,17 @@ module.exports.monitorRoleDelete = role => {
                         takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные удаления ролей за короткий промежуток времени')
                     }
             })
-    })
+    }
 }
 
 /**
  * Prevents admins from deleting too many channels
  * @param {Discord.GuildChannel} channel 
  */
-module.exports.monitorChannelDelete = channel => {
+module.exports.monitorChannelDelete = async channel => {
     const kickPool = 2
     if(channel.parent && channel.parentID != constants.categories.privateRooms)
-        getDef(() => {
+        if(await getDef()) {
             var guild = channel.guild
             guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
                 .then(audit => {
@@ -232,5 +226,5 @@ module.exports.monitorChannelDelete = channel => {
                         if(eCDENew.createdTimestamp - eCDEOld.createdTimestamp < 120000)
                             takeAndNotify(guild.members.cache.get(executor.id), 'многочисленнные удаления каналов за короткий промежуток времени')
                 })
-        })
+        }
 }

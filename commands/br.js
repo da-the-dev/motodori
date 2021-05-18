@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, Connection, getConnection } = utl.db
 const { sweet } = require('../constants.json').emojies
 const sMsg = 'Казино'
 module.exports =
@@ -21,16 +21,15 @@ module.exports =
             return
         }
 
-        const con = await new Connection()
-        const user = await new DBUser(msg.guild.id, msg.author.id, con)
+        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
         if(!user.money) {
             utl.embed.ping(msg, sMsg, `у Вас нет денег чтобы играть!`)
-            con.close()
+
             return
         }
         if(user.money < bet) {
             utl.embed.ping(msg, sMsg, 'ставка больше Вашего баланса!')
-            con.close()
+
             return
         }
 
@@ -44,5 +43,4 @@ module.exports =
         }
 
         await user.save()
-        con.close()
     }

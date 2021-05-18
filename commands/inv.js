@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, getConnection } = utl.db
 const sMsg = 'Инвентарь'
 module.exports =
     /**
@@ -10,12 +10,12 @@ module.exports =
     * @description Usage: .inv
     */
     async (args, msg, client) => {
-        const con = await new Connection()
-        const user = await new DBUser(msg.guild.id, msg.author.id, con)
+
+        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
 
         if(!user.inv && !user.customInv) {
             utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
-            con.close()
+
             return
         }
 
@@ -37,7 +37,7 @@ module.exports =
 
         if(invChanged || customInvChanged)
             await user.save()
-        con.close()
+
 
         var embed = utl.embed.build(msg, sMsg, '')
 

@@ -1,32 +1,32 @@
 const constants = require('../constants.json')
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { getConnection, DBUser } = utl.db
 
 /**
  * Reapply roles on server entry
  * @param {Discord.GuildMember} member 
  */
-module.exports.reapplyRoles = (member) => {
-    utl.db.createClient(process.env.MURL).then(async db => {
-        const userData = await db.get(member.guild.id, member.id)
-        db.close()
-        if(userData) {
-            var collectedRoles = []
-            // Reapply roles
-            if(userData.mute)
-                collectedRoles.push(constants.roles.muted)
-            if(userData.toxic)
-                collectedRoles.push(constants.roles.toxic)
-            if(userData.ban)
-                collectedRoles.push(constants.roles.localban)
-            if(userData.pic)
-                collectedRoles.push(constants.roles.pics)
+module.exports.reapplyRoles = async (member) => {
+    console.log(member.guild.id, member.id)
+    const user = await new DBUser(member.guild.id, member.id, getConnection())
 
-            member.roles.add(collectedRoles).then(() => {
-                console.log(member.displayName, 'applied roles:', collectedRoles != [] ? collectedRoles : 'none')
-            })
-        }
-    })
+    if(user) {
+        var collectedRoles = []
+        // Reapply roles
+        if(user.mute)
+            collectedRoles.push(constants.roles.muted)
+        if(user.toxic)
+            collectedRoles.push(constants.roles.toxic)
+        if(user.ban)
+            collectedRoles.push(constants.roles.localban)
+        if(user.pic)
+            collectedRoles.push(constants.roles.pics)
+
+        member.roles.add(collectedRoles).then(() => {
+            console.log(member.displayName, 'applied roles:', collectedRoles != [] ? collectedRoles : 'none')
+        })
+    }
 }
 
 /**

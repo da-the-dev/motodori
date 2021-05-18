@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, DBServer, Connection } = utl.db
+const { DBUser, DBServer, Connection, getConnection } = utl.db
 const sMsg = 'Экипировка роли'
 
 /**
@@ -11,12 +11,10 @@ const sMsg = 'Экипировка роли'
  * @param {Discord.Message} msg - Original message
  */
 const unequipRole = async (member, index, isCustom, msg) => {
-    const con = await new Connection()
-    const user = await new DBUser(member.guild.id, member.id, con)
+    const user = await new DBUser(member.guild.id, member.id, getConnection())
 
     if(!user.inv && !user.customInv) {
         utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
-        con.close()
         return
     }
 
@@ -24,14 +22,13 @@ const unequipRole = async (member, index, isCustom, msg) => {
 
     if(!user[field][index - 1]) {
         utl.embed.ping(msg, sMsg, 'у Вас нет такой роли!')
-        con.close()
         return
     }
 
     member.roles.remove(user[field][index - 1])
         .then(() => {
             utl.embed.ping(msg, sMsg, `роль <@&${user[field][index - 1]}> успешно снята`)
-            con.close()
+
         })
 }
 module.exports =

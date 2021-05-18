@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const constants = require('../constants.json')
 const { sweet } = constants.emojies
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, getConnection } = utl.db
 const sMsg = 'Временные награды'
 module.exports =
     /**
@@ -12,8 +12,7 @@ module.exports =
     * @description Usage: .timely
     */
     async (args, msg, client) => {
-        const con = await new Connection()
-        const user = await new DBUser(msg.guild.id, msg.author.id, con)
+        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
 
         if(user.rewardTime) { // Check if user can collect the reward
             var diff = Math.floor((msg.createdTimestamp - user.rewardTime) / 1000)
@@ -28,16 +27,13 @@ module.exports =
 
                     user.rewardTime = msg.createdTimestamp
                     await user.save()
-                    con.close()
 
                     utl.embed(msg, sMsg, `<@${msg.author.id}>, вы забрали свои **${reward}** ${sweet}. Приходите через **12** часов`)
                 } else {
                     var reward = 20 + user.streak * 10
                     user.money += reward
                     user.rewardTime = msg.createdTimestamp
-
                     await user.save()
-                    con.close()
 
                     utl.embed(msg, sMsg, `<@${msg.author.id}>, вы пришли слишком поздно! Вы получаете **${reward}** ${sweet}`)
                 }
@@ -45,15 +41,13 @@ module.exports =
                 var time = 12 * 60 - Math.floor(((msg.createdAt - user.rewardTime) / 1000) / 60)
 
                 utl.embed(msg, sMsg, `<@${msg.author.id}>, вы пришли слишком рано! Приходите через ${utl.time.timeCalculator(time)}`)
-                con.close()
+
             }
         } else { // If user never used .timely, but has some data
             user.rewardTime = msg.createdTimestamp
             user.streak = 1
             user.money ? user.money += 20 : user.money = 20
-
             await user.save()
-            con.close()
 
             utl.embed(msg, sMsg, `<@${msg.author.id}>, вы забрали свои **20** ${constants.emojies.sweet}`)
         }

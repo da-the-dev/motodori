@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { Connection, DBUser } = utl.db
+const { Connection, DBUser, getConnection } = utl.db
 const { sweet } = require('../constants.json').emojies
 const sMsg = 'Изменение баланса'
 module.exports =
@@ -10,7 +10,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .give <member> <ammount>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         // Check if admin
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
             var mMember = msg.mentions.members.first()
@@ -28,12 +28,12 @@ module.exports =
                 return
             }
 
-            const con = await new Connection()
-            const user = await new DBUser(msg.guild.id, msg.author.id, con)
+
+            const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
 
             user.money += amount
             await user.save()
-            con.close()
+
             utl.embed(msg, sMsg, `Баланс пользователя <@${mMember.user.id}> изменен на **${amount}** ${sweet}`)
         } else
             utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')

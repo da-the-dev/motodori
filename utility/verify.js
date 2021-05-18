@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
-const { dot } = constants.emojies
 const utl = require('../utility')
+const { getConnection } = utl.db
 var reward = false
 var currentTimeout = null
 
@@ -12,12 +12,11 @@ var currentTimeout = null
  */
 module.exports = (msg, client) => {
     if(msg.channel.type == 'dm') {
-        utl.db.createClient(process.env.MURL).then(async db => {
-            const captchaData = await db.get('836297404260155432', `verify-${msg.author.id}`)
+        getConnection().get('836297404260155432', `verify-${msg.author.id}`).then(async captchaData => {
             if(captchaData) {
                 if(msg.content == captchaData.captcha) {
                     takeRole(client, msg.author.id)
-                    db.delete('836297404260155432', `verify-${msg.author.id}`)
+                    await getConnection().delete('836297404260155432', `verify-${msg.author.id}`)
                     msg.channel.messages.fetch()
                         .then(msgs => {
                             msgs.forEach(m => {
@@ -29,14 +28,10 @@ module.exports = (msg, client) => {
                 else {
                     await msg.channel.send(new Discord.MessageEmbed().setDescription(`${dot}*Неверно введена капча, генерирую новую** . . . `).setColor('#2F3136'))
                     const captcha = await formCaptcha()
-                    utl.db.createClient(process.env.MURL).then(async db => {
-                        await db.set('836297404260155432', `verify-${msg.author.id}`, { captcha: captcha.text })
-                        db.close()
-                        msg.channel.send(captcha.obj)
-                    })
+                    await getConnection().set('836297404260155432', `verify-${msg.author.id}`, { captcha: captcha.text })
+                    msg.channel.send(captcha.obj)
                 }
-            } else
-                db.close()
+            }
         })
     }
 }
@@ -46,10 +41,10 @@ module.exports = (msg, client) => {
  * @param {Discord.Client} client 
  * @param {string} id
  */
-const takeRole = (client, id) => {
-    const member = client.guilds.cache.last().member(id)
+const takeRole = async (client, id) => {
+    const member = client.guild.member(id)
 
-    member.roles.remove(constants.roles.verify)
+    await member.roles.remove(constants.roles.verify)
     console.log(`[VR] Verified user '${member.user.tag}'`)
 
     utl.roles.reapplyRoles(member)
@@ -146,11 +141,11 @@ module.exports.welcomeReward = (msg, client) => {
  */
 module.exports.mark = async (member) => {
     await member.roles.add(constants.roles.verify)
+    console.log(member.roles.cache)
+
     console.log(`[VR] Marked user '${member.user.username}'`)
     const captcha = await formCaptcha()
-    utl.db.createClient(process.env.MURL).then(async db => {
-        await db.set('836297404260155432', `verify-${member.id}`, { captcha: captcha.text })
-        db.close()
-        member.send(captcha.obj)
-    })
+
+    await getConnection().set('836297404260155432', `verify-${member.id}`, { captcha: captcha.text })
+    member.send(captcha.obj)
 }

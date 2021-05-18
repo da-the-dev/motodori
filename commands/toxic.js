@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, getConnection } = utl.db
 const sMsg = 'Прочие роли'
 module.exports =
     /**
@@ -11,21 +11,17 @@ module.exports =
     * @description Usage: .toxic <member>
     */
     async (args, msg, client) => {
-        var chatCRole = msg.guild.roles.cache.get(constants.roles.chatControl)
-        if(msg.member.roles.cache.find(r => r.position >= chatCRole.position)) {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed.ping(msg, sMsg, 'не указан участник!')
                 return
             }
 
-            const con = await new Connection()
-            const user = await new DBUser(msg.guild.id, mMember.id, con)
-
+            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
             user.toxic = true
-
             await user.save()
-            con.close()
+            mMember.roles.add(constants.roles.toxic)
 
             utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
         } else

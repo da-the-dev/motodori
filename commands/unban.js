@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
-const { DBUser, Connection } = utl.db
 const utl = require('../utility')
+const { DBUser, Connection, getConnection } = utl.db
 const sMsg = 'Снятие локальной блокировки'
 
 module.exports =
@@ -11,7 +11,7 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .unban <member>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
@@ -19,13 +19,9 @@ module.exports =
                 return
             }
 
-            const con = await new Connection()
-            const user = await new DBUser(msg.guild.id, mMember.id, con)
-
+            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
             user.ban = false
             await user.save()
-
-            con.close()
 
             utl.embed(msg, sMsg, `C пользователя <@${mMember.id}> была снята локальная блокировка`)
         } else

@@ -30,12 +30,37 @@ commandNames.forEach(c => {
     )
 })
 
+process.stdin.resume();//so the program will not close instantly
+
+function exitHandler(options, exitCode) {
+    if(options.cleanup) {
+        utl.connections.closeConnections(); console.log('ded')
+    }
+    if(exitCode || exitCode === 0) console.log(exitCode);
+    if(options.exit) process.exit();
+}
+
+//do something when app is closing
+process.on('exit', exitHandler.bind(null, { cleanup: true }));
+
+//catches ctrl+c event
+process.on('SIGINT', exitHandler.bind(null, { exit: true }));
+
+// catches "kill pid" (for example: nodemon restart)
+process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
+process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
+
+//catches uncaught exceptions
+process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
+
+
 // General events
 client.login(process.env.BOTTOKEN)
 client.once('ready', async () => {
     /**@type {Discord.Guild} */
     client.guild = await client.guilds.fetch('836297404260155432')
-    console.log(client.guild.name)
+    await utl.connections.startconnections(5)
+    console.log(utl.db.connections)
 
     console.log("[BOT] BOT is online")
 
@@ -56,10 +81,9 @@ client.on('roleDelete', role => {
 })
 
 // Member events
-client.on('guildMemberAdd', (member) => {
+client.on('guildMemberAdd', async (member) => {
     console.log('GOT ONE')
-    utl.verify.mark(member, client)
-    utl.roles.reapplyRoles(member)
+    await utl.verify.mark(member, client)
     if(member.user.bot)
         utl.anticrash.monitorBotInvites(member)
 })

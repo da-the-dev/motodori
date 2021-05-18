@@ -43,7 +43,7 @@ module.exports.yesNo = async (msg, id, yes, no, fail) => {
  * @param {Function} fail - If timer runs out
  * @param {*} funcs - Functions
  */
-module.exports.multiselector = async (msg, id, ...funcs, cancel, fail) => {
+module.exports.multiselector = async (msg, id, cancel, fail, ...funcs) => {
     for(i = 0; i < funcs.length; i++)
         await msg.react(emojies[i])
     await msg.react('❌')

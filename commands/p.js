@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, getConnection } = utl.db
 const { dot, sweet } = require('../constants.json').emojies
 
 module.exports =
@@ -17,9 +17,7 @@ module.exports =
         if(mMember)
             pMember = mMember
 
-        const con = await new Connection()
-        const user = await new DBUser(msg.guild.id, msg.author.id, con)
-        con.close()
+        const user = await new DBUser(msg.guild.id, pMember.id, getConnection())
 
         var embed = utl.embed.build(msg, `Профиль — ${pMember.user.tag}`, `> **Статус:**\n\`\`\`${user.status || 'Не установлен'}\`\`\``)
             .addFields([

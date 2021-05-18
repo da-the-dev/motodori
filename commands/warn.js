@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, Connection, getConnection } = utl.db
 const constants = require('../constants.json')
 const sMsg = 'Выдача предупреждения'
 module.exports =
@@ -27,8 +27,8 @@ module.exports =
                 return
             }
 
-            const con = await new Connection()
-            const user = await new DBUser(msg.guild.id, msg.author.id, con)
+
+            const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
 
             if(user.warns && user.warns.length == 5) {
                 // Set shadow key
@@ -49,7 +49,7 @@ module.exports =
             user.warns ? user.warns = [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] : user.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
 
             await user.save()
-            con.close()
+
         } else {
             utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
         }

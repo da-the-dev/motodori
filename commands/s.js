@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, getConnection } = utl.db
 const sMsg = 'Статус'
 module.exports =
     /**
@@ -13,20 +13,16 @@ module.exports =
         args.shift()
 
         if(args.length <= 0) {
-            const con = await new Connection()
-            const user = await new DBUser(msg.guild.id, msg.author.id, con)
+            const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
             user.status = ''
             await user.save()
-            con.close()
 
             utl.embed(msg, sMsg, `<@${msg.author.id}>, Ваш статус успешно удален`)
-
             return
         }
 
-        const con = await new Connection()
-        const user = await new DBUser(msg.guild.id, msg.author.id, con)
 
+        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
 
         var state = args.join(' ')
         state = state.slice(0, state.length <= 60 ? state.length : 60)
@@ -34,7 +30,6 @@ module.exports =
 
         user.status = state
         await user.save()
-        con.close()
 
         utl.embed(msg, sMsg, `<@${msg.author.id}>, Ваш статус успешно установлен`)
     }

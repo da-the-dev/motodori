@@ -1,8 +1,9 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, getConnection } = utl.db
 const constants = require('../constants.json')
 const sMsg = 'Передача валюты'
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -36,16 +37,12 @@ module.exports =
             return
         }
 
-        const con = await new Connection()
-        const user = await new DBUser(msg.guild.id, mMember.id, con)
+        const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
 
         if(amount > user.money) { // If too much money is requested 
             utl.embed(msg, sMsg, 'У тебя недостаточно средств для перевода!')
-            con.close()
         } else {
             await user.save()
-            con.close()
-
             utl.embed(msg, sMsg, `Вы передали пользователю <@${mMember.user.id}> **${amount}** ${constants.emojies.sweet}`)
         }
     }

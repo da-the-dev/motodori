@@ -7,9 +7,8 @@ const { sweet } = require('../constants.json').emojies
  * @param {Discord.GuildMember} member
  */
 const getBal = async (member) => {
-    const con = await new utl.db.Connection()
-    const user = await new utl.db.DBUser(member.guild.id, member.id, con)
-    con.close()
+    const user = await new utl.db.DBUser(member.guild.id, member.id, utl.db.getConnection())
+
     return user.money
 }
 

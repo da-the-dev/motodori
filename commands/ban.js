@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, Connection, getConnection } = utl.db
 const sMsg = 'Локальная блокировка'
 module.exports =
     /**
@@ -18,11 +18,11 @@ module.exports =
                 return
             }
 
-            const con = await new Connection()
-            var user = await new DBUser(msg.guild.id, mMember.id, con)
+
+            var user = await new DBUser(msg.guild.id, mMember.id, getConnection())
             user.ban = true
             await user.save()
-            con.close()
+
 
             utl.embed(msg, sMsg, `Пользователю <@${mMember.id}> была выдана локальная блокировка`)
         } else

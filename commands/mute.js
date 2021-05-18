@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, getConnection } = utl.db
 const redis = require('redis')
 const constants = require('../constants.json')
 const sMsg = 'Мут'
@@ -118,15 +118,11 @@ module.exports =
                 // Set shadow key
                 rClient.set('muted-' + mMember.user.id, true)
                 rClient.expire('muted-' + mMember.user.id, time)
-
                 rClient.quit()
 
-                const con = await new Connection()
-                const user = await new DBUser(msg.guild.id, mMember.id, con)
-
+                const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
                 user.mute = true
                 await user.save()
-                con.close()
 
                 utl.embed(msg, 'Выдача мута', `<@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             }

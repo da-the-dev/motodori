@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, Connection, getConnection } = utl.db
 const redis = require('redis')
 const constants = require('../constants.json')
 const sMsg = 'Снятие мута'
@@ -22,7 +22,7 @@ module.exports =
 
             // Get and prematurely delete the shadow key
             const rClient = redis.createClient(process.env.RURL)
-            rClient.get('muted-' + mMember.user.id, (err, res) => {
+            rClient.get('muted-' + mMember.user.id, async (err, res) => {
                 if(err) console.log(err)
                 if(res) {
                     // Delete the shadow key
@@ -33,13 +33,9 @@ module.exports =
                         }
                     })
 
-                    const con = await new Connection()
-                    const user = await new DBUser(msg.guild.id, mMember.id, con)
-
+                    const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
                     user.mute = false
-
                     await user.save()
-                    con.close()
 
                     utl.embed(msg, sMsg, `<@${mMember.user.id}> был(-а) размьючен(-а)`)
                 } else {

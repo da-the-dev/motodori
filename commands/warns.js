@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBUser, Connection } = utl.db
+const { DBUser, Connection, getConnection } = utl.db
 const sMsg = 'История предупреждений'
 module.exports =
     /**
@@ -10,10 +10,10 @@ module.exports =
     * @description Usage: .warns
     */
     async (args, msg, client) => {
-        const con = await new Connection()
-        const user = await new DBUser(msg.guild.id, msg.author.id, con)
 
-        con.close()
+        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+
+
 
         if(!user.warns) {
             utl.embed(msg, sMsg, `У Вас нет предупреждений`)

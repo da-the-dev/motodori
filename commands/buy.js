@@ -21,26 +21,25 @@ module.exports =
             return
         }
 
-        const con = await new Connection()
-        const server = await new DBServer(msg.guild.id, con)
+        const server = await new DBServer(msg.guild.id, getConnection())
 
         if(!server.roles) {
             utl.embed.ping(msg, sMsg, 'на этом сервере пока нет ролей для покупки ;(')
-            con.close()
+
             return
         }
 
         const selectedRole = server.roles[args[1] - 1]
-        const user = await new DBUser(msg.guild.id, msg.author.id, con)
+        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
 
         if(!user.money) {
             utl.embed.ping(msg, sMsg, `Не достаточно <${sweet}> для покупки роли!`)
-            con.close()
+
             return
         }
         if(user.money < selectedRole.price) {
             utl.embed.ping(msg, sMsg, `Не достаточно <${sweet}> для покупки роли!`)
-            con.close()
+
             return
         }
 
@@ -52,7 +51,7 @@ module.exports =
                     user.inv = []
                 user.inv.push(selectedRole.id)
                 user.save()
-                con.close()
+
 
                 m.edit(utl.embed.ping(msg, sMsg, `Вы успешно приобрели роль <@&${selectedRole.id}>`))
                 m.reactions.removeAll()

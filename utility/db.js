@@ -2,12 +2,16 @@ require('dotenv').config()
 
 const emmiter = require('events')
 const MongoClient = require('mongodb').MongoClient
-/**@type {Array<DBServer|DBUser>} */
+/**@type {Array<Connection>} */
 var connections = []
 
 class Connection {
     /**@type {MongoClient} */
     #connection
+
+    static closeAll() {
+        connections.forEach(c => c.close())
+    }
 
     /**
      * Establishes a connection via promise
@@ -16,8 +20,12 @@ class Connection {
     constructor() {
         return new Promise(async (resolve, reject) => {
             this.#connection = await new MongoClient(process.env.MURL, { useNewUrlParser: true, useUnifiedTopology: true }).connect()
+            connections.push(this)
             resolve(this)
         })
+    }
+    get connection() {
+        return this.#connection
     }
     close() {
         if(this.#connection.isConnected())
@@ -75,6 +83,26 @@ class Connection {
     }
 
     /**
+     * Update data about a key from a guild
+     * @param {string} guildID - Guild ID
+     * @param {string} uniqueID - Unique ID
+     * @param {object} query - Queries to update
+     * @returns {Promise<string>} Returns 'OK' if update succesfully
+     */
+    update(guildID, uniqueID, query) {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [update]!')
+            if(!uniqueID) reject('No unique ID [update]!')
+            if(!query) reject('No query to update [update]!')
+
+            this.#connection.db('motodori').collection(guildID).updateOne({ id: uniqueID }, query, { upsert: true })
+                .then(() => resolve('OK'))
+                .catch(err => reject(err))
+        })
+    }
+
+
+    /**
      * Gets data about many keys from a guild
      * @param {string} guildID - Guild ID
      * @param {object} query - Query to use as a filter
@@ -87,8 +115,58 @@ class Connection {
                 .catch(err => reject(err))
         })
     }
-}
 
+    /**
+     * Updates data about many keys from a guild
+     * @param {string} guildID - Guild ID
+     * @param {object} filter - Query to use as a filter
+     * @param {object} update - Query to update documents with
+     * @return {Promise<any>} Info about the keys
+     */
+    updateMany(guildID, filter, update) {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [updateMany]!')
+            if(!filter) reject('No filter [updateMany]!')
+            if(!update) reject('No update query [updateMany]!')
+            this.#connection.db('motodori').collection(guildID).updateMany(filter, update, { upsert: true })
+                .then(() => resolve('OK'))
+                .catch(err => reject(err))
+        })
+    }
+
+    /**
+     * Deletes a document
+     * @param {string} guildID - Guild ID
+     * @param {string} uniqueID - Unique ID
+     * @return {Promise<string>} 'OK' if deleted succesfully 
+     */
+    delete(guildID, uniqueID) {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [delete]!')
+            if(!uniqueID) reject('No unique ID [delete]!')
+
+            this.#connection.db('motodori').collection(guildID).deleteOne({ id: uniqueID })
+                .then(() => resolve('OK'))
+                .catch(err => reject(err))
+        })
+    }
+    /**
+     * Deletes many document
+     * @param {string} guildID - Guild ID
+     * @param {obj} query - Query to use a filter
+     * @return {Promise<string>} 'OK' if deleted succesfully 
+     */
+    deleteMany(guildID, query) {
+        return new Promise((resolve, reject) => {
+            if(!guildID) reject('No guild ID [deleteMany]!')
+            if(!query) reject('No query [deleteMany]!')
+
+            this.#connection.db('motodori').collection(guildID).deleteMany(query)
+                .then(() => resolve('OK'))
+                .catch(err => reject(err))
+        })
+    }
+}
 
 class DBUser {
     /**@type {Connection} DB connection*/ #connection
@@ -128,11 +206,7 @@ class DBUser {
 
             this.money = userData.money
             this.msgs = userData.msgs
-            this.dayMsgs = userData.dayMsgs
-            this.nightMsgs = userData.nightMsgs
             this.voiceTime = userData.voiceTime
-            this.dayVoiceTime = userData.dayVoiceTime
-            this.nightVoiceTime = userData.nightVoiceTime
             this.inv = userData.inv
             this.customInv = userData.customInv
             this.warns = userData.warns
@@ -151,11 +225,7 @@ class DBUser {
         this.#id ? userData.id = this.#id : null
         this.money ? userData.money = this.money : null
         this.msgs ? userData.msgs = this.msgs : null
-        this.dayMsgs ? userData.dayMsgs = this.dayMsgs : null
-        this.nightMsgs ? userData.nightMsgs = this.nightMsgs : null
         this.voiceTime ? userData.voiceTime = this.voiceTime : null
-        this.dayVoiceTime ? userData.dayVoiceTime = this.dayVoiceTime : null
-        this.nightVoiceTime ? userData.nightVoiceTime = this.nightVoiceTime : null
         if(this.inv && this.inv.length > 0) userData.inv = this.inv
         if(this.customInv && this.customInv.length > 0) userData.customInv = this.customInv
         if(this.warns && this.warns.length > 0) userData.warns = this.warns
@@ -243,6 +313,13 @@ module.exports.Connection = Connection
 module.exports.DBUser = DBUser
 module.exports.DBServer = DBServer
 module.exports.getGuild = getGuild
+module.exports.getConnection = getConnection
+module.exports.connections = connections
+
+/**@returns {Connection} */
+function getConnection() {
+    return connections.find(c => c.connection.isConnected())
+}
 
 // **Custom types**
 
@@ -292,11 +369,7 @@ module.exports.getGuild = getGuild
  * @property {string} id User ID
  * @property {number} money Money
  * @property {number} msgs Amount of messages in general
- * @property {number} dayMsgs mount of messages in general in daytime
- * @property {number} nightMsgs Amount of messages in general in nighttime
  * @property {number} voiceTime Minutes spent in voice channels
- * @property {number} dayVoiceTime Minutes spent in voice channels during daytime
- * @property {number} nightVoiceTime Minutes spent in voice channels during nighttime
  * @property {Array<Role>} inv Inventory of shop roles
  * @property {Array<CustomRole>} customInv nventory of custom roles
  * @property {Array<Warn>} warns Array of warns
