@@ -1,94 +1,99 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const reactions = require('./reactions')
+const sMsg = 'Реакции'
 
-/**
- * @description Constructs an embed to send
- * @param {Discord.Message} msg - Message to reply to
- * @param {Array<string>} reactions - Reaction's GIF array
- * @param {string} description - Embed's description
- */
-const buildMessage = (msg, reactions, description) => {
-    if(!msg.deleted) msg.delete()
-    var rand = Math.floor(Math.random() * reactions.length)
-
-    return utl.embed.build(msg, 'Реакции', `<@${msg.member.id}> ${description}`)
-        .setImage(reactions[rand])
-        .setThumbnail()
-}
-
-/**
- * Handles multiple types of reactions in one function
- * @param {Discord.GuildMember} mMember
- * @param {Function} func - Function to use to handle reaction messages
- * @param {Array} args - Build function parametrs
- */
-const reactionHandle = (mMember, func, ...args) => {
-    var msg = args.find(a => a.channel)
-    if(mMember === null) { // Single reactions
-        msg.channel.send(func(...args))
-        return
-    }
-
-    var msg = args.find(a => a.channel)
-    if(mMember != undefined && mMember.id != msg.author.id) { // Paired reactions
-        if(func.name != 'permisson') {
-            var dIndex = args.findIndex(a => typeof a == 'string')
-            args[dIndex] = args[dIndex] + ` <@${mMember.id}>`
-            msg.channel.send(func(...args))
-            return
-        }
-        msg.delete()
-        func(...args)
-    } else {
-        utl.embed(msg, 'Не лучшая идея (ノωヽ)')
-        msg.delete()
+var lastRandom = null
+function random(size) {
+    var rand = Math.floor(Math.random() * size)
+    if(lastRandom == rand)
+        rand(size)
+    else {
+        return rand
     }
 }
 
+
 /**
- * Handles those reactions that require other member's confirmation
- * @param {Discord.Message} msg - Message
- * @param {Discord.GuildMember} member2 - Second member who reacts to the reaction
- * @param {string} description - String that describes the action in request embed 
- * @param {*} args - Build message args
+ * Checks for partner
+ * @param {Discord.Message} msg - OG message
+ * @param {Discord.GuildMember} member 
  */
-const permisson = (msg, member2, description, ...args) => {
+function checkForPartner(msg, member) {
+    if(!member) {
+        utl.embed(msg, sMsg, 'Не лучшая идея')
+        return false
+    }
+    return true
+}
+/**
+ * Builds an embed for solo reactions
+ * @param {Discord.Message} msg - OG message
+ * @param {string} member - Who sent the messsage
+ * @param {string[]} gifs - GIFs array
+ * @param {string} description - Description
+ * @returns {Discord.MessageEmbed}
+ */
+function solo(msg, member, gifs, description) {
+    const rand = random(gifs.length)
+
+    msg.channel.send(utl.embed.build(msg, sMsg, `<@${member}> ${description}`)
+        .setImage(gifs[rand])
+        .setThumbnail())
+}
+/**
+ * Builds an embed for paired reactions without permissinon
+ * @param {Discord.Message} msg - OG message
+ * @param {string} member - Who sent the messsage
+ * @param {string} reciever - Who was pinged in the messsage
+ * @param {string[]} gifs - GIFs array
+ * @param {string} description - Description
+ * @returns {Discord.MessageEmbed}
+ */
+function pair(msg, member, reciever, gifs, description) {
+    const rand = random(gifs.length)
+    msg.channel.send(utl.embed.build(msg, sMsg, `<@${member}> ${description} <@${reciever}> `)
+        .setImage(gifs[rand])
+        .setThumbnail())
+}
+/**
+ * Builds an embed for paired reactions with permissinon
+ * @param {Discord.Message} msg - OG message
+ * @param {string} member - Who sent the messsage
+ * @param {string} reciever - Who was pinged in the messsage
+ * @param {string[]} gifs - GIFs array
+ * @param {string} question - Question before consent
+ * @param {string} description - Description
+ * @returns {Discord.MessageEmbed}
+ */
+function pairPerm(msg, member, reciever, gifs, question, description) {
+    const rand = random(gifs.length)
+
     const requestEmbed = new Discord.MessageEmbed()
-        .setDescription(`<@${member2.id}>, ${description} <@${msg.member.id}>, что ответишь ? `)
+        .setDescription(`<@${reciever}>, ${question} <@${member}>, что ответишь ?`)
         .setColor('#2F3136')
 
     msg.channel.send(requestEmbed)
         .then(async m => {
-            await m.react('✅')
-            await m.react('❌')
-            const filter = (reaction, user) =>
-                user.id == member2.user.id
-            m.awaitReactions(filter, { time: 60000, max: 1 })
-                .then(reactions => {
-                    if(reactions.array().length == 0) {
-                        m.edit(utl.embed.build(msg, `<@${member2.id}> тебя проигнорировал(-а)`))
-                        m.reactions.removeAll()
-                        return
-                    }
-                    if(reactions.first().emoji.name == '❌') {
-                        m.edit(utl.embed.build(msg, `<@${member2.id}> тебе отказал(-а)`))
-                        m.reactions.removeAll()
-                        return
-                    }
-                    if(reactions.first().emoji.name == '✅') {
-                        var dIndex = args.findIndex(a => typeof a == 'string')
-                        args[dIndex] = args[dIndex] + ` <@${member2.id}> `
-
-                        m.edit(buildMessage(...[msg, ...args]))
-                        m.reactions.removeAll()
-                        return
-                    }
+            utl.reactionSelector.yesNo(m, reciever,
+                () => {
+                    m.edit(utl.embed.build(msg, sMsg, `<@${member}> ${description} <@${reciever}>`)
+                        .setImage(gifs[rand])
+                        .setThumbnail())
                     m.reactions.removeAll()
-                })
+                },
+                () => {
+                    m.edit(utl.embed.build(msg, sMsg, `<@${reciever}> тебе отказал(-а)`))
+                    m.reactions.removeAll()
+                },
+                () => {
+                    m.edit(utl.embed.build(msg, sMsg, `<@${reciever}> тебя проигнорировал(-а)`))
+                    m.reactions.removeAll()
+                }
+            )
         })
-
 }
+
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -97,68 +102,39 @@ module.exports =
     * @description Handles reaction commands
     */
     (args, msg, client) => {
+        const mMember = msg.mentions.members.first()
         switch(args[0]) {
-            // buildMessage reactions
             case 'angry':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.angry, `разозлился(-ась) на`)
+                mMember ? pair(msg, msg.author.id, mMember.id, reactions.angry, `разозлился(-ась) на`) : solo(msg, msg.member.id, reactions.angry, 'злится')
                 break
             case 'hit':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.hit, `ударил(-а)`)
-                break
-            case 'hug':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.hug, `обнял(-а)`)
-                break
-            case 'sad':
-                reactionHandle(null, buildMessage, msg, reactions.sad, 'грустит')
+                checkForPartner(msg, mMember) ? pair(msg, msg.author.id, mMember.id, reactions.hit, `ударил(-а)`) : null
                 break
 
-            case 'slap':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.slap, `ударил(-а) по лицу`)
+            case 'hug':
+                checkForPartner(msg, mMember) ? pair(msg, msg.author.id, mMember.id, reactions.hug, `обнял(-а)`) : null
                 break
-            case 'poke':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.poke, `ткнул(-а)`)
-                break
-            case 'pat':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.pat, `погладил(-а)`)
-                break
-            case 'cuddle':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.cuddle, `тискает`)
+            case 'sad':
+                solo(msg, msg.author.id, reactions.sad, 'плачет')
                 break
 
             case 'bite':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.bite, `укусил(-а)`)
-                break
-            case 'cheek':
-                reactionHandle(msg.mentions.members.first(), permisson, msg, msg.mentions.members.first(), 'тебя хочет поцеловать в щечку', reactions.cheek, `поцеловал(-а) в щеку`)
-                break
-            case 'cry':
-                reactionHandle(null, buildMessage, msg, reactions.cry, `плачет`)
-                break
-            case 'happy':
-                reactionHandle(null, buildMessage, msg, reactions.happy, `радуется`)
-                break
-
-            case 'lick':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.lick, `облизнул(-а)`)
-                break
-            case 'love':
-                reactionHandle(msg.mentions.members.first(), buildMessage, msg, reactions.love, `признается в любви`)
-                break
-            case 'sleep':
-                reactionHandle(null, buildMessage, msg, reactions.sleep, `наелся(-ась) и спит`)
+                checkForPartner(msg, mMember) ? pair(msg, msg.author.id, mMember.id, reactions.bite, `укусил(-а)`) : null
                 break
             case 'smoke':
-                reactionHandle(null, buildMessage, msg, reactions.smoke, `курит`)
+                solo(msg, msg.author.id, reactions.smoke, 'курит')
                 break
 
             case 'tea':
-                reactionHandle(null, buildMessage, msg, reactions.tea, `наслаждается чаем`)
-                break
-            case 'virt':
-                reactionHandle(msg.mentions.members.first(), permisson, msg, msg.mentions.members.first(), 'тебе предлагает повиртить', reactions.virt, `виртит с`)
+                solo(msg, msg.author.id, reactions.tea, 'наслаждается чаем')
                 break
             case 'kiss':
-                reactionHandle(msg.mentions.members.first(), permisson, msg, msg.mentions.members.first(), 'тебя хочет поцеловать', reactions.kiss, `целует`)
+                checkForPartner(msg, mMember) ? pairPerm(msg, msg.author.id, mMember.id, reactions.kiss, 'хочет тебя поцеловать', 'целует') : null
+                break
+
+            case 'seduce':
+                checkForPartner(msg, mMember) ? pair(msg, msg.author.id, mMember.id, reactions.seduce, `совращает`) : null
                 break
         }
+        if(['angry', 'hit', 'hug', 'sad', 'bite', 'smoke', 'tea', 'kiss', 'seduce'].includes(args[0])) msg.delete()
     }
