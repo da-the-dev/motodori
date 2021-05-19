@@ -44,7 +44,7 @@ module.exports =
             async function removeWarn(index, time, m) {
                 // if(!user.warns[index])
                 //     return
-                const warn = user.warns[index]
+                const warn = user.warns[index - 1]
                 user.warns = user.warns.splice(index - 1, 1)
                 await user.save()
 
