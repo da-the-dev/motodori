@@ -25,23 +25,15 @@ module.exports = (client) => {
                     var member = guild.member(data[0])
                     if(!member) return
                     const rClient = redis.createClient(process.env.RURL)
-                    rClient.get(data[0], (err, res) => {
-                        if(err) console.log(err)
-                        var userData = JSON.parse(res)
-                        var channel = guild.channels.cache.get(userData.mute[0])
-                        delete userData.mute
+                    rClient.quit()
 
-                        rClient.set(member.user.id, JSON.stringify(userData), err => { if(err) console.log(err) })
-                        rClient.quit()
-
-                        var embed = new Discord.MessageEmbed()
-                            .setTitle(`Снятие мута`)
-                            .setDescription(`<@${member.user.id}> был(-а) размьючен(-а)`)
-                            .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
-                            .setColor('#2F3136')
-
-                        channel.send(embed)
-                    })
+                    var embed = new Discord.MessageEmbed()
+                        .setTitle(`Снятие мута`)
+                        .setDescription(`<@${member.user.id}> был(-а) размьючен(-а)`)
+                        .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
+                        .setColor('#2F3136')
+                    var channel = guild.channels.cache.get(constants.channels.cmd)
+                    channel.send(embed)
 
                     member ? member.roles.remove(constants.roles.muted) : null
                 } else if(msg.startsWith('pics')) {
