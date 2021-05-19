@@ -19,22 +19,22 @@ module.exports =
 
         const user = await new DBUser(msg.guild.id, pMember.id, getConnection())
 
-        var embed = utl.embed.build(msg, `Профиль — ${pMember.user.tag}`, `> **Статус:**\n\`\`\`${user.status || 'Не установлен'}\`\`\``)
+        var embed = utl.embed.build(msg, `Профиль — ${pMember.user.tag}`, `> **状態 Status:**\n\`\`\`${user.status || 'Не установлен'}\`\`\``)
             .addFields([
                 {
-                    "name": "> Баланс:",
+                    "name": "> Yen Balance:",
                     "value": `\`\`\`${user.money || 0}\`\`\``,
                     "inline": true
                 },
                 {
-                    "name": "> Голосовой онлайн:",
+                    "name": "> Voice activity:",
                     "value": `\`\`\`${utl.time.timeCalculator(user.voiceTime || 0).replace(/[**]/g, '')}\`\`\``,
                     "inline": true
                 },
 
                 {
-                    "name": "> Партнер:",
-                    "value": `\`\`\`${user.loveroom ? `${msg.guild.member(user.loveroom.partner).displayName}` : 'Нет'}\`\`\``,
+                    "name": "> Chat activity:",
+                    "value": `\`\`\`${user.msgs || 0}\`\`\``,
                     "inline": true
                 }
             ])
