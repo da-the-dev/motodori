@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { Connection, DBUser, getConnection } = utl.db
+const { DBUser, getConnection } = utl.db
 const { sweet } = require('../constants.json').emojies
 const sMsg = 'Изменение баланса'
 module.exports =
@@ -28,10 +28,9 @@ module.exports =
                 return
             }
 
+            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
 
-            const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
-
-            user.money += amount
+            user.money ? user.money += amount : user.money = amount
             await user.save()
 
             utl.embed(msg, sMsg, `Баланс пользователя <@${mMember.user.id}> изменен на **${amount}** ${sweet}`)
