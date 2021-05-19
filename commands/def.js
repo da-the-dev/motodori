@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
+const { getConnection, DBServer } = utl.db
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -7,21 +8,12 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .def
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         if(msg.author.id == process.env.MYID || msg.author.id == process.env.VICID) {
-            utl.db.createClient(process.env.MURL).then(db => {
-                db.get(msg.guild.id, 'serverSettings').then(serverData => {
-                    console.log(serverData)
-                    if(serverData) {
-                        db.update(msg.guild.id, 'serverSettings', { $set: { def: !serverData.def } }).then(() => db.close())
-                        msg.channel.send(utl.embed.def(msg, !serverData.def))
-                    }
-                    else {
-                        db.update(msg.guild.id, 'serverSettings', { $set: { def: true } }).then(() => db.close())
-                        msg.channel.send(utl.embed.def(msg, true))
-                        console.log('def')
-                    }
-                })
-            })
+            const server = await new DBServer(msg.guild.id, getConnection())
+
+            server.def = !server.def
+            server.save()
+            msg.channel.send(utl.embed.def(msg, server.def))
         }
     }

@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBServer, Connection, getConnection } = require('../utility/db')
+const { DBServer, getConnection } = require('../utility/db')
 const constants = require('../constants.json')
 
 // Me, collector & felix
