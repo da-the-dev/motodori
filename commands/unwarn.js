@@ -20,12 +20,10 @@ module.exports =
                 return
             }
 
-
             const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
 
             if(!user.warns) {
                 utl.embed(msg, sMsg, `У пользователя <@${mMember.user.id}> нет предупреждений`)
-
                 return
             }
 
@@ -43,28 +41,34 @@ module.exports =
              * Removes a warns
              * @param {number} index 
              */
-            async function removeWarn(index) {
+            async function removeWarn(index, time, m) {
+                // if(!user.warns[index])
+                //     return
+                const warn = user.warns[index]
                 user.warns = user.warns.splice(index - 1, 1)
                 await user.save()
 
+                m.edit(utl.embed.build(msg, sMsg, `Предупреждения для пользователя <@${mMember.user.id}> обновлены!`))
+                m.reactions.removeAll()
+                utl.moderatorLog.log(msg, 'unwarn', msg.member, mMember, time, warn)
             }
             msg.channel.send(embed)
                 .then(async m => {
-                    utl.reactionSelector.multiselector(msg, msg.author.id,
+                    utl.reactionSelector.multiselector(m, msg.author.id,
                         () => {
-                            removeWarn(1)
+                            removeWarn(1, msg.createdTimestamp, m)
                         },
                         () => {
-                            removeWarn(2)
+                            removeWarn(2, msg.createdTimestamp, m)
                         },
                         () => {
-                            removeWarn(3)
+                            removeWarn(3, msg.createdTimestamp, m)
                         },
                         () => {
-                            removeWarn(4)
+                            removeWarn(4, msg.createdTimestamp, m)
                         },
                         () => {
-                            removeWarn(5)
+                            removeWarn(5, msg.createdTimestamp, m)
                         },
                         cancel = () => {
                             m.delete()
