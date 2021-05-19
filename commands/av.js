@@ -1,26 +1,24 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { dot } = require('../constants.json').emojies
 const sMsg = 'Просмотр аватара'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .av <member>
+    * @description Usage: .av <?member>
     */
     (args, msg, client) => {
         var mMember = msg.mentions.members.first()
-        if(mMember) {
-            var embed = new Discord.MessageEmbed()
-                .setTitle(`${dot}Просмотр аватара`)
-                .setDescription(`**${mMember.user.tag}**`)
-                .setColor('#2F3136')
-            embed.setImage(mMember.user.displayAvatarURL({ dynamic: true }) + "?size=2048")
+        if(!mMember) {
+            var embed = utl.embed.build(msg, `${sMsg} ${msg.author.tag}`)
+                .setThumbnail()
+            embed.setImage(msg.author.displayAvatarURL({ dynamic: true }) + "?size=2048")
+            msg.channel.send(embed)
         } else {
-            utl.embed.ping(msg, sMsg, 'не указан пользователь!')
-            return
+            var embed = utl.embed.build(msg, `${sMsg} ${mMember.user.tag}`)
+                .setThumbnail()
+            embed.setImage(mMember.user.displayAvatarURL({ dynamic: true }) + "?size=2048")
+            msg.channel.send(embed)
         }
-
-        msg.channel.send(embed)
     }
