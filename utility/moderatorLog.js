@@ -60,12 +60,16 @@ module.exports.log = (msg, action, who, acused, when, why = null, duration = nul
             embed.setDescription(`<@${who.id}> выдал токсика <@${acused.id}>\n${date.toLocaleString()}`)
             break
         case 'untoxic':
-            embed.setTitle('Токсика')
+            embed.setTitle('Токсик')
             embed.setDescription(`<@${who.id}> забрал токсика у <@${acused.id}>\n${date.toLocaleString()}`)
             break
         case 'warn':
             embed.setTitle('Варн')
             embed.setDescription(`<@${who.id}> выдал варн <@${acused.id}>\nСодержание варна: ${why}\n${date.toLocaleString()}`)
+            break
+        case 'unwarn':
+            embed.setTitle('Варн')
+            embed.setDescription(`<@${who.id}> снял варн с <@${acused.id}>\nСодержание варна: ${why}\n${date.toLocaleString()}`)
             break
 
     }
