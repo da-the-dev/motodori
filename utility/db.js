@@ -199,7 +199,7 @@ class DBUser {
             this.#id = id
 
             this.#connection = connection
-            const userData = await this.#connection.get(guildID, id)
+            const userData = await this.#connection.get(guildID, id) || {}
 
             this.money = userData.money
             this.msgs = userData.msgs
