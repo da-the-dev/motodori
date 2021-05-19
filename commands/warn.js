@@ -27,7 +27,7 @@ module.exports =
                 return
             }
 
-            const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
 
             if(user.warns && user.warns.length == 5) {
                 // Set shadow key
@@ -45,9 +45,9 @@ module.exports =
                 mMember.roles.add(constants.roles.muted)
             }
             console.log(user.warns)
-
             !user.warns ? user.warns = [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] : user.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
             await user.save()
+            console.log(user.warns)
 
             utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             utl.moderatorLog.log(msg, 'warn', msg.member, mMember, msg.createdTimestamp, reason)
