@@ -27,7 +27,6 @@ module.exports =
                 return
             }
 
-
             const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
 
             if(user.warns && user.warns.length == 5) {
@@ -47,9 +46,10 @@ module.exports =
             }
 
             user.warns ? user.warns = [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] : user.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
-
             await user.save()
 
+            utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
+            utl.moderatorLog.log(msg, 'warn', msg.member, mMember, msg.createdTimestamp, reason)
         } else {
             utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
         }

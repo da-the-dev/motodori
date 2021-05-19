@@ -51,6 +51,23 @@ module.exports.log = (msg, action, who, acused, when, why = null, duration = nul
             embed.setTitle('Мут')
             embed.setDescription(`<@${who.id}> замутил <@${acused.id}> на ${timeCalculator(duration)}\nПричина: ${why}\n${date.toLocaleString()}`)
             break
+        case 'unmute':
+            embed.setTitle('Мут')
+            embed.setDescription(`<@${who.id}> размутил <@${acused.id}>\n${date.toLocaleString()}`)
+            break
+        case 'toxic':
+            embed.setTitle('Токсик')
+            embed.setDescription(`<@${who.id}> выдал токсика <@${acused.id}>\n${date.toLocaleString()}`)
+            break
+        case 'untoxic':
+            embed.setTitle('Токсика')
+            embed.setDescription(`<@${who.id}> забрал токсика у <@${acused.id}>\n${date.toLocaleString()}`)
+            break
+        case 'warn':
+            embed.setTitle('Варн')
+            embed.setDescription(`<@${who.id}> выдал варн <@${acused.id}>\nСодержание варна: ${why}\n${date.toLocaleString()}`)
+            break
+
     }
     msg.guild.channels.cache.get(constants.channels.log).send(embed)
 }
