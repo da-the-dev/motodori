@@ -20,7 +20,7 @@ function random(size) {
  * @param {Discord.GuildMember} member 
  */
 function checkForPartner(msg, member) {
-    if(!member) {
+    if(!member || msg.author.id == member.id) {
         utl.embed(msg, sMsg, 'Не лучшая идея')
         return false
     }
