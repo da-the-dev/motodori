@@ -10,11 +10,8 @@ module.exports =
     * @description Usage: .warns
     */
     async (args, msg, client) => {
-
         const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
-
-
-
+        var embed = utl.embed.build(msg, `${sMsg} • ${msg.member.displayName}`)
         if(!user.warns) {
             utl.embed(msg, sMsg, `У Вас нет предупреждений`)
             return
