@@ -25,7 +25,7 @@ module.exports =
 
 
             utl.embed(msg, sMsg, `Пользователю <@${mMember.id}> была выдана локальная блокировка`)
-            utl.moderatorLog.log(msg, 'ban', msg.member, mMember, msg.createdTimestamp)
+            utl.actionLogs.modLog(msg, 'ban', msg.member, mMember, msg.createdTimestamp)
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет доступа к этой команде!')
     }

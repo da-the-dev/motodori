@@ -50,7 +50,7 @@ module.exports =
             console.log(user.warns)
 
             utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
-            utl.moderatorLog.log(msg, 'warn', msg.member, mMember, msg.createdTimestamp, reason)
+            utl.actionLogs.modLog(client.guild, 'warn', msg.member, mMember, msg.createdTimestamp, reason)
         } else {
             utl.embed(msg, sMsg, 'У Вас нет прав для этой команды!')
         }

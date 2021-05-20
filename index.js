@@ -91,6 +91,7 @@ client.once('ready', async () => {
     utl.elderlyRole(client.guilds.cache.first())
     utl.bannerUpdate(client.guilds.cache.first())
     utl.loveroomMonitor.initPayment(client)
+    utl.actionLogs.initLogs(client)
 })
 
 // Role events

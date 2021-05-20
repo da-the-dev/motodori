@@ -24,7 +24,7 @@ module.exports =
             await user.save()
 
             utl.embed(msg, sMsg, `C пользователя <@${mMember.id}> была снята локальная блокировка`)
-            utl.moderatorLog.log(msg, 'unban', msg.member, mMember, msg.createdTimestamp)
+            utl.actionLogs.modLog(client.guild, 'unban', msg.member, mMember, msg.createdTimestamp)
         } else
             utl.embed(msg, sMsg, 'У Вас нет доступа к этой команде!')
     }

@@ -50,7 +50,7 @@ module.exports =
 
                 m.edit(utl.embed.build(msg, sMsg, `Предупреждения для пользователя <@${mMember.user.id}> обновлены!`))
                 m.reactions.removeAll()
-                utl.moderatorLog.log(msg, 'unwarn', msg.member, mMember, time, warn)
+                utl.actionLogs.modLog(client.guild, 'unwarn', msg.member, mMember, time, warn)
             }
             msg.channel.send(embed)
                 .then(async m => {

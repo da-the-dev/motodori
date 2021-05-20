@@ -25,7 +25,7 @@ module.exports =
             mMember.roles.remove(constants.roles.toxic)
 
             utl.embed(msg, sMsg, `У пользователя <@${mMember.user.id}> была убрана роль <@&${constants.roles.toxic}>`)
-            utl.moderatorLog.log(msg, 'untoxic', msg.member, mMember, msg.createdTimestamp)
+            utl.actionLogs.modLog(client.guild, 'untoxic', msg.member, mMember, msg.createdTimestamp)
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет доступа к этой команде!')
     }

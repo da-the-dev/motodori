@@ -24,7 +24,7 @@ module.exports =
             mMember.roles.add(constants.roles.toxic)
 
             utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> была выдана роль <@&${constants.roles.toxic}>`)
-            utl.moderatorLog.log(msg, 'toxic', msg.member, mMember, msg.createdTimestamp)
+            utl.actionLogs.modLog(client.guild, 'toxic', msg.member, mMember, msg.createdTimestamp)
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет доступа к этой команде!')
     }

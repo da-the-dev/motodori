@@ -124,7 +124,7 @@ module.exports =
                 await user.save()
 
                 utl.embed(msg, 'Выдача мута', `<@${mMember.user.id}> получил(-а) **мут** на ${muteMsg} \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
-                utl.moderatorLog.log(msg, 'mute', msg.member, mMember, msg.createdTimestamp, reason, time)
+                utl.actionLogs.modLog(client.guild, 'mute', msg.member, mMember, msg.createdTimestamp, reason, time)
             }
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет прав для этой команды!')
