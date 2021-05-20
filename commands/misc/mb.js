@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
-const utl = require(require('path').resolve('utility.js'))
-const constants = require(require('path').resolve('constants.json'))
-const { dot } = require(require('path').resolve('constants.json')).emojies
+const utl = require('../../utility')
+const constants = require('../../constants.json')
+const { dot } = require('../../constants.json').emojies
 
 const getStatus = (msg, id) => {
     return `<${msg.guild.member(id).user.presence.status == 'online' ? constants.emojies.true : constants.emojies.false}>`

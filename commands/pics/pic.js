@@ -1,8 +1,8 @@
 const Discord = require('discord.js')
 const redis = require('redis')
-const constants = require(require('path').resolve('constants.json'))
-const { one, two, three, sweet } = require(require('path').resolve('constants.json')).emojies
-const utl = require(require('path').resolve('utility.js'))
+const constants = require('../../constants.json')
+const { one, two, three, sweet } = require('../../constants.json').emojies
+const utl = require('../../utility')
 const sMsg = 'Картинки'
 
 /**

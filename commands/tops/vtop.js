@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const utl = require(require('path').resolve('utility.js'))
+const utl = require('../../utility')
 const { getGuild, getConnection } = utl.db
 
 const topAmount = 10

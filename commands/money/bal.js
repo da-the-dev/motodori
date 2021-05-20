@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
-const utl = require(require('path').resolve('utility.js'))
-const { sweet } = require(require('path').resolve('constants.json')).emojies
+const utl = require('../../utility')
+const { sweet } = require('../../constants.json').emojies
 
 /**
  * Gets balance of the member

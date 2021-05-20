@@ -1,7 +1,7 @@
-const constants = require(require('path').resolve('constants.json'))
+const constants = require('../../constants.json')
 const Discord = require('discord.js')
-const utl = require(require('path').resolve('utility.js'))
-const { sweet, dot } = require(require('path').resolve('constants.json')).emojies
+const utl = require('../../utility')
+const { sweet, dot } = require('../../constants.json').emojies
 const sMsg = 'Любовная комната'
 
 const timeTillPayday = () => {

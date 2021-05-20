@@ -38,7 +38,7 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                             reportInfo.reportVoiceChannel ? description += `— [Канал пожаловавшегося](${reportInfo.reportVoiceChannel})\n` : null
                             reportInfo.guiltyVoiceChannel ? description += `— [Канал виновника](${reportInfo.guiltyVoiceChannel})` : null
 
-                            const { dot } = require('../constants.json').emojies
+                            const { dot } = require('../../constants.json').emojies
                             const takenReport = reaction.message.embeds[0]
                             takenReport.setTitle(`${dot}Жалоба от ${reaction.message.guild.member(reportInfo.caller).user.tag || 'неизвестный'}`)
                             takenReport.setDescription(description)

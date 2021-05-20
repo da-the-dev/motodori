@@ -37,7 +37,7 @@ function walk(dir) {
     });
     return results;
 }
-var commandNames = walk('./commands').filter(c => c.endsWith('.js'))
+var commandNames = walk('./commands').filter(c => c.endsWith('.js') && !c.includes('utility.js'))
 client.commands = new Array()
 console.log('[F] Bot functions')
 commandNames.forEach(c => {

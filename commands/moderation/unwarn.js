@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
-const utl = require(require('path').resolve('utility.js'))
+const utl = require('../../utility')
 const { DBUser, Connection, getConnection } = utl.db
-const constants = require(require('path').resolve('constants.json'))
+const constants = require('../../constants.json')
 const emojies = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣']
 const sMsg = 'Снятие предупреждений'
 module.exports =

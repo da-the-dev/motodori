@@ -1,8 +1,8 @@
 const Discord = require('discord.js')
-const utl = require(require('path').resolve('utility.js'))
+const utl = require('../../utility')
 const { DBUser, Connection, getConnection } = utl.db
 const redis = require('redis')
-const constants = require(require('path').resolve('constants.json'))
+const constants = require('../../constants.json')
 const sMsg = 'Снятие мута'
 
 module.exports =

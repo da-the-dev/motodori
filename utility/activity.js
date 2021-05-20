@@ -1,8 +1,7 @@
 const Discord = require('discord.js')
 var voiceActs = []
-const utl = require('../utility/db')
-const { getConnection } = utl
-const constants = require('../constants.json')
+const utl = require('../utility')
+const { getConnection } = require('../utility/db')
 
 /**
  * Increments money and time fields for all current active members every minute

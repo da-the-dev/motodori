@@ -1,4 +1,4 @@
-const { Connection, connections } = require('../utility/db')
+const { Connection } = require('../utility/db')
 
 /**
  * Starts a few connections

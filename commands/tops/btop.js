@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
-const utl = require(require('path').resolve('utility.js'))
+const utl = require('../../utility')
 const { getGuild, getConnection } = utl.db
-const constants = require(require('path').resolve('constants.json'))
+const constants = require('../../constants.json')
 const { sweet } = constants.emojies
 
 const topAmount = 10

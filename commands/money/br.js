@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
-const utl = require(require('path').resolve('utility.js'))
+const utl = require('../../utility')
 const { DBUser, Connection, getConnection } = utl.db
-const { sweet } = require(require('path').resolve('constants.json')).emojies
+const { sweet } = require('../../constants.json').emojies
 const sMsg = 'Казино'
 module.exports =
     /**

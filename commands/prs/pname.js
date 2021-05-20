@@ -1,6 +1,6 @@
 const Discord = require(`discord.js`)
-const constants = require(require('path').resolve('constants.json'))
-const utl = require(require('path').resolve('utility.js'))
+const constants = require('../../constants.json')
+const utl = require('../../utility')
 const sMsg = `Приватные комнаты`
 
 module.exports =
