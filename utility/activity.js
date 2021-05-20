@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 var voiceActs = []
 const utl = require('../utility')
+const constants = require('../constants.json')
 const { getConnection } = require('../utility/db')
 
 /**
