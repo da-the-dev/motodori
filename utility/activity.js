@@ -80,54 +80,30 @@ const amountOfMessages = 10
  * @param {Discord.Message} msg - Message
  */
 module.exports.chatActivity = async (msg) => {
-    // // Register only if in general and not a bot
-    // if(msg.channel.id == constants.channels.general && !msg.author.bot) {
-    //     // Save it in the map
-    //     messages.set(msg.author.id, messages.get() || 1)
+    // Register only if in general and not a bot
+    if(msg.channel.id == constants.channels.general && !msg.author.bot) {
+        // Save it in the map
+        messages.set(msg.author.id, messages.get() || 1)
 
-    //     // Check if enough messages have been collected
-    //     if(messagesCounter < amountOfMessages) {
-    //         messagesCounter++
-    //     }
-    //     else {
-    //         utl.db.createClient(process.env.MURL).then(async db => {
-    //             var arrayMap = Array.from(messages.entries())
-    //             for(i = 0; i < arrayMap.length; i++) {
-    //                 // Form update query based on message info
-    //                 var update = { $inc: {} }
-    //                 arrayMap[i][1].forEach(mI => {
-    //                     update.$inc.msgs ? update.$inc.msgs++ : update.$inc.msgs = 1
-    //                 })
+        // Check if enough messages have been collected
+        if(messagesCounter < amountOfMessages) {
+            messagesCounter++
+        }
+        else {
+            var arrayMap = Array.from(messages.entries())
+            for(i = 0; i < arrayMap.length; i++) {
+                // Form update query based on message info
+                var update = { $inc: {} }
+                arrayMap[i][1].forEach(mI => {
+                    update.$inc.msgs ? update.$inc.msgs++ : update.$inc.msgs = 1
+                })
 
-    //                 // Update member
-    //                 await db.update('836297404260155432', arrayMap[i][0], update)
-    //             }
-    //             // Reset map and counter
-    //             messages.clear()
-    //             messagesCounter = 1
-
-    //             // Give out activity roles to those who want them
-    //             db.getMany('836297404260155432', {
-    //                 $or: [
-    //                     { dayMsgs: { $exists: true } },
-    //                     { nightMsgs: { $exists: true } }
-    //                 ]
-    //             }).then(validData => {
-    //                 validData.forEach(d => {
-    //                     if(!d.notActivity) {
-    //                         // var member = msg.guild.member(d.id)
-    //                         // if(member) {
-    //                         //     if(d.dayMsgs >= 500 && !member.roles.cache.has(constants.roles.daylyActive))
-    //                         //         null
-    //                         //     // member.roles.add(constants.roles.daylyActive)
-    //                         //     else if(d.nightMsgs >= 500 && !member.roles.cache.has(constants.roles.nightActive))
-    //                         //         member.roles.add(constants.roles.nightActive)
-    //                         // }
-    //                     }
-    //                 })
-    //                 db.close()
-    //             })
-    //         })
-    //     }
-    // }
+                // Update member
+                getConnection().update('836297404260155432', arrayMap[i][0], update)
+            }
+            // Reset map and counter
+            messages.clear()
+            messagesCounter = 1
+        }
+    }
 }
