@@ -201,8 +201,8 @@ class DBUser {
             this.#connection = connection
             const userData = await this.#connection.get(guildID, id) || {}
 
-            this.money = userData.money
-            this.msgs = userData.msgs
+            this.money = userData.money || 0
+            this.msgs = userData.msgs || 0
             this.voiceTime = userData.voiceTime
             this.inv = userData.inv
             this.customInv = userData.customInv
@@ -222,9 +222,9 @@ class DBUser {
         /**@type {UserData}*/ var userData = {}
 
         this.#id ? userData.id = this.#id : null
-        this.money ? userData.money = this.money : null
-        this.msgs ? userData.msgs = this.msgs : null
-        this.voiceTime ? userData.voiceTime = this.voiceTime : null
+        if(this.money && this.money > 0) userData.money = this.money
+        if(this.msgs && this.msgs > 0) userData.msgs = this.msgs
+        if(this.voiceTime && this.voiceTime > 0) userData.voiceTime = this.voiceTime
         if(this.inv && this.inv.length > 0) userData.inv = this.inv
         if(this.customInv && this.customInv.length > 0) userData.customInv = this.customInv
         if(this.warns && this.warns.length > 0) userData.warns = this.warns

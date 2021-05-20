@@ -37,12 +37,22 @@ module.exports =
             return
         }
 
-        const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+        const users = await Promise.all([
+            new DBUser(msg.guild.id, msg.author.id, getConnection()),
+            new DBUser(msg.guild.id, mMember.id, getConnection())
+        ]).catch(err => console.log(err))
+        const sender = users[0]
+        const reciever = users[1]
 
-        if(amount > user.money) { // If too much money is requested 
+        if(amount > sender.money) { // If too much money is requested
             utl.embed(msg, sMsg, 'У тебя недостаточно средств для перевода!')
         } else {
-            await user.save()
-            utl.embed(msg, sMsg, `Вы передали пользователю <@${mMember.user.id}> **${amount}** ${constants.emojies.sweet}`)
+            sender.money -= amount
+            reciever.money += amount
+
+            sender.save()
+            reciever.save()
+
+            utl.embed.ping(msg, sMsg, `Вы передали пользователю <@${mMember.user.id}> **${amount}** ${constants.emojies.sweet}`)
         }
     }
