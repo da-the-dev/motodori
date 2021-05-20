@@ -16,17 +16,38 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 client.prefix = prefix
 
 // Commands
-var commandNames = fs.readdirSync(__dirname + '/commands')
+/**
+ * 
+ * @param {string} dir 
+ * @returns {string[]}
+ */
+function walk(dir) {
+    var results = [];
+    var list = fs.readdirSync(dir);
+    list.forEach(function(file) {
+        file = dir + '/' + file;
+        var stat = fs.statSync(file);
+        if(stat && stat.isDirectory()) {
+            /* Recurse into a subdirectory */
+            results = results.concat(walk(file));
+        } else {
+            /* Is a file */
+            results.push(file);
+        }
+    });
+    return results;
+}
+var commandNames = walk('./commands').filter(c => c.endsWith('.js'))
 client.commands = new Array()
 console.log('[F] Bot functions')
 commandNames.forEach(c => {
     client.commands.push({
-        'name': c.slice(0, c.length - 3),
-        'foo': require(__dirname + '/commands/' + c),
-        'allowedInGeneral': require(__dirname + '/commands/' + c).allowedInGeneral
+        'name': c.slice(c.lastIndexOf('/') + 1, c.length - 3),
+        'foo': require(c),
+        'allowedInGeneral': require(c).allowedInGeneral
     })
     console.log(
-        `[F] Name: ${c.slice(0, c.length - 3)}; 'allowedInGeneral': ${require(__dirname + '/commands/' + c).allowedInGeneral}`
+        `[F] Name: ${c.slice(c.lastIndexOf('/') + 1, c.length - 3)}; 'allowedInGeneral': ${require(c).allowedInGeneral}`
     )
 })
 
@@ -53,7 +74,6 @@ process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 
 //catches uncaught exceptions
 process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
-
 
 // General events
 client.login(process.env.BOTTOKEN)
@@ -170,8 +190,6 @@ client.on('message', msg => {
             } else {
                 utl.reactionHandler(args, msg, client)
             }
-
-            // Reactions
         }
     }
     // Selfy moderation
