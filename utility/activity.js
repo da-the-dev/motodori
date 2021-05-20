@@ -87,7 +87,6 @@ module.exports.chatActivity = async (msg) => {
         messages.set(msg.author.id, messages.get(msg.author.id) + 1 || 1)
 
         const entrified = Array.from(messages.entries())
-        console.log(entrified)
         for(i = 0; i < messages.size; i++)
             if(entrified[i][1] == 5) {
                 messages.delete(entrified[i][0])
