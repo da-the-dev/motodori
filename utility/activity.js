@@ -73,7 +73,7 @@ module.exports.voiceActivityInit = async (client) => {
  * @type {Map<string, Array<MessageInfo>}
  */
 var messages = new Map()
-var messagesCounter = 1
+var messagesCounter = 0
 const amountOfMessages = 10
 /**
  * Give user 1 point every 5 messages, save the message in
@@ -82,30 +82,16 @@ const amountOfMessages = 10
  */
 module.exports.chatActivity = async (msg) => {
     // Register only if in general and not a bot
-    if(msg.channel.id == constants.channels.dev && !msg.author.bot) {
-        // Save it in the map
+    if(msg.channel.id == constants.channels.general && !msg.author.bot) {
+        getConnection().update('836297404260155432', msg.author.id, { $inc: { msgs: 1 } })
         messages.set(msg.author.id, messages.get(msg.author.id) + 1 || 1)
 
-        // Check if enough messages have been collected
-        if(messagesCounter < amountOfMessages) {
-            messagesCounter++
-        }
-        else {
-            var arrayMap = Array.from(messages.entries())
-            console.log(arrayMap)
-            for(i = 0; i < arrayMap.length; i++) {
-                var update = { $inc: { msgs: messages.get(arrayMap[i][0]) } }
-                // // Form update query based on message info
-                // arrayMap[i][1].forEach(mI => {
-                //     update.$inc.msgs ? update.$inc.msgs++ : update.$inc.msgs = 1
-                // })
-
-                // Update member
-                getConnection().update('836297404260155432', arrayMap[i][0], update)
+        const entrified = Array.from(messages.entries())
+        console.log(entrified)
+        for(i = 0; i < messages.size; i++)
+            if(entrified[i][1] == 5) {
+                messages.delete(entrified[i][0])
+                getConnection().update('836297404260155432', msg.author.id, { $inc: { money: 1 } })
             }
-            // Reset map and counter
-            messages.clear()
-            messagesCounter = 1
-        }
     }
 }
