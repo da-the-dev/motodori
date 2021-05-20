@@ -76,7 +76,7 @@ module.exports.modLog = (guild, action, who, acused, when, why = null, duration 
                 .setColor('#ff8308')
             break
     }
-    msg.guild.channels.cache.get(constants.channels.log).send(embed)
+    guild.channels.cache.get(constants.channels.log).send(embed)
 }
 
 /**
