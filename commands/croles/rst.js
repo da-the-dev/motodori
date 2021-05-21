@@ -52,7 +52,7 @@ module.exports =
         const discordRole = msg.guild.roles.cache.get(roleID)
 
         var embed = new Discord.MessageEmbed()
-            .setTitle('<Информация о роли')
+            .setTitle('Информация о роли')
             .setDescription(`
                 Роль: <@&${role.id}>
                 Владелец: <@${role.owner}>
