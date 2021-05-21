@@ -23,7 +23,7 @@ module.exports =
 
         const embed = utl.embed.build(msg, sMsg)
 
-        if(user.inv.length > 0) {
+        if(user.inv && user.inv.length > 0) {
             var roles = ''
             for(i = 0; i < user.inv.length; i++)
                 if(msg.member.roles.cache.has(user.inv[i]))
@@ -33,7 +33,7 @@ module.exports =
 
             embed.addField('Магазинные роли', roles)
         }
-        if(user.customInv) {
+        if(user.customInv && user.customInv.length > 0) {
             var roles = ''
             for(i = 0; i < user.customInv.length; i++)
                 if(msg.member.roles.cache.has(user.customInv[i]))
