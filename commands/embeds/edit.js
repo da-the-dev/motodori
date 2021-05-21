@@ -9,46 +9,50 @@ module.exports =
     * @description Usage: .edit <id>\n<jsonData>
     */
     (args, msg, client) => {
-        args.shift()
-        args = args.join(' ').split('\n')
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
+            args.shift()
+            args = args.join(' ').split('\n')
 
-        var messageID = args[0]
-        args.shift()
-        if(!messageID) {
-            utl.embed.ping(msg, sMsg, 'не указан ID эмбеда!')
-            return
+            var messageID = args[0]
+            args.shift()
+            if(!messageID) {
+                utl.embed.ping(msg, sMsg, 'не указан ID эмбеда!')
+                return
+            }
+
+            var stringData = args.join('\n').trim()
+            var jsonData = {}
+            if(!stringData) {
+                utl.embed.ping(msg, sMsg, 'Вы не указали данные для эмбеда!')
+                return
+            }
+
+            try {
+                jsonData = JSON.parse(stringData)
+            } catch(err) {
+                utl.embed.ping(msg, sMsg, 'некорректные данные для эмбеда!')
+                return
+            }
+
+            msg.channel.messages.fetch(messageID)
+                .then(m => {
+                    if(m) {
+                        if(jsonData.plainText && Object.keys(jsonData).length == 1) {
+                            m.edit(jsonData.plainText)
+                        } else {
+                            const embed = new Discord.MessageEmbed(jsonData)
+                                .setThumbnail(jsonData.thumbnail)
+                                .setImage(jsonData.image)
+                            m.edit({
+                                content: jsonData.plainText,
+                                embed: embed
+                            })
+                        }
+                    } else
+                        utl.embed.ping(msg, sMsg, 'не найдено сообщение! Проверьте ID!')
+                })
+        } else {
+            utl.embed.ping(msg, '.say', 'у Вас нет прав на эту команду!')
         }
-
-        var stringData = args.join('\n').trim()
-        var jsonData = {}
-        if(!stringData) {
-            utl.embed.ping(msg, sMsg, 'Вы не указали данные для эмбеда!')
-            return
-        }
-
-        try {
-            jsonData = JSON.parse(stringData)
-        } catch(err) {
-            utl.embed.ping(msg, sMsg, 'некорректные данные для эмбеда!')
-            return
-        }
-
-        msg.channel.messages.fetch(messageID)
-            .then(m => {
-                if(m) {
-                    if(jsonData.plainText && Object.keys(jsonData).length == 1) {
-                        m.edit(jsonData.plainText)
-                    } else {
-                        const embed = new Discord.MessageEmbed(jsonData)
-                            .setThumbnail(jsonData.thumbnail)
-                            .setImage(jsonData.image)
-                        m.edit({
-                            content: jsonData.plainText,
-                            embed: embed
-                        })
-                    }
-                } else
-                    utl.embed.ping(msg, sMsg, 'не найдено сообщение! Проверьте ID!')
-            })
     }
 module.exports.allowedInGeneral = true
