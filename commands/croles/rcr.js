@@ -119,8 +119,7 @@ module.exports =
 
         const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
         if(user.money < cost) {
-            utl.embed.ping(msg, sMsg, `у Вас не хватает ${sweet}!
-            *нужно 10.000${sweet}*`)
+            utl.embed.ping(msg, sMsg, `у Вас не хватает ${sweet}! *(нужно 10.000${sweet})*`)
             return
         }
 
