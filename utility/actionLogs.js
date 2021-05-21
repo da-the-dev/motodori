@@ -92,7 +92,6 @@ async function msgLog(what, when, msg, msg2) {
         .setFooter(`${date}`)
 
     msg.partial ? await msg.fetch() : null
-    msg2.partial ? await msg2.fetch() : null
 
     switch(what) {
         case 'delete':
@@ -105,6 +104,7 @@ async function msgLog(what, when, msg, msg2) {
                 .setColor('#08fff7')
             break
         case 'update':
+            msg2.partial ? await msg2.fetch() : null
             if(msg.content == msg2.content)
                 return
             if(msg.author.id == msg.client.user.id)

@@ -16,7 +16,6 @@ module.exports =
             utl.embed.ping(msg, sMsg, 'не указан номер роли!')
             return
         }
-        console.log(args[1], Number(args[1]), Number.isInteger(Number(args[1])))
         if(!Number.isInteger(Number(args[1]))) {
             utl.embed.ping(msg, sMsg, 'указан неверный номер роли!')
             return
@@ -33,12 +32,14 @@ module.exports =
         const selectedRole = server.roles[args[1] - 1]
         const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
 
-        if(!user.money) {
+        if(!user.money || user.money < selectedRole.price) {
             utl.embed.ping(msg, sMsg, `не достаточно ${sweet} для покупки роли!`)
             return
         }
-        if(user.money < selectedRole.price) {
-            utl.embed.ping(msg, sMsg, `не достаточно ${sweet} для покупки роли!`)
+
+        // Check if receiver has the role
+        if(user.inv && user.inv.find(r => r == selectedRole.id)) {
+            utl.embed.ping(msg, sMsg, `эта роль уже есть у Вас!`)
             return
         }
 
