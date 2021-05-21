@@ -1,6 +1,5 @@
 require('dotenv').config()
 
-const emmiter = require('events')
 const MongoClient = require('mongodb').MongoClient
 /**@type {Array<Connection>} */
 var connections = []
@@ -176,8 +175,8 @@ class DBUser {
     /**@type {number} Money */ money
     /**@type {number} Amount of messages in general*/ msgs
     /**@type {number} Minutes spent in voice channels*/ voiceTime
-    /**@type {Array<Role>} Inventory of shop roles*/ inv
-    /**@type {Array<CustomRole>} Inventory of custom roles*/ customInv
+    /**@type {number[]} Inventory of shop roles' IDs*/ inv
+    /**@type {number[]} Inventory of custom roles' IDs*/ customInv
     /**@type {Array<Warn>}  Array of warns*/ warns
     /**@type {boolean} If banned*/ ban
     /**@type {boolean} If toxic*/ toxic
@@ -203,7 +202,7 @@ class DBUser {
 
             this.money = userData.money || 0
             this.msgs = userData.msgs || 0
-            this.voiceTime = userData.voiceTime
+            this.voiceTime = userData.voiceTime || 0
             this.inv = userData.inv
             this.customInv = userData.customInv
             this.warns = userData.warns
@@ -270,7 +269,7 @@ class DBServer {
 
             this.def = serverData.def
             this.roles = serverData.roles
-            this.customRoles = serverData.customRoles
+            this.customRoles = serverData.customRoles || []
 
             resolve(this)
         })

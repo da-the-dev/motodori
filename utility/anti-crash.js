@@ -4,7 +4,7 @@ const { DBServer, getConnection } = require('../utility/db')
 const constants = require('../constants.json')
 
 // Me, collector & felix
-const whitelist = [process.env.MYID, '820196535940939806', '677923814914523144']
+const whitelist = [process.env.MYID, '820196535940939806', '677923814914523144', '843147495550484480']
 
 /**
  * Checks is "defenses" key value is "true" and then runs "func"

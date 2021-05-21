@@ -1,59 +1,76 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
+const { getConnection, DBUser, DBServer } = utl.db
 const sMsg = 'Конфискация кастомной роли'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .rgv <member> <rolePos>
+    * @description Usage: .rtk <member> <rolePos>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         var mMember = msg.mentions.members.first()
-        if(!args[2] || !args[2][0] == 'c' || !Number.isInteger(Number(args[2].slice(1)))) {
-            utl.embed.ping(msg, sMsg, 'указан неверный индекс роли!')
-            return
-        }
-        var pos = args[2].slice(1)
         if(!mMember) {
             utl.embed.ping(msg, sMsg, 'не указан пользователь!')
             return
         }
-        if(!pos) {
+        if(!args[2]) {
             utl.embed.ping(msg, sMsg, 'не указана роль!')
             return
         }
+        if(args[2][0] != 'c' || !Number.isInteger(Number(args[2].slice(1)))) {
+            utl.embed.ping(msg, sMsg, 'указан неверный индекс роли!')
+            return
+        }
+        const pos = args[2].slice(1)
 
-        utl.db.createClient(process.env.MURL).then(async db => {
-            var userData = await db.get(msg.guild.id, msg.author.id)
-            if(!userData || !userData.customInv || !userData.customInv[pos - 1]) {
-                utl.embed.ping(msg, sMsg, 'у Вас нет кастомных ролей')
-                db.close()
-                return
-            }
+        const elements = await Promise.all([
+            new DBServer(msg.guild.id, getConnection()),
+            new DBUser(msg.guild.id, msg.author.id, getConnection()),
+            new DBUser(msg.guild.id, mMember.id, getConnection())
+        ])
+        const server = elements[0]
+        const sender = elements[1]
+        const receiver = elements[2]
 
-            var serverData = await db.getServer(msg.guild.id)
-            var role = serverData.customRoles.find(r => r.id == userData.customInv[pos - 1])
-            if(!role) {
-                utl.embed.ping(msg, sMsg, 'эта роль Вам не принадлежит!')
-                db.close()
-                return
-            }
+        // Check if has roles at all
+        if(!sender.customInv) {
+            utl.embed.ping(msg, sMsg, 'у Вас нет кастомных ролей!')
+            return
+        }
+        // If selected role doesn't exist on the server
+        if(!msg.guild.roles.cache.get(server.customRoles[pos - 1].id)) {
+            utl.embed.ping(msg, sMsg, 'такой роли не существует!')
+            // Validate roles
+            sender.customInv = sender.customInv.filter(r => msg.guild.roles.cache.get(r))
+            sender.save()
+            return
+        }
+        // Check out of range
+        const role = sender.customInv[pos - 1]
+        if(!role) {
+            utl.embed.ping(msg, sMsg, 'у Вас нет такой кастомной роли!')
+            return
+        }
+        // Check ownership
+        if(!server.customRoles.find(r => r.owner == msg.author.id && r.id == role)) {
+            utl.embed.ping(msg, sMsg, 'эта роль Вам не принадлежит!')
+            return
+        }
+        // Check if receiver has the role
+        if(!receiver.customInv.find(r => r == role)) {
+            utl.embed.ping(msg, sMsg, `этой роли нет у ${mMember}!`)
+            return
+        }
 
-            var recipientData = await db.get(msg.guild.id, mMember.id)
-            if(!recipientData.customInv || !recipientData.customInv.find(r => r == role.id)) {
-                utl.embed.ping(msg, sMsg, `этой роли нет у <@${mMember.id}>!`)
-                db.close()
-                return
-            }
+        server.customRoles.find(r => role).members--
+        server.save()
 
-            serverData.customRoles[serverData.customRoles.findIndex(r => r.id == role.id && r.owner == msg.author.id)].members -= 1
-            if(mMember.roles.cache.has(role.id))
-                mMember.roles.remove(role.id)
-            utl.embed.ping(msg, sMsg, `роль <@&${role.id}> была забрана у <@${mMember.id}>`)
+        receiver.customInv.splice(receiver.customInv.indexOf(r => r.id == role), 1)
+        receiver.save()
 
-            db.update(msg.guild.id, mMember.id, { $pull: { customInv: role.id } }).then(() => {
-                db.setServer(msg.guild.id, serverData).then(() => db.close())
-            })
-        })
+        mMember.roles.remove(role)
+
+        utl.embed(msg, sMsg, `Роль <@&${role}> была забрана у <@${mMember.id}>`)
     }

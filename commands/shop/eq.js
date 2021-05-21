@@ -19,7 +19,7 @@ const equipRole = async (member, index, isCustom, msg) => {
     }
 
     var field = isCustom ? 'customInv' : 'inv'
-    if(!user[field][index - 1]) {
+    if(!user[field] || !user[field][index - 1]) {
         utl.embed.ping(msg, sMsg, 'у Вас нет такой роли!')
 
         return
