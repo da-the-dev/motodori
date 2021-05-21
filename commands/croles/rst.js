@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
+const { getConnection, DBServer, DBUser } = utl.db
 const sMsg = 'Информация о роли'
 module.exports =
     /**
@@ -8,47 +9,62 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .rst <rolePos>
     */
-    (args, msg, client) => {
+    async (args, msg, client) => {
         if(!args[1]) {
-            utl.embed(msg, sMsg, 'Не указан индекс роли!')
+            utl.embed.ping(msg, sMsg, 'не указан индекс роли!')
             return
         }
         if(!args[1][0] == 'c' || !Number.isInteger(Number(args[1].slice(1)))) {
-        }
-        var pos = args[1].slice(1)
-
-        if(!pos) {
-            utl.embed(msg, sMsg, 'Не указана роль!')
+            utl.embed.ping(msg, sMsg, 'неверный индекс роли!')
             return
         }
 
-        utl.db.createClient(process.env.MURL).then(async db => {
-            var userData = await db.get(msg.guild.id, msg.author.id)
-            if(!userData || !userData.customInv) {
-                utl.embed(msg, sMsg, 'У Вас нет кастомных ролей')
-                db.close()
-                return
-            }
+        const pos = args[1].slice(1)
 
-            var serverData = await db.getServer(msg.guild.id)
-            var role = serverData.customRoles.find(r => r.id == userData.customInv[pos - 1])
-            if(!serverData.customRoles.find(r => r.id == userData.customInv[pos - 1])) {
-                utl.embed(msg, sMsg, 'Эта роль Вам не принадлежит!')
-                db.close()
-                return
-            }
+        const elements = await Promise.all([
+            new DBServer(msg.guild.id, getConnection()),
+            new DBUser(msg.guild.id, msg.author.id, getConnection()),
+        ])
+        const server = elements[0]
+        const user = elements[1]
 
-            var discordRole = msg.guild.roles.cache.get(role.id)
-            var expireDate = new Date(role.expireTimestamp)
-            var creationDate = new Date(discordRole.createdTimestamp)
+        // If selected role doesn't exist on the server
+        if(!msg.guild.roles.cache.get(server.customRoles[pos - 1].id)) {
+            utl.embed.ping(msg, sMsg, 'такой роли не существует!')
+            // Validate roles
+            user.customInv = sender.customInv.filter(r => msg.guild.roles.cache.get(r))
+            user.save()
+            return
+        }
+        // Check out of range
+        const roleID = user.customInv[pos - 1]
+        if(!roleID) {
+            utl.embed.ping(msg, sMsg, 'у Вас нет такой кастомной роли!')
+            return
+        }
+        // Check ownership
+        if(!server.customRoles.find(r => r.owner == msg.author.id && r.id == roleID)) {
+            utl.embed.ping(msg, sMsg, 'эта роль Вам не принадлежит!')
+            return
+        }
 
-            var embed = new Discord.MessageEmbed()
-                .setTitle('<:dot:835981467879342160>Информация о роли')
-                .setDescription(`Роль: <@&${role.id}>\nВладелец: <@${role.owner}>\nНосителей: **${role.members}** из **5**\n\nID роли: **${role.id}**\nЦвет роли: **${discordRole.hexColor}**\nДействует до: **${expireDate.toLocaleDateString()}**, **00:00:00**\nКуплена: **${creationDate.toLocaleDateString()}**, **${creationDate.toLocaleTimeString()}**`)
-                .setColor('#2F3136')
-                .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
+        const role = server.customRoles.find(r => r.id == roleID)
+        const discordRole = msg.guild.roles.cache.get(roleID)
 
-            msg.channel.send(embed)
-            db.close()
-        })
+        var embed = new Discord.MessageEmbed()
+            .setTitle('<Информация о роли')
+            .setDescription(`
+                Роль: <@&${role.id}>
+                Владелец: <@${role.owner}>
+                Носителей: **${role.members}** из **5**
+                
+                ID роли: **${role.id}**\n
+                Цвет роли: **${discordRole.hexColor}**
+                Действует до: **${new Date(role.expireTimestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })}**
+                Куплена: **${new Date(role.createdTimestamp).toLocaleDateString("ru-RU", { timeZone: "Europe/Moscow" })}**, **${new Date(role.createdTimestamp).toLocaleTimeString("ru-RU", { timeZone: "Europe/Moscow" })}**
+                `)
+            .setColor('#2F3136')
+            .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))
+
+        msg.channel.send(embed)
     }
