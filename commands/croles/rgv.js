@@ -15,7 +15,6 @@ module.exports =
             utl.embed.ping(msg, sMsg, 'не указан пользователь!')
             return
         }
-
         if(!args[2]) {
             utl.embed.ping(msg, sMsg, 'не указана роль!')
             return
@@ -26,32 +25,52 @@ module.exports =
         }
         const pos = args[2].slice(1)
 
-        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
-        if(!user.customInv) {
-            utl.embed.ping(msg, sMsg, 'у Вас нет кастомных ролей')
+        const elements = await Promise.all([
+            new DBServer(msg.guild.id, getConnection()),
+            new DBUser(msg.guild.id, msg.author.id, getConnection()),
+            new DBUser(msg.guild.id, mMember.id, getConnection())
+        ])
+        const server = elements[0]
+        const sender = elements[1]
+        const receiver = elements[2]
+
+        // Check if has roles at all
+        if(!sender.customInv) {
+            utl.embed.ping(msg, sMsg, 'у Вас нет кастомных ролей!')
             return
         }
-
-        const server = await new DBServer(msg.guild.id, getConnection())
-        const role = server.customRoles.find(r => r.id == user.customInv[pos - 1] && r.owner == msg.author.id)
+        // If selected role doesn't exist on the server
+        if(!msg.guild.roles.cache.get(server.customRoles[pos - 1].id)) {
+            utl.embed.ping(msg, sMsg, 'такой роли не существует!')
+            sender.customInv = sender.customInv.filter(r => msg.guild.roles.cache.get(r))
+            sender.save()
+            return
+        }
+        // Validate roles
+        // Check out of range
+        const role = sender.customInv[pos - 1]
         if(!role) {
+            utl.embed.ping(msg, sMsg, 'у Вас нет такой кастомной роли!')
+            return
+        }
+        // Check ownership
+        if(!server.customRoles.find(r => r.owner == msg.author.id && r.id == role)) {
             utl.embed.ping(msg, sMsg, 'эта роль Вам не принадлежит!')
             return
         }
-        if(role.members + 1 > 5) {
-            utl.embed.ping(msg, sMsg, 'эта роль уже есть у 5 пользователей!')
+        // Check if receiver has the role
+        if(receiver.customInv.find(r => r == role)) {
+            utl.embed.ping(msg, sMsg, `эта роль уже есть у ${mMember}!`)
             return
         }
 
-        const recipient = await new DBUser(msg.guild.id, mMember.id, getConnection())
-        if(recipient.customInv && recipient.customInv.find(r => r == role.id)) {
-            utl.embed.ping(msg, sMsg, `эта роль уже есть у <@${mMember.id}>!`)
-            return
-        }
-        server.customRoles.find(r => r.id).members++
+        server.customRoles.find(r => role).members++
         server.save()
-        recipient.customInv ? recipient.customInv.push(role.id) : recipient.customInv = [role.id]
-        recipient.save()
 
-        utl.embed(msg, sMsg, `Роль <@&${role.id}> была выдана <@${mMember.id}>`)
+        receiver.customInv ? receiver.customInv.push(role) : receiver.customInv = [role]
+        receiver.save()
+
+        mMember.roles.remove(role)
+
+        utl.embed(msg, sMsg, `Роль <@&${role.id}> была забрана у <@${mMember.id}>`)
     }
