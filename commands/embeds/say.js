@@ -10,7 +10,7 @@ module.exports =
     * @description Usage: .say <jsonData>
     */
     (args, msg, client) => {
-        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {
             args = args.join(' ').split('\n')
             args.shift()
 

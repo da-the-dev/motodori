@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
+const constants = require('../../constants.json')
 const sMsg = 'Редактирование эмбеда'
 module.exports =
     /**
@@ -9,7 +10,7 @@ module.exports =
     * @description Usage: .edit <id>\n<jsonData>
     */
     (args, msg, client) => {
-        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {
             args.shift()
             args = args.join(' ').split('\n')
 
