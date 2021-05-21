@@ -24,7 +24,7 @@ module.exports.initLogs = client => {
  * @param {number} duration - Duration in seconds
  */
 module.exports.modLog = (guild, action, who, acused, when, why = null, duration = null) => {
-    const date = new Date(new Date(when).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+    const date = new Date(new Date(when).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
 
     const embed = new Discord.MessageEmbed()
         .setFooter(`${date.toLocaleString()}`)
@@ -87,7 +87,7 @@ module.exports.modLog = (guild, action, who, acused, when, why = null, duration 
  * @param {Discord.Message} [msg2]
  */
 function msgLog(what, when, msg, msg2) {
-    const date = new Date(new Date(when).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+    const date = new Date(new Date(when).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
     const embed = new Discord.MessageEmbed()
         .setFooter(`${date.toLocaleString()}`)
 

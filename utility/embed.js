@@ -44,11 +44,11 @@ module.exports.calculateTime = (source) => {
     var time = 'Сегодня, в '
     var date
     if(typeof source == 'number')
-        date = new Date(new Date(source).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+        date = new Date(new Date(source).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
     else if(source instanceof Discord.Message)
-        date = new Date(new Date(source.createdTimestamp).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+        date = new Date(new Date(source.createdTimestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
     else if(source instanceof Discord.GuildMember)
-        date = new Date(new Date(source.joinedTimestamp).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+        date = new Date(new Date(source.joinedTimestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
 
     var hours = date.getHours().toString().padStart(2, '0')
     var minutes = date.getMinutes().toString().padStart(2, '0')

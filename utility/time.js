@@ -21,5 +21,5 @@ module.exports.timeCalculator = (time) => {
  * @returns {Date}
  */
 module.exports.convertTime = timestamp => {
-    return new Date(new Date(timestamp).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+    return new Date(new Date(timestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
 }
