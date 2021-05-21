@@ -92,6 +92,7 @@ client.once('ready', async () => {
     utl.bannerUpdate(client.guilds.cache.first())
     utl.loveroomMonitor.initPayment(client)
     utl.actionLogs.initLogs(client)
+    utl.cRoles.deleteExpired(client)
 })
 
 // Role events
