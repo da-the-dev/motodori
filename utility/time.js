@@ -15,3 +15,11 @@ module.exports.timeCalculator = (time) => {
 
     return msg
 }
+/**
+ * Converts the timestampt into Moscow date
+ * @param {number} timestamp 
+ * @returns {Date}
+ */
+module.exports.convertTime = timestamp => {
+    return new Date(new Date(timestamp).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+}

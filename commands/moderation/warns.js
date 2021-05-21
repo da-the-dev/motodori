@@ -34,7 +34,7 @@ module.exports =
                 const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
                 var embed = utl.embed.build(msg, `${sMsg} • ${mMember.displayName}`)
                 if(!user.warns) {
-                    utl.embed(msg, sMsg, `У Вас нет предупреждений`)
+                    utl.embed(msg, sMsg, `У ${mMember} нет предупреждений`)
                     return
                 }
 
