@@ -176,8 +176,8 @@ class DBUser {
     /**@type {number} Money */ money
     /**@type {number} Amount of messages in general*/ msgs
     /**@type {number} Minutes spent in voice channels*/ voiceTime
-    /**@type {Array<Role>} Inventory of shop roles*/ inv
-    /**@type {Array<CustomRole>} Inventory of custom roles*/ customInv
+    /**@type {number[]} Inventory of shop roles' IDs*/ inv
+    /**@type {number[]} Inventory of custom roles' IDs*/ customInv
     /**@type {Array<Warn>}  Array of warns*/ warns
     /**@type {boolean} If banned*/ ban
     /**@type {boolean} If toxic*/ toxic
@@ -270,7 +270,7 @@ class DBServer {
 
             this.def = serverData.def
             this.roles = serverData.roles
-            this.customRoles = serverData.customRoles
+            this.customRoles = serverData.customRoles || []
 
             resolve(this)
         })
