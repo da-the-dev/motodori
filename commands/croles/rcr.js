@@ -96,6 +96,7 @@ module.exports =
         }
 
         hex = hex.toUpperCase()
+        hex == '#000000' ? hex == '#010101' : null
 
         args.shift()
         args.shift()
