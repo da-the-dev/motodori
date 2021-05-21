@@ -102,6 +102,8 @@ function msgLog(what, when, msg, msg2) {
                 .setColor('#08fff7')
             break
         case 'update':
+            if(msg.content == msg2.content)
+                return
             if(msg.author.id == msg.client.user.id)
                 return
             embed.setTitle('Изменение сообщения')
