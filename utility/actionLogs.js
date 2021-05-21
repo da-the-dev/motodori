@@ -86,10 +86,13 @@ module.exports.modLog = (guild, action, who, acused, when, why = null, duration 
  * @param {Discord.Message} msg
  * @param {Discord.Message} [msg2]
  */
-function msgLog(what, when, msg, msg2) {
+async function msgLog(what, when, msg, msg2) {
     const date = new Date(when).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })
     const embed = new Discord.MessageEmbed()
         .setFooter(`${date}`)
+
+    msg.partial ? await msg.fetch() : null
+    msg2.partial ? await msg2.fetch() : null
 
     switch(what) {
         case 'delete':
