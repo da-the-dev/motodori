@@ -1,13 +1,13 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
 const { getConnection, DBUser, DBServer } = utl.db
-const sMsg = 'Выдача кастомной роли'
+const sMsg = 'Конфискация кастомной роли'
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Discord.Message} msg Discord message object
     * @param {Discord.Client} client Discord client object
-    * @description Usage: .rgv <member> <rolePos>
+    * @description Usage: .rtk <member> <rolePos>
     */
     async (args, msg, client) => {
         var mMember = msg.mentions.members.first()
@@ -72,5 +72,5 @@ module.exports =
 
         mMember.roles.remove(role)
 
-        utl.embed(msg, sMsg, `Роль <@&${role.id}> была забрана у <@${mMember.id}>`)
+        utl.embed(msg, sMsg, `Роль <@&${role}> была забрана у <@${mMember.id}>`)
     }

@@ -19,8 +19,8 @@ module.exports =
             return
         }
 
-        user.inv = user.inv.filter(r => msg.guild.roles.cache.get(r))
-        user.customInv = user.customInv.filter(r => msg.guild.roles.cache.get(r))
+        user.inv ? user.inv = user.inv.filter(r => msg.guild.roles.cache.get(r)) : null
+        user.customInv ? user.customInv = user.customInv.filter(r => msg.guild.roles.cache.get(r)) : null
         user.save()
 
         const embed = utl.embed.build(msg, sMsg)

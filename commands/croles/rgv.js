@@ -59,7 +59,7 @@ module.exports =
             return
         }
         // Check if receiver has the role
-        if(receiver.customInv.find(r => r == role)) {
+        if(receiver.customInv && receiver.customInv.find(r => r == role)) {
             utl.embed.ping(msg, sMsg, `эта роль уже есть у ${mMember}!`)
             return
         }
@@ -70,7 +70,5 @@ module.exports =
         receiver.customInv ? receiver.customInv.push(role) : receiver.customInv = [role]
         receiver.save()
 
-        mMember.roles.remove(role)
-
-        utl.embed(msg, sMsg, `Роль <@&${role.id}> была забрана у <@${mMember.id}>`)
+        utl.embed(msg, sMsg, `Роль <@&${role}> была выдана <@${mMember.id}>`)
     }
