@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
+const { getConnection, DBServer, DBUser } = utl.db
 const sMsg = 'Удаление кастомной роли'
 
 module.exports =
@@ -9,43 +10,62 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .rdel <rolePos>
     */
-    (args, msg, client) => {
-        if(!args[1] || !args[1][0] == 'c' || !Number.isInteger(Number(args[1].slice(1)))) {
-            utl.embe.ping(msg, sMsg, 'указан неверный индекс роли!')
+    async (args, msg, client) => {
+        if(!args[1]) {
+            utl.embed.ping(msg, sMsg, 'не указан индекс роли!')
             return
         }
-        var pos = args[1].slice(1)
+        if(args[1][0] != 'c' || !Number.isInteger(Number(args[1].slice(1)))) {
+            utl.embed.ping(msg, sMsg, 'указан неверный индекс роли!')
+            return
+        }
+        const pos = args[1].slice(1)
 
-        utl.db.createClient(process.env.MURL).then(async db => {
-            var userData = await db.get(msg.guild.id, msg.author.id)
-            if(!userData || !userData.customInv) {
-                utl.embed.ping(msg, sMsg, 'у Вас нет кастомных ролей')
-                db.close()
-                return
-            }
+        /*
+        Check:
+        if has roles at all
+        if owner
+        */
 
-            var serverData = await db.getServer(msg.guild.id)
-            var role = serverData.customRoles.find(r => r.id == userData.customInv[pos - 1])
-            if(!role) {
-                utl.embed.ping(msg, sMsg, 'этой роли не существует!')
-                db.close()
-                return
-            }
-            var owner = serverData.customRoles.find(r => r.id == userData.customInv[pos - 1]).owner
-            if(owner != msg.author.id && !msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
-                utl.embed.ping(msg, sMsg, 'эта роль Вам не принадлежит!')
-                db.close()
-                return
-            }
+        const elements = await Promise.all([
+            new DBServer(msg.guild.id, getConnection()),
+            new DBUser(msg.guild.id, msg.author.id, getConnection()),
+        ])
+        const server = elements[0]
+        const user = elements[1]
 
-            // Find and delete role from guild
-            var role = serverData.customRoles.find(r => r.id == role.id && r.owner == msg.author.id)
-            var guildRole = msg.guild.roles.cache.get(role.id)
-            utl.embed.ping(msg, sMsg, `роль **${guildRole.name}** была удалена`)
-            guildRole.delete()
+        if(!user.customInv) {
+            utl.embed.ping(msg, sMsg, 'у Вас нет кастомных ролей!')
+            return
+        }
 
-            // Delete the role for server settings
-            serverData.customRoles.splice(serverData.customRoles.findIndex(r => r.id == role.id && r.owner == msg.author.id), 1)
-            db.setServer(msg.guild.id, serverData).then(() => db.close())
+        // If selected role doesn't exist on the server
+        if(!msg.guild.roles.cache.get(server.customRoles[pos - 1].id)) {
+            utl.embed.ping(msg, sMsg, 'такой роли не существует!')
+            // Validate roles
+            user.customInv = sender.customInv.filter(r => msg.guild.roles.cache.get(r))
+            user.save()
+            return
+        }
+        // Check out of range
+        const role = user.customInv[pos - 1]
+        if(!role) {
+            utl.embed.ping(msg, sMsg, 'у Вас нет такой кастомной роли!')
+            return
+        }
+        // Check ownership
+        if(!server.customRoles.find(r => r.owner == msg.author.id && r.id == role)) {
+            utl.embed.ping(msg, sMsg, 'эта роль Вам не принадлежит!')
+            return
+        }
+
+        server.customRoles.splice(server.customRoles.findIndex(r => r.id == role), 1)
+        server.save()
+        user.customInv.splice(user.customInv.findIndex(r => r == role), 1)
+        user.save()
+
+        msg.guild.roles.cache.get(role).delete(`Удалена ${msg.author.tag} командой .rdel`).then(role => {
+            utl.embed(msg, sMsg, `Роль **${role.name}** удалена`)
         })
+
     }
