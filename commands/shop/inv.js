@@ -10,22 +10,20 @@ module.exports =
     * @description Usage: .inv
     */
     async (args, msg, client) => {
-
         const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
-
-        if(!user.inv && !user.customInv) {
-            utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
-
-            return
-        }
 
         user.inv ? user.inv = user.inv.filter(r => msg.guild.roles.cache.get(r)) : null
         user.customInv ? user.customInv = user.customInv.filter(r => msg.guild.roles.cache.get(r)) : null
         user.save()
 
+        if((!user.inv || user.inv.length < 0) && (!user.customInv || user.customInv.length < 0)) {
+            utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')
+            return
+        }
+
         const embed = utl.embed.build(msg, sMsg)
 
-        if(user.inv) {
+        if(user.inv.length > 0) {
             var roles = ''
             for(i = 0; i < user.inv.length; i++)
                 if(msg.member.roles.cache.has(user.inv[i]))
