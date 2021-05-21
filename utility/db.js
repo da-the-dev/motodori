@@ -1,6 +1,5 @@
 require('dotenv').config()
 
-const emmiter = require('events')
 const MongoClient = require('mongodb').MongoClient
 /**@type {Array<Connection>} */
 var connections = []
@@ -203,7 +202,7 @@ class DBUser {
 
             this.money = userData.money || 0
             this.msgs = userData.msgs || 0
-            this.voiceTime = userData.voiceTime
+            this.voiceTime = userData.voiceTime || 0
             this.inv = userData.inv
             this.customInv = userData.customInv
             this.warns = userData.warns
