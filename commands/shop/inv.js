@@ -19,32 +19,11 @@ module.exports =
             return
         }
 
-        var invChanged = false
-        var customInvChanged = false
+        user.inv = user.inv.filter(r => msg.guild.roles.cache.get(r))
+        user.customInv = user.customInv.filter(r => msg.guild.roles.cache.get(r))
+        user.save()
 
-        console.log(user.inv)
-        // if(user.inv)
-        //     user.inv.forEach(r => {
-        //         if(!msg.guild.roles.cache.has(r.id)) {
-        //             invChanged = true
-        //             user.inv.splice(user.inv.findIndex(id => id == user.inv[i]), 1)
-        //         }
-        //     })
-        // if(user.customInv)
-        //     user.customInv.forEach(r => {
-        //         if(!msg.guild.roles.cache.has(r.id)) {
-        //             customInvChanged = true
-        //             user.customInv.splice(user.customInv.findIndex(id => id == user.customInv[i]), 1)
-        //         }
-        //     })
-
-        console.log(user.inv)
-
-        if(invChanged || customInvChanged)
-            await user.save()
-
-
-        var embed = utl.embed.build(msg, sMsg, '')
+        const embed = utl.embed.build(msg, sMsg)
 
         if(user.inv) {
             var roles = ''
