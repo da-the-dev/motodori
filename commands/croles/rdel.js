@@ -11,7 +11,7 @@ module.exports =
     */
     (args, msg, client) => {
         if(!args[1] || !args[1][0] == 'c' || !Number.isInteger(Number(args[1].slice(1)))) {
-            utl.embe.ping(msg, sMsg, 'указан неверный индекс роли!')
+            utl.embe.pingd(msg, sMsg, 'указан неверный индекс роли!')
             return
         }
         var pos = args[1].slice(1)
