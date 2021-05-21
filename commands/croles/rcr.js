@@ -52,10 +52,7 @@ const createRole = async (msg, name, hex) => {
         expireDate.setMonth(1)
         expireDate.setFullYear(expireDate.getFullYear() + 1)
     }
-    expireDate.setHours(0)
-    expireDate.setMinutes(0)
-    expireDate.setSeconds(0)
-    expireDate.setMilliseconds(0)
+    expireDate.setHours(0, 0, 0, 0, 0)
 
     const DBElements = await Promise.all([
         new DBServer(msg.guild.id, getConnection()),
@@ -105,7 +102,7 @@ module.exports =
 
         var name = args.join(' ')
         if(!name) {
-            utl.embed(msg, sMsg, 'не указано название роли!')
+            utl.embed.ping(msg, sMsg, 'не указано название роли!')
             return
         }
 
