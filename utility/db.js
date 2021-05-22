@@ -181,6 +181,7 @@ class DBUser {
     /**@type {boolean} If banned*/ ban
     /**@type {boolean} If toxic*/ toxic
     /**@type {boolean} If muted*/ mute
+    /**@type {boolean} If bought pics role*/ pics
     /**@type {string} Custom status*/ status
     /**@type {LoveRoom} Love room*/ loveroom
     /**@type {number} Timely streak*/ streak
@@ -209,6 +210,7 @@ class DBUser {
             this.ban = userData.ban
             this.toxic = userData.toxic
             this.mute = userData.mute
+            this.pics = userData.pics
             this.status = userData.status
             this.loveroom = userData.loveroom
             this.rewardTimestamp = userData.rewardTimestamp
@@ -230,6 +232,7 @@ class DBUser {
         this.ban ? userData.ban = this.ban : null
         this.toxic ? userData.toxic = this.toxic : null
         this.mute ? userData.mute = this.mute : null
+        this.pics ? userData.pics = this.pics : null
         this.status ? userData.status = this.status : null
         this.loveroom ? userData.loveroom = this.loveroom : null
         this.rewardTimestamp ? userData.rewardTimestamp = this.rewardTimestamp : null

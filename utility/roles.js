@@ -20,7 +20,7 @@ module.exports.reapplyRoles = async (member) => {
             collectedRoles.push(constants.roles.toxic)
         if(user.ban)
             collectedRoles.push(constants.roles.localban)
-        if(user.pic)
+        if(user.pics)
             collectedRoles.push(constants.roles.pics)
 
         member.roles.add(collectedRoles).then(() => {
