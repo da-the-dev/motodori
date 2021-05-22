@@ -40,7 +40,7 @@ module.exports =
             return
         }
         // If selected role doesn't exist on the server
-        if(!msg.guild.roles.cache.get(server.customRoles[pos - 1].id)) {
+        if(!msg.guild.roles.cache.get(sender.customInv[pos - 1].id)) {
             utl.embed.ping(msg, sMsg, 'такой роли не существует!')
             // Validate roles
             sender.customInv = sender.customInv.filter(r => msg.guild.roles.cache.get(r))
