@@ -28,6 +28,7 @@ module.exports.modLog = (guild, action, who, acused, when, why = null, duration 
 
     const embed = new Discord.MessageEmbed()
         .setFooter(`${date}`)
+        .setImage('https://i.stack.imgur.com/Fzh0w.png')
 
     switch(action) {
         case 'ban':
@@ -44,12 +45,12 @@ module.exports.modLog = (guild, action, who, acused, when, why = null, duration 
         case 'mute':
             embed.setTitle('Мут')
                 .setDescription(`<@${who.id}> **замутил** <@${acused.id}> на ${timeCalculator(duration)}\nПричина: ${why}`)
-                .setColor('#34CCEB')
+                .setColor('#460303')
             break
         case 'unmute':
             embed.setTitle('Мут')
                 .setDescription(`<@${who.id}> **размутил** <@${acused.id}>}`)
-                .setColor('#34CCEB')
+                .setColor('#460303')
             break
 
         case 'toxic':
@@ -76,7 +77,11 @@ module.exports.modLog = (guild, action, who, acused, when, why = null, duration 
                 .setColor('#ff8308')
             break
     }
-    guild.channels.cache.get(constants.channels.log).send(embed)
+    if(action == 'ban' || action == 'unban')
+        guild.channels.cache.get('842071535967272960').send(embed)
+    else
+        guild.channels.cache.get(constants.channels.log).send(embed)
+
 }
 
 /**
@@ -90,6 +95,7 @@ async function msgLog(what, when, msg, msg2) {
     const date = new Date(when).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })
     const embed = new Discord.MessageEmbed()
         .setFooter(`${date}`)
+        .setImage('https://i.stack.imgur.com/Fzh0w.png')
 
     msg.partial ? await msg.fetch() : null
 
@@ -111,8 +117,8 @@ async function msgLog(what, when, msg, msg2) {
                 return
             embed.setTitle('Изменение сообщения')
                 .setDescription(`Изменено сообщение в ${msg.channel}\n[Ссылка на него](${msg2.url})`)
-                .addField('Было:', `*${msg.content}*`, true)
-                .addField('Стало:', `*${msg2.content}*`, true)
+                .addField('Было:', `*${msg.content}*`)
+                .addField('Стало:', `*${msg2.content}*`)
                 .addField('Автор сообщения:', `${msg2.author}`)
                 .setColor('#00948f')
         // .setColor('#00948f')
