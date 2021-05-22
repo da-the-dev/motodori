@@ -33,7 +33,7 @@ module.exports =
             return
         }
 
-        if(Math.floor(Math.random() * 99) + 1 >= 80) {
+        if(Math.random() < 0.2) {
             user.money += bet * 2
             utl.embed.ping(msg, sMsg, `**Вы выиграли!** Ваш баланс: **${user.money}** ${sweet}`)
         }
