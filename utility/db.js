@@ -296,12 +296,11 @@ class DBServer {
 /**
  * Retrieves guild user data
  * @param {string} guildID - Guild ID
- * @param {Connection} con
  * @returns {Promise<UserData[]>} Guild data
  */
-function getGuild(guildID, con) {
+function getGuild(guildID) {
     return new Promise(async (resolve, reject) => {
-        var guildData = await con.getMany(guildID, { id: { $regex: /^\d+$/ } })
+        var guildData = await getConnection().getMany(guildID, { id: { $regex: /^\d+$/ } })
         guildData.forEach(u => {
             u._id ? delete u._id : null
         })
@@ -313,8 +312,6 @@ module.exports.Connection = Connection
 module.exports.DBUser = DBUser
 module.exports.DBServer = DBServer
 module.exports.getGuild = getGuild
-module.exports.getConnection = getConnection
-module.exports.connections = connections
 
 /**@returns {Connection} */
 function getConnection() {
