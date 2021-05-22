@@ -81,7 +81,6 @@ client.once('ready', async () => {
     /**@type {Discord.Guild} */
     client.guild = await client.guilds.fetch('836297404260155432')
     await utl.connections.startconnections(3)
-    console.log(utl.db.connections)
 
     console.log("[BOT] BOT is online")
 
