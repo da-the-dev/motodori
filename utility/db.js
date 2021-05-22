@@ -312,6 +312,7 @@ module.exports.Connection = Connection
 module.exports.DBUser = DBUser
 module.exports.DBServer = DBServer
 module.exports.getGuild = getGuild
+module.exports.getConnection = getConnection
 
 /**@returns {Connection} */
 function getConnection() {
