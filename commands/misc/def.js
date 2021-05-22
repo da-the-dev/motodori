@@ -10,7 +10,7 @@ module.exports =
     */
     async (args, msg, client) => {
         if(msg.author.id == process.env.MYID || msg.author.id == process.env.VICID) {
-            const server = await new DBServer(msg.guild.id, getConnection())
+            const server = await new DBServer(msg.guild.id)
 
             server.def = !server.def
             server.save()

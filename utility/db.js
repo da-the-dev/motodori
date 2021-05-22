@@ -192,12 +192,12 @@ class DBUser {
     * @param {string} id
     * @return {Promise<DBUser>}
     */
-    constructor(guildID, id, connection) {
+    constructor(guildID, id) {
         return new Promise(async (resolve, reject) => {
             this.#guildID = guildID
             this.#id = id
 
-            this.#connection = connection
+            this.#connection = getConnection()
             const userData = await this.#connection.get(guildID, id) || {}
 
             this.money = userData.money || 0
@@ -260,10 +260,10 @@ class DBServer {
     * @param {Connection} con
     * @returns {Promise<DBServer>}
     */
-    constructor(guildID, con) {
+    constructor(guildID) {
         return new Promise(async (resolve, reject) => {
             this.#guildID = guildID
-            this.#connection = con
+            this.#connection = getConnection()
 
             const serverData = await this.#connection.get(guildID, 'serverSettings')
 

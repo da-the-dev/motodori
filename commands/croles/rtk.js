@@ -26,9 +26,9 @@ module.exports =
         const pos = args[2].slice(1)
 
         const elements = await Promise.all([
-            new DBServer(msg.guild.id, getConnection()),
-            new DBUser(msg.guild.id, msg.author.id, getConnection()),
-            new DBUser(msg.guild.id, mMember.id, getConnection())
+            new DBServer(msg.guild.id),
+            new DBUser(msg.guild.id, msg.author.id),
+            new DBUser(msg.guild.id, mMember.id)
         ])
         const server = elements[0]
         const sender = elements[1]

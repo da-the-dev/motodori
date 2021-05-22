@@ -13,7 +13,7 @@ module.exports =
         args.shift()
 
         if(args.length <= 0) {
-            const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+            const user = await new DBUser(msg.guild.id, msg.author.id)
             user.status = ''
             await user.save()
 
@@ -22,7 +22,7 @@ module.exports =
         }
 
 
-        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+        const user = await new DBUser(msg.guild.id, msg.author.id)
 
         var state = args.join(' ')
         state = state.slice(0, state.length <= 60 ? state.length : 60)

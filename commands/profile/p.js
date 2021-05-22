@@ -17,7 +17,7 @@ module.exports =
         if(mMember)
             pMember = mMember
 
-        const user = await new DBUser(msg.guild.id, pMember.id, getConnection())
+        const user = await new DBUser(msg.guild.id, pMember.id)
 
         var embed = utl.embed.build(msg, `Профиль — ${pMember.user.tag}`, `> **状態 Status:**\n\`\`\`${user.status || 'Не установлен'}\`\`\``)
             .addFields([

@@ -15,7 +15,7 @@ module.exports =
         var embed = utl.embed.build(msg, 'Магазин')
             .setFooter(`Страница 1/3 • ${msg.author.tag}`)
 
-        const server = await new DBServer(msg.guild.id, getConnection())
+        const server = await new DBServer(msg.guild.id)
 
         var rolesData = server.roles
         rolesData.sort((a, b) => {

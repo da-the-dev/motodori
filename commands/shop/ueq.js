@@ -11,7 +11,7 @@ const sMsg = 'Экипировка роли'
  * @param {Discord.Message} msg - Original message
  */
 const unequipRole = async (member, index, isCustom, msg) => {
-    const user = await new DBUser(member.guild.id, member.id, getConnection())
+    const user = await new DBUser(member.guild.id, member.id)
 
     if(!user.inv && !user.customInv) {
         utl.embed.ping(msg, sMsg, 'к сожалению, Ваш инвентарь пуст')

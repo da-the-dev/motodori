@@ -28,8 +28,8 @@ module.exports =
         */
 
         const elements = await Promise.all([
-            new DBServer(msg.guild.id, getConnection()),
-            new DBUser(msg.guild.id, msg.author.id, getConnection()),
+            new DBServer(msg.guild.id),
+            new DBUser(msg.guild.id, msg.author.id),
         ])
         const server = elements[0]
         const user = elements[1]

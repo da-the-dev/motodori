@@ -13,7 +13,7 @@ module.exports =
     async (args, msg, client) => {
         const mMember = msg.mentions.members.first()
         if(!mMember) {
-            const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+            const user = await new DBUser(msg.guild.id, msg.author.id)
             console.log(user.get())
             var embed = utl.embed.build(msg, `${sMsg} • ${msg.member.displayName}`)
             if(!user.warns) {
@@ -31,7 +31,7 @@ module.exports =
             msg.channel.send(embed)
         } else {
             if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
-                const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+                const user = await new DBUser(msg.guild.id, mMember.id)
                 var embed = utl.embed.build(msg, `${sMsg} • ${mMember.displayName}`)
                 if(!user.warns) {
                     utl.embed(msg, sMsg, `У ${mMember} нет предупреждений`)

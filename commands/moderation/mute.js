@@ -119,7 +119,7 @@ module.exports =
                 rClient.expire('muted-' + mMember.user.id, time)
                 rClient.quit()
 
-                const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+                const user = await new DBUser(msg.guild.id, mMember.id)
                 user.mute = true
                 await user.save()
 

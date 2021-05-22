@@ -7,7 +7,7 @@ const { scheduleJob } = require("node-schedule")
   */
 module.exports.deleteExpired = (client) => {
     scheduleJob('0 0 * * *', async () => {
-        const server = await new DBServer(client.guild.id, getConnection())
+        const server = await new DBServer(client.guild.id)
         server.customRoles.forEach(r => {
             if(Date.now() >= r.expireTimestamp) {
                 client.guild.roles.cache.get(r.id).delete()

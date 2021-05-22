@@ -27,7 +27,7 @@ module.exports =
                 return
             }
 
-            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+            const user = await new DBUser(msg.guild.id, mMember.id)
 
             if(user.warns && user.warns.length == 5) {
                 // Set shadow key

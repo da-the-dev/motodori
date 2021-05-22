@@ -9,7 +9,7 @@ const { getConnection, DBUser } = utl.db
  */
 module.exports.reapplyRoles = async (member) => {
     console.log(member.guild.id, member.id)
-    const user = await new DBUser(member.guild.id, member.id, getConnection())
+    const user = await new DBUser(member.guild.id, member.id)
 
     if(user) {
         var collectedRoles = []

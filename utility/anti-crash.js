@@ -10,7 +10,7 @@ const whitelist = [process.env.MYID, '820196535940939806', '677923814914523144',
  * Checks is "defenses" key value is "true" and then runs "func"
  */
 const getDef = async (func) => {
-    return (await new DBServer('836297404260155432', getConnection())).def
+    return (await new DBServer('836297404260155432')).def
 }
 
 /**

@@ -21,7 +21,7 @@ module.exports =
             return
         }
 
-        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+        const user = await new DBUser(msg.guild.id, msg.author.id)
         if(!user.money) {
             utl.embed.ping(msg, sMsg, `у Вас нет денег чтобы играть!`)
 

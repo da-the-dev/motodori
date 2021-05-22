@@ -10,7 +10,7 @@ module.exports =
     * @description Usage: .inv
     */
     async (args, msg, client) => {
-        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+        const user = await new DBUser(msg.guild.id, msg.author.id)
 
         user.inv ? user.inv = user.inv.filter(r => msg.guild.roles.cache.get(r)) : null
         user.customInv ? user.customInv = user.customInv.filter(r => msg.guild.roles.cache.get(r)) : null

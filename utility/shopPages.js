@@ -19,7 +19,7 @@ const buildPage = async (page, msg, thumbnail) => {
         .setThumbnail(thumbnail)
         .setColor('#2F3136')
 
-    const server = await new DBServer(msg.guild.id, getConnection())
+    const server = await new DBServer(msg.guild.id)
 
 
     const start = (page - 1) * 9

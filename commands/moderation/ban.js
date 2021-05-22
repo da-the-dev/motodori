@@ -19,7 +19,7 @@ module.exports =
             }
 
 
-            var user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+            var user = await new DBUser(msg.guild.id, mMember.id)
             user.ban = true
             await user.save()
 
