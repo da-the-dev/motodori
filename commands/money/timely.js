@@ -24,7 +24,7 @@ module.exports =
                     user.money += reward
                     user.streak += 1
 
-                    if(user.streak = 14)
+                    if(user.streak == 14)
                         user.streak = 1
 
                     user.rewardTimestamp = msg.createdTimestamp
