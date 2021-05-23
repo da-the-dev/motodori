@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { DBUser, Connection, getConnection } = utl.db
+const { DBUser } = utl.db
 const { sweet } = require('../../constants.json').emojies
 const sMsg = 'Казино'
 module.exports =
@@ -33,7 +33,7 @@ module.exports =
             return
         }
 
-        if(Math.random() < 0.2) {
+        if(Math.random() < 0.3) {
             user.money += bet * 2
             utl.embed.ping(msg, sMsg, `**Вы выиграли!** Ваш баланс: **${user.money}** ${sweet}`)
         }
