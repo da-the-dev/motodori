@@ -119,7 +119,7 @@ client.on('guildMemberRemove', member => {
     utl.anticrash.monitorKicks(member)
 })
 client.on('presenceUpdate', (oldPresence, newPresence) => {
-    utl.gameRoles(oldPresence, newPresence)
+    utl.gameRoles(client.guild, oldPresence, newPresence)
 })
 
 // Channel events

@@ -182,6 +182,7 @@ class DBUser {
     /**@type {boolean} If toxic*/ toxic
     /**@type {boolean} If muted*/ mute
     /**@type {boolean} If bought pics role*/ pics
+    /**@type {boolean} If gameroles DISABLED*/ disGameRole
     /**@type {string} Custom status*/ status
     /**@type {LoveRoom} Love room*/ loveroom
     /**@type {number} Timely streak*/ streak
@@ -212,6 +213,7 @@ class DBUser {
             this.mute = userData.mute
             this.pics = userData.pics
             this.status = userData.status
+            this.disGameRole = userData.disGameRole
             this.loveroom = userData.loveroom
             this.rewardTimestamp = userData.rewardTimestamp
             this.streak = userData.streak
@@ -234,6 +236,7 @@ class DBUser {
         this.mute ? userData.mute = this.mute : null
         this.pics ? userData.pics = this.pics : null
         this.status ? userData.status = this.status : null
+        this.disGameRole ? userData.disGameRole = this.disGameRole : null
         this.loveroom ? userData.loveroom = this.loveroom : null
         this.rewardTimestamp ? userData.rewardTimestamp = this.rewardTimestamp : null
         this.streak ? userData.streak = this.streak : null

@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
+const { DBUser } = utl.db
 const constants = require('../../constants.json')
 const sMsg = 'Игровые роли'
 module.exports =
@@ -9,17 +10,9 @@ module.exports =
     * @param {Discord.Client} client Discord client object
     * @description Usage: .ugrole
     */
-
-    //!!!GAMEROLES TRUE - DONT GIVE ROLE; GAMEROLES FALSE - GIVE ROLES!!!
-    (args, msg, client) => {
-        // utl.db.createClient(process.env.MURL).then(db => {
-        //     db.update(msg.guild.id, msg.author.id, [{ $set: { gameRoles: { $not: "$gameRoles" } } }])
-        //         .then(() => {
-        //             db.get(msg.guild.id, msg.author.id).then(userData => {
-        //                 utl.embed(msg, sMsg, `Вы успешно ${!userData.gameRoles ? '**включили**' : '**отключили**'} роли за игровую активность`)
-        //                 userData.gameRoles ? msg.member.roles.remove(constants.gameRolesArray) : null
-        //                 db.close()
-        //             })
-        //         })
-        // })
+    async (args, msg, client) => {
+        const user = await new DBUser(msg.guild.id, msg.author.id)
+        user.disGameRole = user.disGameRole
+        user.save()
+        utl.embed(msg, sMsg, `Вы успешно ${!user.disGameRole ? '**включили**' : '**отключили**'} роли за игровую активность`)
     }

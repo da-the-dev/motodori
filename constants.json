@@ -31,20 +31,16 @@
         "log": "842071488667582534"
     },
     "gameRoles": {
-        "Dota 2": "821424808398159902",
-        "Counter-Strike: Global Offensive": "821424811049353257",
-        "PLAYERUNKNOWN'SBATTLEGORUNDS": "821426994062557205",
-        "PUBG LITE": "821426994062557205",
-        "osu!": "821424815268167741",
-        "League of Legends": "821424818544705578",
-        "VALORANT": "821424822377513030",
-        "Among Us": "821424825775947796",
-        "Minecraft": "821424830158864434",
-        "Brawlhalla": "821426991794094131",
-        "Apex Legends": "821424834323284010",
-        "Rainbow Six Siege": "821424838182567956",
-        "Genshin Impact": "821424842082615317",
-        "Fortnite": "821758147193733182"
+        "Dota 2": "844477999641526303",
+        "Counter-Strike: Global Offensive": "844478007095984169",
+        "PLAYERUNKNOWN'SBATTLEGORUNDS": "844477995598610492",
+        "osu!": "844478170244841493",
+        "League of Legends": "844477264195485698",
+        "VALORANT": "844477232176693278",
+        "Brawlhalla": "844477253840404500",
+        "Rainbow Six Siege": "844477266284511253",
+        "Genshin Impact": "844477261361053706",
+        "Overwatch": "844477258402889748"
     },
     "gameRolesArray": [
         "821424808398159902",
