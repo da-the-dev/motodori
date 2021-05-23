@@ -92,6 +92,7 @@ client.once('ready', async () => {
     utl.loveroomMonitor.initPayment(client)
     utl.actionLogs.initLogs(client)
     utl.cRoles.deleteExpired(client)
+    utl.eve.sendMessage(client.guild)
 })
 
 // Role events
@@ -133,12 +134,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 })
 
 // Message events
-client.on('messageReactionAdd', (reaction, user) => {
-    utl.fetch.fetchReactions(reaction)
+client.on('messageReactionAdd', async (reaction, user) => {
+    await utl.fetch.fetchReactions(reaction)
 
-    if(reaction.message.channel.id != client.verifyMsg)
-        utl.shop(reaction, user, client)
-    utl.reportHandler.reportAssignmentHandler(reaction, user, client)
+    // if(reaction.message.channel.id != client.verifyMsg)
+    utl.shop(reaction, user, client)
+    utl.eve.reaction(reaction, user)
+    // utl.reportHandler.reportAssignmentHandler(reaction, user, client)
 })
 client.on('message', msg => {
     // Activity
