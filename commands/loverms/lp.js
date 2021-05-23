@@ -5,8 +5,8 @@ const { sweet, dot } = require('../../constants.json').emojies
 const sMsg = 'Любовная комната'
 
 const timeTillPayday = () => {
-    var today = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
-    var payday = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+    var today = new Date(new Date(Date.now()).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
+    var payday = new Date(new Date(Date.now()).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
 
     payday.setUTCHours(0)
     payday.setUTCMinutes(0)
@@ -46,7 +46,7 @@ module.exports = (args, msg, client) => {
                 return
             }
 
-            var today = new Date(new Date(Date.now()).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+            var today = new Date(new Date(Date.now()).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
             var payday = new Date(Date.now())
             if(today.getDay() >= 24 && today.getDate() <= 31)
                 payday.setDate(1)

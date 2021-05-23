@@ -55,8 +55,8 @@ const createRole = async (msg, name, hex) => {
     expireDate.setHours(0, 0, 0, 0, 0)
 
     const DBElements = await Promise.all([
-        new DBServer(msg.guild.id, getConnection()),
-        new DBUser(msg.guild.id, msg.author.id, getConnection())
+        new DBServer(msg.guild.id),
+        new DBUser(msg.guild.id, msg.author.id)
     ])
     const server = DBElements[0]
     const user = DBElements[1]
@@ -96,6 +96,7 @@ module.exports =
         }
 
         hex = hex.toUpperCase()
+        hex == '#000000' ? hex == '#010101' : null
 
         args.shift()
         args.shift()
@@ -106,7 +107,7 @@ module.exports =
             return
         }
 
-        const server = await new DBServer(msg.guild.id, getConnection())
+        const server = await new DBServer(msg.guild.id)
         var counter = 0
         server.customRoles.forEach(r => {
             r.owner == msg.author.id ? counter++ : null
@@ -116,9 +117,9 @@ module.exports =
             return
         }
 
-        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+        const user = await new DBUser(msg.guild.id, msg.author.id)
         if(user.money < cost) {
-            utl.embed.ping(msg, sMsg, 'у Вас не хватает конфет!')
+            utl.embed.ping(msg, sMsg, `у Вас не хватает ${sweet}! *(нужно 10.000${sweet})*`)
             return
         }
 

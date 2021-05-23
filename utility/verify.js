@@ -26,7 +26,7 @@ module.exports = (msg, client) => {
                         })
                 }
                 else {
-                    await msg.channel.send(new Discord.MessageEmbed().setDescription(`${dot}*Неверно введена капча, генерирую новую** . . . `).setColor('#2F3136'))
+                    await msg.channel.send(new Discord.MessageEmbed().setDescription(`*Неверно введена капча, генерирую новую** . . . `).setColor('#2F3136'))
                     const captcha = await formCaptcha()
                     await getConnection().set('836297404260155432', `verify-${msg.author.id}`, { captcha: captcha.text })
                     msg.channel.send(captcha.obj)

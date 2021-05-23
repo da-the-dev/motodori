@@ -27,7 +27,7 @@ module.exports =
                 return
             }
 
-            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+            const user = await new DBUser(msg.guild.id, mMember.id)
             const index = Number(args[2]) - 1
 
 

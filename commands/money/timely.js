@@ -12,7 +12,7 @@ module.exports =
     * @description Usage: .timely
     */
     async (args, msg, client) => {
-        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+        const user = await new DBUser(msg.guild.id, msg.author.id)
 
         console.log(user.rewardTimestamp)
 
@@ -24,7 +24,7 @@ module.exports =
                     user.money += reward
                     user.streak += 1
 
-                    if(user.streak = 14)
+                    if(user.streak == 14)
                         user.streak = 1
 
                     user.rewardTimestamp = msg.createdTimestamp

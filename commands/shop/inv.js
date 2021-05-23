@@ -10,7 +10,7 @@ module.exports =
     * @description Usage: .inv
     */
     async (args, msg, client) => {
-        const user = await new DBUser(msg.guild.id, msg.author.id, getConnection())
+        const user = await new DBUser(msg.guild.id, msg.author.id)
 
         user.inv ? user.inv = user.inv.filter(r => msg.guild.roles.cache.get(r)) : null
         user.customInv ? user.customInv = user.customInv.filter(r => msg.guild.roles.cache.get(r)) : null
@@ -23,7 +23,7 @@ module.exports =
 
         const embed = utl.embed.build(msg, sMsg)
 
-        if(user.inv.length > 0) {
+        if(user.inv && user.inv.length > 0) {
             var roles = ''
             for(i = 0; i < user.inv.length; i++)
                 if(msg.member.roles.cache.has(user.inv[i]))
@@ -33,7 +33,7 @@ module.exports =
 
             embed.addField('Магазинные роли', roles)
         }
-        if(user.customInv) {
+        if(user.customInv && user.customInv.length > 0) {
             var roles = ''
             for(i = 0; i < user.customInv.length; i++)
                 if(msg.member.roles.cache.has(user.customInv[i]))

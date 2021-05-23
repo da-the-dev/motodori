@@ -19,7 +19,7 @@ module.exports =
                 return
             }
 
-            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+            const user = await new DBUser(msg.guild.id, mMember.id)
             user.ban = false
             await user.save()
 

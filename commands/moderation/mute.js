@@ -32,7 +32,7 @@ module.exports =
      * @example .mute @daym bro 5h "reason"
      */
     async (args, msg, client) => {
-        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.eventor))) {
+        if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.eventee))) {
             var mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed.ping(msg, sMsg, 'Вы не указали пользователя для мута!')
@@ -119,7 +119,7 @@ module.exports =
                 rClient.expire('muted-' + mMember.user.id, time)
                 rClient.quit()
 
-                const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+                const user = await new DBUser(msg.guild.id, mMember.id)
                 user.mute = true
                 await user.save()
 

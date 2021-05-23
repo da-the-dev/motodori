@@ -18,7 +18,7 @@ module.exports =
                 return
             }
 
-            const user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+            const user = await new DBUser(msg.guild.id, mMember.id)
             user.toxic = true
             await user.save()
             mMember.roles.add(constants.roles.toxic)

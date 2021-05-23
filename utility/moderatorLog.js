@@ -36,7 +36,7 @@ module.exports.log = (msg, action, who, acused, when, why = null, duration = nul
     const embed = new Discord.MessageEmbed()
     embed.setColor('#34cceb')
 
-    const date = new Date(new Date(when).toLocaleString("en-US", { timeZone: "Europe/Moscow" }))
+    const date = new Date(new Date(when).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
 
     switch(action) {
         case 'ban':

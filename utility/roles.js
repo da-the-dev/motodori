@@ -9,7 +9,7 @@ const { getConnection, DBUser } = utl.db
  */
 module.exports.reapplyRoles = async (member) => {
     console.log(member.guild.id, member.id)
-    const user = await new DBUser(member.guild.id, member.id, getConnection())
+    const user = await new DBUser(member.guild.id, member.id)
 
     if(user) {
         var collectedRoles = []
@@ -20,7 +20,7 @@ module.exports.reapplyRoles = async (member) => {
             collectedRoles.push(constants.roles.toxic)
         if(user.ban)
             collectedRoles.push(constants.roles.localban)
-        if(user.pic)
+        if(user.pics)
             collectedRoles.push(constants.roles.pics)
 
         member.roles.add(collectedRoles).then(() => {

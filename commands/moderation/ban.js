@@ -19,13 +19,13 @@ module.exports =
             }
 
 
-            var user = await new DBUser(msg.guild.id, mMember.id, getConnection())
+            var user = await new DBUser(msg.guild.id, mMember.id)
             user.ban = true
             await user.save()
 
 
             utl.embed(msg, sMsg, `Пользователю <@${mMember.id}> была выдана локальная блокировка`)
-            utl.actionLogs.modLog(msg, 'ban', msg.member, mMember, msg.createdTimestamp)
+            utl.actionLogs.modLog(msg.guild, 'ban', msg.member, mMember, msg.createdTimestamp)
         } else
             utl.embed.ping(msg, sMsg, 'у Вас нет доступа к этой команде!')
     }

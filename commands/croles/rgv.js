@@ -26,9 +26,9 @@ module.exports =
         const pos = args[2].slice(1)
 
         const elements = await Promise.all([
-            new DBServer(msg.guild.id, getConnection()),
-            new DBUser(msg.guild.id, msg.author.id, getConnection()),
-            new DBUser(msg.guild.id, mMember.id, getConnection())
+            new DBServer(msg.guild.id),
+            new DBUser(msg.guild.id, msg.author.id),
+            new DBUser(msg.guild.id, mMember.id)
         ])
         const server = elements[0]
         const sender = elements[1]
@@ -40,7 +40,7 @@ module.exports =
             return
         }
         // If selected role doesn't exist on the server
-        if(!msg.guild.roles.cache.get(server.customRoles[pos - 1].id)) {
+        if(!msg.guild.roles.cache.get(sender.customInv[pos - 1])) {
             utl.embed.ping(msg, sMsg, 'такой роли не существует!')
             // Validate roles
             sender.customInv = sender.customInv.filter(r => msg.guild.roles.cache.get(r))

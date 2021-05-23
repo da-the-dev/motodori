@@ -181,6 +181,7 @@ class DBUser {
     /**@type {boolean} If banned*/ ban
     /**@type {boolean} If toxic*/ toxic
     /**@type {boolean} If muted*/ mute
+    /**@type {boolean} If bought pics role*/ pics
     /**@type {string} Custom status*/ status
     /**@type {LoveRoom} Love room*/ loveroom
     /**@type {number} Timely streak*/ streak
@@ -192,12 +193,12 @@ class DBUser {
     * @param {string} id
     * @return {Promise<DBUser>}
     */
-    constructor(guildID, id, connection) {
+    constructor(guildID, id) {
         return new Promise(async (resolve, reject) => {
             this.#guildID = guildID
             this.#id = id
 
-            this.#connection = connection
+            this.#connection = getConnection()
             const userData = await this.#connection.get(guildID, id) || {}
 
             this.money = userData.money || 0
@@ -209,6 +210,7 @@ class DBUser {
             this.ban = userData.ban
             this.toxic = userData.toxic
             this.mute = userData.mute
+            this.pics = userData.pics
             this.status = userData.status
             this.loveroom = userData.loveroom
             this.rewardTimestamp = userData.rewardTimestamp
@@ -230,6 +232,7 @@ class DBUser {
         this.ban ? userData.ban = this.ban : null
         this.toxic ? userData.toxic = this.toxic : null
         this.mute ? userData.mute = this.mute : null
+        this.pics ? userData.pics = this.pics : null
         this.status ? userData.status = this.status : null
         this.loveroom ? userData.loveroom = this.loveroom : null
         this.rewardTimestamp ? userData.rewardTimestamp = this.rewardTimestamp : null
@@ -260,10 +263,10 @@ class DBServer {
     * @param {Connection} con
     * @returns {Promise<DBServer>}
     */
-    constructor(guildID, con) {
+    constructor(guildID) {
         return new Promise(async (resolve, reject) => {
             this.#guildID = guildID
-            this.#connection = con
+            this.#connection = getConnection()
 
             const serverData = await this.#connection.get(guildID, 'serverSettings')
 
@@ -296,12 +299,11 @@ class DBServer {
 /**
  * Retrieves guild user data
  * @param {string} guildID - Guild ID
- * @param {Connection} con
  * @returns {Promise<UserData[]>} Guild data
  */
-function getGuild(guildID, con) {
+function getGuild(guildID) {
     return new Promise(async (resolve, reject) => {
-        var guildData = await con.getMany(guildID, { id: { $regex: /^\d+$/ } })
+        var guildData = await getConnection().getMany(guildID, { id: { $regex: /^\d+$/ } })
         guildData.forEach(u => {
             u._id ? delete u._id : null
         })
@@ -314,7 +316,6 @@ module.exports.DBUser = DBUser
 module.exports.DBServer = DBServer
 module.exports.getGuild = getGuild
 module.exports.getConnection = getConnection
-module.exports.connections = connections
 
 /**@returns {Connection} */
 function getConnection() {

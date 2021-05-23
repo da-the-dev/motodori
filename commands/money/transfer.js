@@ -38,8 +38,8 @@ module.exports =
         }
 
         const users = await Promise.all([
-            new DBUser(msg.guild.id, msg.author.id, getConnection()),
-            new DBUser(msg.guild.id, mMember.id, getConnection())
+            new DBUser(msg.guild.id, msg.author.id),
+            new DBUser(msg.guild.id, mMember.id)
         ]).catch(err => console.log(err))
         const sender = users[0]
         const reciever = users[1]

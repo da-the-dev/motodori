@@ -12,7 +12,7 @@ module.exports =
      * @description Usage: .vtop
      */
     async (args, msg, client) => {
-        var guild = await getGuild(msg.guild.id, getConnection())
+        var guild = await getGuild(msg.guild.id)
 
         guild = guild.filter(u => u.voiceTime)
         guild.sort((a, b) => {

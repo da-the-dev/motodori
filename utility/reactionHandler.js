@@ -115,7 +115,7 @@ module.exports =
                 checkForPartner(msg, mMember) ? pair(msg, msg.author.id, mMember.id, reactions.hug, `обнял(-а)`) : null
                 break
             case 'sad':
-                solo(msg, msg.author.id, reactions.sad, 'плачет')
+                solo(msg, msg.author.id, reactions.sad, 'грустит')
                 break
 
             case 'bite':

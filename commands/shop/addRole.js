@@ -33,7 +33,7 @@ module.exports =
                 return
             }
 
-            const server = await new DBServer(msg.guild.id, getConnection())
+            const server = await new DBServer(msg.guild.id)
             console.log(server.roles)
             if(!server.roles)
                 server.roles = [{ id: mRole.id, price: price }]
