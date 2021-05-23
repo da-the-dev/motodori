@@ -29,8 +29,6 @@ module.exports =
         const server = elements[0]
         const user = elements[1]
 
-        console.log(user.customInv, pos, user.customInv[pos - 1])
-
         // Check if has roles at all
         if(!user.customInv) {
             utl.embed.ping(msg, sMsg, 'у Вас нет кастомных ролей!')
@@ -75,9 +73,10 @@ module.exports =
                     return
                 }
 
-                const discordRole = msg.guild.roles.cache.get(role)
+                var discordRole = msg.guild.roles.cache.get(role)
+                const oldName = discordRole.name
                 discordRole.setName(name, `Изменено ${msg.author} командой .redit`)
-                utl.embed.ping(msg, sMsg, `название роли изменено на ${name}`)
+                utl.embed.ping(msg, sMsg, `название роли **${oldName}** изменено на **${name}**`)
                 break
             case 'hex':
                 args.shift()
@@ -97,11 +96,15 @@ module.exports =
                 hex = hex.toUpperCase()
                 hex == '#000000' ? hex == '#010101' : null
 
-                const discordRole = msg.guild.roles.cache.get(role)
+                var discordRole = msg.guild.roles.cache.get(role)
+                const oldHex = discordRole.hexColor
                 discordRole.setColor(hex, `Изменено ${msg.author} командой .redit`)
-                utl.embed.ping(msg, sMsg, `цвет роли изменен на ${hex}`)
+                utl.embed.ping(msg, sMsg, `цвет роли изменен c **${discordRole.hexColor}** на **${hex}**`)
                 break
             default:
+                utl.embed.ping(msg, sMsg,
+                    `не указано неизвестное действие!
+                    \`\`\`Доступные действия:\n1.name новое имя роли\n2.hex #hex\`\`\``)
                 break
         }
     }
