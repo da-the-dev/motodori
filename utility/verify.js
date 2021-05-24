@@ -141,7 +141,6 @@ module.exports.welcomeReward = (msg, client) => {
  */
 module.exports.mark = async (member) => {
     await member.roles.add(constants.roles.verify)
-    console.log(member.roles.cache)
 
     console.log(`[VR] Marked user '${member.user.username}'`)
     const captcha = await formCaptcha()
