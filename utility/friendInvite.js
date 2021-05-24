@@ -23,8 +23,6 @@ module.exports.invite = async member => {
     const inviter = await new DBUser(member.guild.id, invite.inviter.id)
     inviter.invites += 1
 
-    console.log(inviter.get())
-
     if(inviter.invites % 4 == 0)
         inviter.discount += 1
 
