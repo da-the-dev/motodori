@@ -187,6 +187,8 @@ class DBUser {
     /**@type {LoveRoom} Love room*/ loveroom
     /**@type {number} Timely streak*/ streak
     /**@type {number} Timely reward timestamp*/ rewardTimestamp
+    /**@type {number} Invites*/ invites
+    /**@type {number} Discount for custom roles*/ discount
 
     /**
     * Retrieves data about a user
@@ -217,6 +219,9 @@ class DBUser {
             this.loveroom = userData.loveroom
             this.rewardTimestamp = userData.rewardTimestamp
             this.streak = userData.streak
+            this.invites = userData.invites || 0
+            this.discount = userData.discount || 0
+
             resolve(this)
         })
     }
@@ -240,6 +245,10 @@ class DBUser {
         this.loveroom ? userData.loveroom = this.loveroom : null
         this.rewardTimestamp ? userData.rewardTimestamp = this.rewardTimestamp : null
         this.streak ? userData.streak = this.streak : null
+        this.invites ? userData.invites = this.invites : null
+        this.discount ? userData.discount = this.discount : null
+
+        console.log(userData)
 
         return userData
     }
@@ -382,4 +391,7 @@ function getConnection() {
  * @property {boolean} mute If muted
  * @property {string} status Custom status
  * @property {LoveRoom} loveroom Love room
+ * @property {number} streak Timely streak
+ * @property {number} rewardTimestamp Timely reward timestamp
+ * @property {number} invites Invites
  */
