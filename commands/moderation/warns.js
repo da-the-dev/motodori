@@ -23,8 +23,8 @@ module.exports =
 
             for(i = 0; i < user.warns.length; i++) {
                 var w = user.warns[i]
-                var date = new Date(new Date(w.time).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
-                embed.addField('Дата выдачи', `**${i + 1}.** — ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(2)} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`, true)
+                var date = new Date(w.time).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })
+                embed.addField('Дата выдачи', `**${i + 1}.** — ${date}`, true)
                 embed.addField(`Исполнитель`, `<@${w.who}>`, true)
                 embed.addField(`Причина`, `${w.reason}`, true)
             }
@@ -40,8 +40,8 @@ module.exports =
 
                 for(i = 0; i < user.warns.length; i++) {
                     var w = user.warns[i]
-                    var date = new Date(new Date(w.time).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
-                    embed.addField('Дата выдачи', `**${i + 1}.** — ${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear().toString().slice(2)} в ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`, true)
+                    var date = new Date(w.time).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })
+                    embed.addField('Дата выдачи', `**${i + 1}.** — ${date}`, true)
                     embed.addField(`Исполнитель`, `<@${w.who}>`, true)
                     embed.addField(`Причина`, `${w.reason}`, true)
                 }
