@@ -70,8 +70,10 @@ const createRole = async (msg, name, hex, price) => {
         }
     )
     server.save()
-    user.customInv ? user.customInv.push(r.id) : user.customInv = [r.id]
+    console.log(user.get())
+    user.customInv.push(r.id)
     user.money -= price
+    console.log(user.get())
     user.save()
 
     utl.embed.ping(msg, sMsg, `Вы успешно создали роль <@&${r.id}>`)
@@ -118,45 +120,43 @@ module.exports =
         }
 
         const user = await new DBUser(msg.guild.id, msg.author.id)
-        if(user.money < cost && !user.discount && user.money < cost / 2) {
-            utl.embed.ping(msg, sMsg, `у Вас не хватает ${sweet}! *(нужно 10.000${sweet})*\nИли пригласите **4 друзей** и получите скидку **50%**!`)
-            return
-        }
-
-        if(user.discount) {
-            // Paying with money, no boosts
-            utl.embed(msg, sMsg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названием **${name}**?\nТак как у Вас есть **скидка** за 4 приглашенных друзей, стоимость снижена на **50%**\nСтоимость роли на **30** дней — **${cost / 2}**${sweet}`).then(m => {
-                utl.reactionSelector.yesNo(m, msg.author.id,
-                    async () => {
-                        await createRole(msg, name, hex, cost / 2)
-                        const user = await new DBUser(msg.guild.id, msg.member.id)
-                        user.discount -= 1
-                        user.save()
-                        m.delete()
-                    },
-                    () => {
-                        m.delete()
-                    },
-                    () => {
-                        m.delete()
-                    }
-                )
-            })
-        } else {
-            // Paying with money, no boosts
-            utl.embed(msg, sMsg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названием **${name}**?\nСтоимость роли на **30** дней — **${cost}** ${sweet}`).then(m => {
-                utl.reactionSelector.yesNo(m, msg.author.id,
-                    () => {
-                        createRole(msg, name, hex, cost)
-                        m.delete()
-                    },
-                    () => {
-                        m.delete()
-                    },
-                    () => {
-                        m.delete()
-                    }
-                )
-            })
-        }
+        if(user.discount > 0) {
+            if(user.money > cost / 2) {
+                utl.embed(msg, sMsg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названием **${name}**?\nТак как у Вас есть **скидка** за 4 приглашенных друзей, стоимость снижена на **50%**\nСтоимость роли на **30** дней — **${cost / 2}**${sweet}`).then(m => {
+                    utl.reactionSelector.yesNo(m, msg.author.id,
+                        async () => {
+                            await createRole(msg, name, hex, cost / 2)
+                            const user = await new DBUser(msg.guild.id, msg.member.id)
+                            user.discount -= 1
+                            user.save()
+                            m.delete()
+                        },
+                        () => {
+                            m.delete()
+                        },
+                        () => {
+                            m.delete()
+                        }
+                    )
+                })
+            } else
+                utl.embed.ping(msg, sMsg, `у Вас не хватает ${sweet}! *(нужно 10.000${sweet})*\nИли пригласите **4 друзей** и получите скидку **50%**!`)
+        } else
+            if(user.money > cost)
+                utl.embed(msg, sMsg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названием **${name}**?\nСтоимость роли на **30** дней — **${cost}** ${sweet}`).then(m => {
+                    utl.reactionSelector.yesNo(m, msg.author.id,
+                        () => {
+                            createRole(msg, name, hex, cost)
+                            m.delete()
+                        },
+                        () => {
+                            m.delete()
+                        },
+                        () => {
+                            m.delete()
+                        }
+                    )
+                })
+            else
+                utl.embed.ping(msg, sMsg, `у Вас не хватает ${sweet}! *(нужно 10.000${sweet})*\nИли пригласите **4 друзей** и получите скидку **50%**!`)
     }

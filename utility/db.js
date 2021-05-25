@@ -207,9 +207,9 @@ class DBUser {
             this.money = userData.money || 0
             this.msgs = userData.msgs || 0
             this.voiceTime = userData.voiceTime || 0
-            this.inv = userData.inv
-            this.customInv = userData.customInv
-            this.warns = userData.warns
+            this.inv = userData.inv || []
+            this.customInv = userData.customInv || []
+            this.warns = userData.warns || []
             this.ban = userData.ban
             this.toxic = userData.toxic
             this.mute = userData.mute
