@@ -248,8 +248,6 @@ class DBUser {
         this.invites ? userData.invites = this.invites : null
         this.discount ? userData.discount = this.discount : null
 
-        console.log(userData)
-
         return userData
     }
 
