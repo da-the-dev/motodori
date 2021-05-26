@@ -55,6 +55,8 @@ module.exports =
         server.customRoles[server.customRoles.indexOf(role)].members = role.members
         server.save()
 
+        console.log(role.expireTimestamp)
+
         const discordRole = msg.guild.roles.cache.get(roleID)
 
         var embed = new Discord.MessageEmbed()

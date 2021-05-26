@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
 const { DBUser, DBServer } = utl.db
+const { sweet } = require('../../constants.json').emojies
 const sMsg = 'Изменение роли'
 
 module.exports =
@@ -104,14 +105,25 @@ module.exports =
                 break
 
             case 'extend':
-                const selectedRole = user.customInv[pos]
-                var serverRoleIndex = server.customRoles.findIndex(r => r.id == selectedRole)
-                server.customRoles[serverRoleIndex].expireTimestamp += 30 * 24 * 60 * 60 * 1000 // Add a month
+                if(user.money < 2000) {
+                    utl.embed.ping(msg, sMsg, `продление роли на месяц стоит 2000${sweet}!`)
+                    return
+                }
+
+                const selectedRole = user.customInv[pos - 1]
+                const serverRoleIndex = server.customRoles.findIndex(r => r.id == selectedRole)
+
+                // Add a month
+                const extendedDate = new Date(server.customRoles[serverRoleIndex].expireTimestamp + 30 * 24 * 60 * 60 * 1000)
+                extendedDate.setUTCHours(0, 0, 0, 0)
+                server.customRoles[serverRoleIndex].expireTimestamp = extendedDate.getTime()
                 server.save()
+
                 user.money -= 2000
                 user.save()
 
-                utl.embed(msg, sMsg, '')
+                utl.embed(msg, sMsg, `Роль <@&${selectedRole}> была продлена на месяц`)
+                break
 
             default:
                 utl.embed.ping(msg, sMsg,
