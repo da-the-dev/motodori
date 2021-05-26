@@ -281,7 +281,7 @@ class DBServer {
             const serverData = await this.#connection.get(guildID, 'serverSettings')
 
             this.def = serverData.def
-            this.roles = serverData.roles
+            this.roles = serverData.roles || []
             this.customRoles = serverData.customRoles || []
 
             resolve(this)
