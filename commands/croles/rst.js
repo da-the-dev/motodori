@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { getConnection, DBServer, DBUser } = utl.db
+const { getGuild, DBServer, DBUser } = utl.db
 const sMsg = 'Информация о роли'
 module.exports =
     /**
@@ -24,9 +24,11 @@ module.exports =
         const elements = await Promise.all([
             new DBServer(msg.guild.id),
             new DBUser(msg.guild.id, msg.author.id),
+            getGuild(msg.guild.id)
         ])
         const server = elements[0]
         const user = elements[1]
+        const guild = elements[2]
 
         // If selected role doesn't exist on the server
         if(!msg.guild.roles.cache.get(user.customInv[pos - 1])) {
@@ -49,6 +51,10 @@ module.exports =
         }
 
         const role = server.customRoles.find(r => r.id == roleID)
+        role.members = guild.filter(m => m.customInv && m.customInv.includes(role.id)).length
+        server.customRoles[server.customRoles.indexOf(role)].members = role.members
+        server.save()
+
         const discordRole = msg.guild.roles.cache.get(roleID)
 
         var embed = new Discord.MessageEmbed()

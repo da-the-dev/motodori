@@ -78,6 +78,7 @@ module.exports =
                 discordRole.setName(name, `Изменено ${msg.author} командой .redit`)
                 utl.embed.ping(msg, sMsg, `название роли **${oldName}** изменено на **${name}**`)
                 break
+
             case 'hex':
                 args.shift()
                 args.shift()
@@ -101,6 +102,17 @@ module.exports =
                 discordRole.setColor(hex, `Изменено ${msg.author} командой .redit`)
                 utl.embed.ping(msg, sMsg, `цвет роли изменен c **${discordRole.hexColor}** на **${hex}**`)
                 break
+
+            case 'extend':
+                const selectedRole = user.customInv[pos]
+                var serverRoleIndex = server.customRoles.findIndex(r => r.id == selectedRole)
+                server.customRoles[serverRoleIndex].expireTimestamp += 30 * 24 * 60 * 60 * 1000 // Add a month
+                server.save()
+                user.money -= 2000
+                user.save()
+
+                utl.embed(msg, sMsg, '')
+
             default:
                 utl.embed.ping(msg, sMsg,
                     `не указано неизвестное действие!

@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { getConnection, DBUser, DBServer } = utl.db
+const { getGuild, DBUser, DBServer } = utl.db
 const sMsg = 'Выдача кастомной роли'
 module.exports =
     /**
@@ -63,8 +63,14 @@ module.exports =
             utl.embed.ping(msg, sMsg, `эта роль уже есть у ${mMember}!`)
             return
         }
+        // Check if max role limit
+        if(server.customRoles.find(r => r.owner == msg.author.id && r.id == role).members == 5) {
+            utl.embed.ping(msg, sMsg, 'эта роль выдана максимальному количеству участников!')
+            return
+        }
 
-        server.customRoles.find(r => role).members++
+        const guild = await getGuild(msg.guild.id)
+        server.customRoles[server.customRoles.findIndex(r => r.id == role)].members = guild.filter(m => m.customInv && m.customInv.includes(role)).length
         server.save()
 
         receiver.customInv ? receiver.customInv.push(role) : receiver.customInv = [role]
