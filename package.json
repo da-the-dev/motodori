@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "node .",
-    "restart": "npm start"
+    "start": "nodemon ."
   },
   "repository": {
     "type": "git",
