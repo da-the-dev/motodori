@@ -69,12 +69,12 @@ const createRole = async (msg, name, hex, price) => {
             members: 1,
         }
     )
-    server.save()
-    console.log(user.get())
+    await server.save()
+
+    console.log(r.id)
     user.customInv.push(r.id)
     user.money -= price
-    console.log(user.get())
-    user.save()
+    await user.save()
 
     utl.embed.ping(msg, sMsg, `Вы успешно создали роль <@&${r.id}>`)
 }
@@ -126,9 +126,9 @@ module.exports =
             utl.reactionSelector.yesNo(m, msg.author.id,
                 async () => {
                     await createRole(msg, name, hex, cost / 2)
-                    const user = await new DBUser(msg.guild.id, msg.member.id)
-                    user.discount -= 1
-                    user.save()
+                    const buyer = await new DBUser(msg.guild.id, msg.member.id)
+                    buyer.discount -= 1
+                    buyer.save()
                     m.delete()
                 },
                 () => {
