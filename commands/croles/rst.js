@@ -64,7 +64,7 @@ module.exports =
             .setDescription(`
                 Роль: <@&${role.id}>
                 Владелец: <@${role.owner}>
-                Носителей: **${role.members}** из **5**
+                Носителей: **${role.members}** из **${role.maxHolders}**
                 
                 ID роли: **${role.id}**\n
                 Цвет роли: **${discordRole.hexColor}**

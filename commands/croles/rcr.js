@@ -67,6 +67,7 @@ const createRole = async (msg, name, hex, price) => {
             createdTimestamp: Date.now(),
             expireTimestamp: expireDate.getTime(),
             members: 1,
+            maxHolders: 5
         }
     )
     await server.save()

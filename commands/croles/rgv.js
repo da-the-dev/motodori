@@ -64,7 +64,8 @@ module.exports =
             return
         }
         // Check if max role limit
-        if(server.customRoles.find(r => r.owner == msg.author.id && r.id == role).members == 5) {
+        const serverRoleData = server.customRoles.find(r => r.owner == msg.author.id && r.id == role)
+        if(serverRoleData.members == serverRoleData.maxHolders) {
             utl.embed.ping(msg, sMsg, 'эта роль выдана максимальному количеству участников!')
             return
         }

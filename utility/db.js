@@ -349,6 +349,7 @@ function getConnection() {
  * @property {string} createdTimestamp - Creation timestamp
  * @property {number} expireTimestamp - Expiration timestamp
  * @property {number} members - Amount of members who have this role in their inventories
+ * @property {number} maxHolders - MAX amount of members who have this role in their inventories
  */
 
 // *Misc*
