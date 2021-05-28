@@ -82,8 +82,6 @@ client.once('ready', async () => {
     client.guild = await client.guilds.fetch('836297404260155432')
     await utl.connections.startconnections(3)
 
-    console.log("[BOT] BOT is online")
-
     utl.scanServer(client)
     utl.redisUnmute(client)
     utl.activity.voiceActivityInit(client)
@@ -93,6 +91,9 @@ client.once('ready', async () => {
     utl.actionLogs.initLogs(client)
     utl.cRoles.deleteExpired(client)
     utl.eve.sendMessage(client.guild)
+    await utl.friendInvite.fetchInvites(client, client.guild)
+
+    console.log("[BOT] BOT is online")
 })
 
 // Role events
@@ -109,6 +110,8 @@ client.on('guildMemberAdd', async (member) => {
     await utl.verify.mark(member, client)
     if(member.user.bot)
         utl.anticrash.monitorBotInvites(member)
+
+    utl.friendInvite.invite(member)
 })
 client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)

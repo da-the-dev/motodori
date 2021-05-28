@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { getConnection, DBUser, DBServer } = utl.db
+const { getGuild, DBUser, DBServer } = utl.db
 const sMsg = 'Конфискация кастомной роли'
 module.exports =
     /**
@@ -64,10 +64,11 @@ module.exports =
             return
         }
 
-        server.customRoles.find(r => role).members--
+        const guild = await getGuild(msg.guild.id)
+        server.customRoles[server.customRoles.findIndex(r => r.id == role)].members = guild.filter(m => m.customInv && m.customInv.includes(role)).length
         server.save()
 
-        receiver.customInv.splice(receiver.customInv.indexOf(r => r.id == role), 1)
+        receiver.customInv.splice(receiver.customInv.indexOf(role), 1)
         receiver.save()
 
         mMember.roles.remove(role)

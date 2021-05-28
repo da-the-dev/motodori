@@ -34,7 +34,7 @@ const fetchHEXName = (hex) => {
  * @param {string} hex - Role's hex color
  * @param {Function} success - Success function tp run at the end
  */
-const createRole = async (msg, name, hex) => {
+const createRole = async (msg, name, hex, price) => {
     const pos = msg.guild.roles.cache.get('842137782364930098').position
     const r = await msg.guild.roles.create({
         data: {
@@ -67,12 +67,15 @@ const createRole = async (msg, name, hex) => {
             createdTimestamp: Date.now(),
             expireTimestamp: expireDate.getTime(),
             members: 1,
+            maxHolders: 5
         }
     )
-    server.save()
-    user.customInv ? user.customInv.push(r.id) : user.customInv = [r.id]
-    user.money -= cost
-    user.save()
+    await server.save()
+
+    console.log(r.id)
+    user.customInv.push(r.id)
+    user.money -= price
+    await user.save()
 
     utl.embed.ping(msg, sMsg, `Вы успешно создали роль <@&${r.id}>`)
 }
@@ -118,16 +121,28 @@ module.exports =
         }
 
         const user = await new DBUser(msg.guild.id, msg.author.id)
-        if(user.money < cost) {
-            utl.embed.ping(msg, sMsg, `у Вас не хватает ${sweet}! *(нужно 10.000${sweet})*`)
-            return
-        }
 
-        // Paying with money, no boosts
-        utl.embed(msg, sMsg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названем **${name}**?\nСтоимость роли на **30** дней — **${cost}** ${sweet}`).then(m => {
+        if(user.discount && user.money >= 5000) {
+            const m = await utl.embed(msg, sMsg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названием **${name}**?\nТак как у Вас есть **скидка** за 4 приглашенных друзей, стоимость снижена на **50%**\nСтоимость роли на **30** дней — **${cost / 2}**${sweet}`)
+            utl.reactionSelector.yesNo(m, msg.author.id,
+                async () => {
+                    await createRole(msg, name, hex, cost / 2)
+                    const buyer = await new DBUser(msg.guild.id, msg.member.id)
+                    buyer.discount -= 1
+                    buyer.save()
+                    m.delete()
+                },
+                () => {
+                    m.delete()
+                },
+                () => {
+                    m.delete()
+                })
+        } else if(user.money >= 10000) {
+            const m = await utl.embed(msg, sMsg, `Подтверждаете создание роли c цветом **${await fetchHEXName(hex)}** и названием **${name}**?\nСтоимость роли на **30** дней — **${cost}** ${sweet}`)
             utl.reactionSelector.yesNo(m, msg.author.id,
                 () => {
-                    createRole(msg, name, hex)
+                    createRole(msg, name, hex, cost)
                     m.delete()
                 },
                 () => {
@@ -137,5 +152,7 @@ module.exports =
                     m.delete()
                 }
             )
-        })
+        }
+        else
+            utl.embed.ping(msg, sMsg, `у Вас не хватает ${sweet}! *(нужно 10.000${sweet})*\nИли пригласите **4 друзей** и получите скидку **50%**!`)
     }

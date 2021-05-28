@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "nodemon --delay 3 ."
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     "redis": "^3.0.2"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.23",
     "@types/redis": "^2.8.28"
   }
 }
