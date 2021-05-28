@@ -29,11 +29,15 @@ module.exports =
         }
 
         if(jsonData.plainText && Object.keys(jsonData).length == 1) {
-            msg.channel.send(jsonData.plainText)
+            msg.channel.send(jsonData.plainText || 'Сообщение было пустым')
+                .catch(err => {
+                    msg.channel.send(err)
+                })
         } else {
             const embed = new Discord.MessageEmbed(jsonData)
                 .setThumbnail(jsonData.thumbnail)
                 .setImage(jsonData.image)
+
             msg.channel.send({
                 content: jsonData.plainText,
                 embed: embed
