@@ -55,7 +55,7 @@ describe('Parts indentifier', () => {
 
 describe('Reward indentifier', () => {
     test('should return reward of 3', () => {
-        expect(parser(messageParser('.seve -name name -r 3'))[3]).toEqual(3)
+        expect(parser(messageParser('.seve -name name -r 3'))[3]).toEqual('3 Yen')
     })
     test('should return reward of null', () => {
         expect(parser(messageParser('.seve -name name'))[3]).toEqual(null)
@@ -69,8 +69,8 @@ describe('Reward indentifier', () => {
     test('should throw invalid reward (negative)', () => {
         expect(() => parser(messageParser('.seve -name name -r -3'))).toThrow()
     })
-    test('should throw invalid reward (NaN)', () => {
-        expect(() => parser(messageParser('.seve -name name -r wdasdw'))).toThrow()
+    test('should be fine', () => {
+        expect(() => parser(messageParser('.seve -name name -r wdasdw'))).not.toThrow()
     })
 })
 
@@ -126,15 +126,14 @@ describe('Testing the whole command parser', () => {
     test('should throw an error (reward real)', () => {
         expect(() => parser(messageParser('.seve -n n -r 1.32'))).toThrow()
     })
-    // Look into it, reward should be above 1
     test('should throw an error (reward 0)', () => {
         expect(() => parser(messageParser('.seve -n n -r 0'))).toThrow()
     })
     test('should throw an error (reward negative)', () => {
         expect(() => parser(messageParser('.seve -n n -r -100'))).toThrow()
     })
-    test('should throw an error (reward NaN)', () => {
-        expect(() => parser(messageParser('.seve -n n -r dwasd'))).toThrow()
+    test('should be fine (reward NaN)', () => {
+        expect(() => parser(messageParser('.seve -n n -r dwasd'))).not.toThrow()
     })
     test('should throw an error (reward no value)', () => {
         expect(() => parser(messageParser('.seve -n n -r'))).toThrow()

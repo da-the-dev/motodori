@@ -22,15 +22,22 @@ module.exports.parser = (args) => {
 
 
     parts ? parts = Number(parts) : null
-    reward ? reward = Number(reward) : null
 
     // console.log('reward:', reward, typeof reward)
 
     if(!name) throw 'название эвента не указано!'
     if(!(parts === null || parts > 0 && parts < 100 && Number.isInteger(parts)))
         throw 'неверное количество участников!'
-    if(!(reward === null || reward > 0 && Number.isInteger(reward)))
-        throw 'неверно указана награда!'
+
+    // Reward check
+    if(Number.isInteger(Number(reward)) && reward !== undefined) {
+        if(Number(reward) > 0 && reward !== null) reward += ' Yen'
+        else if(reward !== null) throw 'неверная награда!'
+    }
+    else if(!(reward !== null && !Number(reward) && reward !== undefined) && reward !== null)
+        throw 'неверная награда!'
+
+
     if(!start) {
         let date = new Date(Date.now())
         start = date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0')
