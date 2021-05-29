@@ -19,7 +19,7 @@ module.exports.invite = async member => {
     const freshInvites = await member.guild.fetchInvites()
 
     const invite = freshInvites.find(i => member.client.invites.get(i.code).uses < i.uses);
-    client.invites = freshInvites
+    member.client.invites = freshInvites
 
     const inviter = await new DBUser(member.guild.id, invite.inviter.id)
     inviter.invites += 1
