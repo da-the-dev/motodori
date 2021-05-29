@@ -142,4 +142,16 @@ describe('Testing the whole command parser', () => {
     test('should be valid (some time)', () => {
         expect(() => parser(messageParser('.seve -name name'))).not.toThrow()
     })
+    test('should be valid (some time)', () => {
+        expect(() => parser(messageParser('.seve -name name -s 00:00'))).not.toThrow()
+    })
+    test('should be valid (some time)', () => {
+        expect(() => parser(messageParser('.seve -name name -s 23:59'))).not.toThrow()
+    })
+    test('should throw an error (hours > 24)', () => {
+        expect(() => parser(messageParser('.seve -name name -s 24:00'))).toThrow()
+    })
+    test('should throw an error (minutes > 60)', () => {
+        expect(() => parser(messageParser('.seve -name name -s 00:60'))).toThrow()
+    })
 })
