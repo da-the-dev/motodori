@@ -67,10 +67,6 @@ module.exports =
             return
         }
 
-        var args = msg.content.trim().slice(1).split(" ")
-        args.forEach(a => a.trim())
-        args.shift()
-
         try {
             const evData = parser(args)
             const emb = new MessageEmbed()
