@@ -14,6 +14,20 @@ client.once('ready', () => {
     console.log('Test Bot standing by!')
 })
 
+const buildEmb = (evData) => {
+    const emb = new MessageEmbed()
+        .setTitle('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ивент ')
+        .setDescription(`\`\`\`${evData[0]}\`\`\``)
+        .setImage('https://cdn.discordapp.com/attachments/826179756604391536/847877470048878592/f6952822c6ab4c6e72ae1b2a5d00503b.jpg')
+        .setColor('#0xBBECF3')
+
+    if(evData[1]) emb.addField('> Кол-во людей', `\`\`\`${evData[1]}\`\`\``, true)
+    if(evData[2]) emb.addField('> Начало ивента', `\`\`\`${evData[2]}\`\`\``, true)
+    if(evData[3]) emb.addField('> Награда', `\`\`\`${evData[3]}\`\`\``, true)
+
+    return emb
+}
+
 client.on('message', msg => {
     if(!msg.author.bot && msg.content.startsWith('!test')) {
         var args = msg.content.trim().slice(1).split(" ")
@@ -21,19 +35,8 @@ client.on('message', msg => {
         args.shift()
 
         try {
-            const evData = parser(args)
-            const emb = new MessageEmbed()
-                .setTitle('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀Ивент ')
-                .setDescription(`\`\`\`${evData[0]}\`\`\``)
-                .setImage('https://cdn.discordapp.com/attachments/826179756604391536/847877470048878592/f6952822c6ab4c6e72ae1b2a5d00503b.jpg')
-                .setColor('#0xBBECF3')
-
-            if(evData[1]) emb.addField('> Кол-во людей', `\`\`\`${evData[1]}\`\`\``, true)
-            if(evData[2]) emb.addField('> Начало ивента', `\`\`\`${evData[2]}\`\`\``, true)
-            if(evData[3]) emb.addField('> Награда', `\`\`\`${evData[3]}\`\`\``, true)
-
+            const emb = buildEmb(parser(args))
             msg.channel.send(emb)
-
         } catch(err) {
             if(err == 'no args')
                 interactive(msg)
@@ -53,50 +56,81 @@ const interactive = async (msg) => {
     var start = null
     var reward = null
 
-    const filter = m => m.author.id == msg.author.id
-    await embed(msg, sMsg, 'Укажите название эвента')
-    await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
-        .then(collected => {
-            name = collected.first()
-        })
-        .catch(() => {
-            embed(msg, sMsg, 'Не указано имя эвента!')
-        })
+    /**@type {Message[]} */
+    var messages = []
 
-    await embed(msg, sMsg, 'Укажите количество учасников или `-`')
-    await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
-        .then(collected => {
-            parts = collected.first()
-            const incorrect = embed(msg, sMsg, 'Неверное количество участников!')
-            if(parts == '-') parts = null
-            if(!(parts > 0 && parts < 100 && Number.isInteger(parts)))
-                msg.channel.send(incorrect)
+    const deleteMessages = () => {
+        messages.forEach(m => {
+            if(m.deletable) m.delete()
         })
-        .catch(() => {
-            msg.channel.send(incorrect)
-        })
+    }
+    try {
+        const filter = m => m.author.id == msg.author.id
+        messages.push(await embed(msg, sMsg, 'Укажите название эвента'))
+        await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
+            .then(collected => {
+                messages.push(collected.first())
+                name = collected.first().content
+            })
+            .catch(() => {
+                embed(msg, sMsg, 'Не указано имя эвента!')
+                throw 'no event name'
+            })
 
-    await embed(msg, sMsg, 'Укажите время')
-    await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
-        .then(collected => {
-            start = collected.first()
-            const incorrect = embed(msg, sMsg, 'Неверное время!')
-            if(!start || start.length != 5 || start.indexOf(':') == -1 || Number(start.slice(0, 2)) >= 24 || Number(start.slice(3, 5)) >= 60)
-                msg.channel.send(incorrect)
-        })
-        .catch(() => {
-            msg.channel.send(incorrect)
-        })
+        messages.push(await embed(msg, sMsg, 'Укажите количество учасников или `-`'))
+        await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
+            .then(collected => {
+                messages.push(collected.first())
 
-    await embed(msg, sMsg, 'Укажите время')
-    await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
-        .then(collected => {
-            start = collected.first()
-            const incorrect = embed(msg, sMsg, 'Неверное время!')
-            if(!start || start.length != 5 || start.indexOf(':') == -1 || Number(start.slice(0, 2)) >= 24 || Number(start.slice(3, 5)) >= 60)
+                parts = collected.first().content
+                const incorrect = embed.build(msg, sMsg, 'Неверное количество участников!')
+                if(parts == '-') parts = null
+                else if(!(parts > 0 && parts < 100 && Number.isInteger(Number(parts)))) {
+                    msg.channel.send(incorrect)
+                    throw 'invalid parts'
+                }
+            })
+            .catch(() => {
                 msg.channel.send(incorrect)
-        })
-        .catch(() => {
-            msg.channel.send(incorrect)
-        })
+                throw 'invalid parts'
+            })
+
+        messages.push(await embed(msg, sMsg, 'Укажите время'))
+        await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
+            .then(collected => {
+                messages.push(collected.first())
+
+                start = collected.first().content
+                const incorrect = embed.build(msg, sMsg, 'Неверное время!')
+                if(!start || start.length != 5 || start.indexOf(':') == -1 || Number(start.slice(0, 2)) >= 24 || Number(start.slice(3, 5)) >= 60) {
+                    msg.channel.send(incorrect)
+                    throw 'invalid time'
+                }
+            })
+            .catch(() => {
+                msg.channel.send(incorrect)
+                throw 'invalid time'
+            })
+
+        messages.push(await embed(msg, sMsg, 'Укажите награду или `-`'))
+        await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
+            .then(collected => {
+                messages.push(collected.first())
+
+                reward = collected.first().content
+                const incorrect = embed.build(msg, sMsg, 'Неверная награда!')
+                if(reward == '-') reward = null
+                else if(Number.isInteger(Number(reward))) {
+                    reward += ' Yen'
+                }
+            })
+            .catch(() => {
+                msg.channel.send(incorrect)
+                throw 'invalid time'
+            })
+        deleteMessages()
+        msg.channel.send(buildEmb([name, parts, start, reward]))
+    } catch(err) {
+        deleteMessages()
+    }
 }
