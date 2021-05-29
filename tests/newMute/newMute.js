@@ -11,10 +11,5 @@ const { getRedCon } = redisConnection
  * Usage: .mute <member> 5s 10s 5m reason
  */
 module.exports = (args, msg, client) => {
-    const mMember = msg.mentions.members.first()
-
-    args.shift()
-    args.shift()
-
-    const time = args.filter(e => e.match(/[^ss]s{1,1}$/).length)
+    const mMember = msg.mentions.first
 }
