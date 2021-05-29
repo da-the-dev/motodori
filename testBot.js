@@ -16,7 +16,8 @@ client.on('message', msg => {
     if(!msg.author.bot && msg.content.startsWith('!test')) {
         var args = msg.content.trim().slice(1).split(" ")
         args.forEach(a => a.trim())
-
+        args.shift()
+        
         // Stuff happens here
     }
 })
