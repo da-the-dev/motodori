@@ -39,8 +39,9 @@ module.exports.parser = (args) => {
 
 
     if(!start) {
-        let date = new Date(Date.now())
-        start = date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0')
+        let date = new Date(Date.now()).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
+
+        start = date.slice(date.indexOf(',') + 2, date.lastIndexOf(':'))
     }
     if(start.length != 5 || start.indexOf(':') == -1)
         throw 'неверно указано время начала!'
