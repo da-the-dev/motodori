@@ -6,9 +6,9 @@ const { getConnection, getGuild } = require('../utility/db')
 
 /**
  * Increments money and time fields for all current active members every minute
- * @param {Discord.Guild} guild
+ * @param {Discord.Client} client
  */
-const voiceAct = (guild) => {
+const voiceAct = client => {
     setInterval(async () => {
         var prepedVoiceActs = voiceActs.map(a => { return { id: a } })
         if(prepedVoiceActs.length > 0) {
@@ -16,14 +16,22 @@ const voiceAct = (guild) => {
             getConnection().updateMany('836297404260155432', { $or: prepedVoiceActs }, update)
         }
 
-        (await getGuild('836297404260155432')).forEach(m => {
-            const member = guild.member(m.id)
-            if((m.msgs >= 1000 || m.voiceTime >= 100 * 60) && member && member.roles.cache.has(constants.roles.active)) {
-                console.log(member.user.id, m.msgs)
+        const guild = await getGuild('836297404260155432')
+        guild.forEach(m => {
+            /**@type {Discord.GuildMember} */
+            const member = client.guild.member(m.id)
+            if(!member) return
+
+            if(m.msgs >= 1000 || m.voiceTime >= 600 && !member.roles.cache.has(constants.roles.active)) {
+                console.log(member.user.id, m.msgs, m.voiceTime)
+
                 member.roles.add(constants.roles.active)
+                    .then(() => {
+                        console.log(member.user.id, m.msgs, m.voiceTime)
+                    })
             }
         })
-    }, 6000)
+    }, 60000)
 }
 
 /**
@@ -68,7 +76,7 @@ module.exports.voiceActivityInit = async (client) => {
             })
         }
     })
-    voiceAct(client.guild)
+    voiceAct(client)
 }
 
 /**
