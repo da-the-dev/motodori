@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
 const { DBUser, Connection, getConnection } = utl.db
+const { getRedCon } = utl.redisConnection
 const constants = require('../../constants.json')
 const sMsg = 'Выдача предупреждения'
 module.exports =
@@ -28,26 +29,18 @@ module.exports =
             }
 
             const user = await new DBUser(msg.guild.id, mMember.id)
-
             if(user.warns && user.warns.length == 5) {
-                // Set shadow key
-                const rClient = require('redis').createClient(process.env.RURL)
-                rClient.set('muted-' + mMember.user.id, true)
-                rClient.expire('muted-' + mMember.user.id, 3 * 24 * 60 * 60)
+                await getRedCon().set(`mute-${mMember.id}`, '')
+                getRedCon().expire(`mute-${mMember.id}`, 3 * 24 * 60 * 60)
 
-                utl.db.createClient(process.env.MURL).then(async db => {
-                    var user = await db.get(msg.guild.id, mMember.id)
-                    user.mute = true
-                    await db.set(msg.guild.id, mMember.id, user)
-                    db.close()
-                })
-                delete user.warns
+                user.mute = true
+                user.warns = []
+
                 mMember.roles.add(constants.roles.muted)
             }
-            console.log(user.warns)
-            !user.warns ? user.warns = [{ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp }] : user.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
-            await user.save()
-            console.log(user.warns)
+
+            user.warns.push({ 'reason': reason, 'who': msg.author.id, 'time': msg.createdTimestamp })
+            user.save()
 
             utl.embed(msg, sMsg, `Пользователю <@${mMember.user.id}> выдано предупреждение \n\`\`\`Elm\nПричина: ${reason}\n\`\`\``)
             utl.actionLogs.modLog(client.guild, 'warn', msg.member, mMember, msg.createdTimestamp, reason)
