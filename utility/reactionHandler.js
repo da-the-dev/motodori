@@ -135,6 +135,9 @@ module.exports =
             case 'seduce':
                 checkForPartner(msg, mMember) ? pair(msg, msg.author.id, mMember.id, reactions.seduce, `совращает`) : null
                 break
+            case 'pat':
+                checkForPartner(msg, mMember) ? pair(msg, msg.author.id, mMember.id, reactions.pat, `гладит`) : null
+                break
         }
-        if(['angry', 'hit', 'hug', 'sad', 'bite', 'smoke', 'tea', 'kiss', 'seduce'].includes(args[0])) msg.delete()
+        if(['angry', 'hit', 'hug', 'sad', 'bite', 'smoke', 'tea', 'kiss', 'seduce', 'pat'].includes(args[0])) msg.delete()
     }
