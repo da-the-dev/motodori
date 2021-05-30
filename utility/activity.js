@@ -2,19 +2,28 @@ const Discord = require('discord.js')
 var voiceActs = []
 const utl = require('../utility')
 const constants = require('../constants.json')
-const { getConnection } = require('../utility/db')
+const { getConnection, getGuild } = require('../utility/db')
 
 /**
  * Increments money and time fields for all current active members every minute
+ * @param {Discord.Guild} guild
  */
-const voiceAct = () => {
-    setInterval(() => {
+const voiceAct = (guild) => {
+    setInterval(async () => {
         var prepedVoiceActs = voiceActs.map(a => { return { id: a } })
         if(prepedVoiceActs.length > 0) {
             var update = { $inc: { money: 1, voiceTime: 1 } }
             getConnection().updateMany('836297404260155432', { $or: prepedVoiceActs }, update)
         }
-    }, 60000)
+
+        (await getGuild('836297404260155432')).forEach(m => {
+            const member = guild.member(m.id)
+            if((m.msgs >= 1000 || m.voiceTime >= 100 * 60) && member && member.roles.cache.has(constants.roles.active)) {
+                console.log(member.user.id, m.msgs)
+                member.roles.add(constants.roles.active)
+            }
+        })
+    }, 6000)
 }
 
 /**
@@ -59,7 +68,7 @@ module.exports.voiceActivityInit = async (client) => {
             })
         }
     })
-    voiceAct()
+    voiceAct(client.guild)
 }
 
 /**
