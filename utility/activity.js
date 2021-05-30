@@ -22,7 +22,7 @@ const voiceAct = client => {
             const member = client.guild.member(m.id)
             if(!member) return
 
-            if(m.msgs >= 1000 || m.voiceTime >= 600 && !member.roles.cache.has(constants.roles.active)) {
+            if(m.msgs >= 1000 || m.voiceTime >= 6000 && !member.roles.cache.has(constants.roles.active)) {
                 console.log(member.user.id, m.msgs, m.voiceTime)
 
                 member.roles.add(constants.roles.active)
