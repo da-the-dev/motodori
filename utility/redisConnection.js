@@ -6,15 +6,16 @@ const { promisify } = require('util')
 var connections = []
 
 function getRedCon() {
-    connections.find(c => c.isAvalible())
-}
-function closeAllRedCon() {
-    connections.forEach(c => c.close())
+    return connections.find(c => c.isAvalible())
 }
 
 class RedisConnection {
     /**@type {redis.RedisClient} */
     #connection
+
+    static closeAll() {
+        connections.forEach(c => c.close())
+    }
 
     constructor() {
         this.#connection = redis.createClient(process.env.RURL)
@@ -52,7 +53,7 @@ class RedisConnection {
      */
     async ttl(key) {
         const ttl = promisify(this.#connection.ttl).bind(this.#connection)
-        await ttl(key)
+        return await ttl(key)
     }
     /**
      * Set key's lifespan (expiration date)
@@ -63,7 +64,16 @@ class RedisConnection {
         const expire = promisify(this.#connection.expire).bind(this.#connection)
         await expire(key, duration)
     }
+
+    /**
+     * Delete key
+     * @param {string} key 
+     */
+    async delete(key) {
+        const del = promisify(this.#connection.del).bind(this.#connection)
+        await del(key)
+    }
 }
 
-module.exports = { RedisConnection, getRedCon, closeAllRedCon }
+module.exports = { RedisConnection, getRedCon }
 

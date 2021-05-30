@@ -21,6 +21,7 @@
     "canvas": "^2.7.0",
     "discord.js": "^12.5.2",
     "dotenv": "^8.2.0",
+    "moment": "^2.29.1",
     "mongodb": "^3.6.6",
     "node-fetch": "^2.6.1",
     "node-redis-scan": "^1.2.1",

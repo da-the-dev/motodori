@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
+const { timeCalculatorSec } = require('../utility/time')
 /**
  * @param {Discord.Client} client  
  */
@@ -44,7 +45,7 @@ module.exports.modLog = (guild, action, who, acused, when, why = null, duration 
 
         case 'mute':
             embed.setTitle('Мут')
-                .setDescription(`<@${who.id}> **замутил** <@${acused.id}> на ${timeCalculator(duration)}\nПричина: ${why}`)
+                .setDescription(`<@${who.id}> **замутил** <@${acused.id}> на ${timeCalculatorSec(duration)}\nПричина: ${why}`)
                 .setColor('#460303')
             break
         case 'unmute':

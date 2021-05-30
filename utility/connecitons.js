@@ -1,4 +1,5 @@
 const { Connection } = require('../utility/db')
+const { RedisConnection } = require('../utility/redisConnection')
 
 /**
  * Starts a few connections
@@ -8,8 +9,13 @@ module.exports.startconnections = async (amount) => {
     var connectionPromises = []
     for(i = 0; i < amount; i++)
         connectionPromises.push(new Connection())
+    var rConnectionPromises = []
+    for(i = 0; i < 1; i++)
+        rConnectionPromises.push(new RedisConnection())
+
 
     await Promise.all(connectionPromises)
+    await Promise.all(rConnectionPromises)
 }
 
 /**
@@ -17,4 +23,5 @@ module.exports.startconnections = async (amount) => {
  */
 module.exports.closeConnections = () => {
     Connection.closeAll()
+    RedisConnection.closeAll()
 }

@@ -15,27 +15,28 @@ module.exports = (client) => {
         const expired_subKey = '__keyevent@0__:expired'
         sub.subscribe(expired_subKey, function() {
             console.log(`[DB] Now listeting to '${expired_subKey}' events`)
-            sub.on('message', function(chan, msg) {
+            sub.on('message', async function(chan, msg) {
                 console.log(msg)
-                if(msg.startsWith('muted-')) {
+                if(msg.startsWith('mute-')) {
                     /**@type {Array<string>} */
                     var data = msg.split('-')
                     data.shift()
-                    var guild = client.guilds.cache.last()
-                    var member = guild.member(data[0])
+                    var member = client.guild.member(data[0])
                     if(!member) return
-                    const rClient = redis.createClient(process.env.RURL)
-                    rClient.quit()
+
+                    const user = await new utl.db.DBUser(member.guild.id, member.id)
+                    user.mute = true
+                    user.save()
+
+                    member ? member.roles.remove(constants.roles.muted) : null
 
                     var embed = new Discord.MessageEmbed()
                         .setTitle(`Снятие мута`)
                         .setDescription(`<@${member.user.id}> был(-а) размьючен(-а)`)
                         .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
                         .setColor('#2F3136')
-                    var channel = guild.channels.cache.get(constants.channels.cmd)
+                    var channel = client.guild.channels.cache.get(constants.channels.cmd)
                     channel.send(embed)
-
-                    member ? member.roles.remove(constants.roles.muted) : null
                 } else if(msg.startsWith('pics')) {
                     var id = msg.split('-').pop()
                     client.guilds.cache.last().member(id).roles.remove(constants.roles.pics)
