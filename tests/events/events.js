@@ -3,6 +3,8 @@
  * @param {string[]} args
  */
 module.exports.parser = (args) => {
+    if(args.length <= 0)
+        throw 'no args'
     const finder = (args, long, short) => {
         var res = null
         // console.log(long, args.indexOf(`- ${ long }`), args.indexOf(` - ${ short }`))
@@ -38,11 +40,7 @@ module.exports.parser = (args) => {
         throw 'неверная награда!'
 
 
-    if(!start) {
-        let date = new Date(Date.now()).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
-        start = date.slice(date.indexOf(',') + 2, date.lastIndexOf(':'))
-    }
-    if(start.length != 5 || start.indexOf(':') == -1 || Number(start.slice(0, 2)) >= 24 || Number(start.slice(3, 5)) >= 60)
+    if(!start || start.length != 5 || start.indexOf(':') == -1 || Number(start.slice(0, 2)) >= 24 || Number(start.slice(3, 5)) >= 60)
         throw 'неверно указано время начала!'
 
     // return reward
