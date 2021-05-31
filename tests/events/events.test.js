@@ -16,10 +16,10 @@ const messageParser = (msg) => {
 describe('First name identifier', () => {
     // Name finder
     test('should print a name "name"', () => {
-        expect(parser(messageParser('.seve -name name 213 -s 18:00'))[0]).toEqual('name')
+        expect(parser(messageParser('.seve -name name 213 -s 18:00'))[0]).toEqual('name 213')
     })
     test('should print a name "name"', () => {
-        expect(parser(messageParser('.seve -n name 213 -s 18:00'))[0]).toEqual('name')
+        expect(parser(messageParser('.seve -n name 213 -s 18:00'))[0]).toEqual('name 213')
     })
     test('should throw an error', () => {
         expect(() => parser(messageParser('.seve qwe q2e2 e  -s 18:00'))).toThrow()
