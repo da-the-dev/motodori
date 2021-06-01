@@ -8,6 +8,7 @@ const sMsg = 'Создание эвента'
  * @param {string[]} args
  */
 const parser = (args) => {
+    args.shift()
     if(args.length <= 0)
         throw 'no args'
     const finder = (args, long, short) => {
