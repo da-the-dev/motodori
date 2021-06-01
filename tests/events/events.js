@@ -17,7 +17,24 @@ module.exports.parser = (args) => {
         return res
     }
 
-    var name = finder(args, 'name', 'n')
+    var name = null
+    if(args.indexOf(`-name`) != -1) {
+        const start = args.indexOf(`-name`) + 1
+        var nextWithHyphen = args.slice(start).findIndex(e => e[0] == '-')
+        nextWithHyphen === -1 ? -1 : nextWithHyphen = nextWithHyphen + start;
+
+        name = args.slice(start, nextWithHyphen == -1 ? args.length : nextWithHyphen).join(' ')
+        // console.log('args:', args, 'args[nextWithHyphen]', args[nextWithHyphen], 'name:', name, 'stuff', start, nextWithHyphen == -1 ? args.length : nextWithHyphen)
+    }
+    else if(args.indexOf(`-n`) != -1) {
+        const start = args.indexOf(`-n`) + 1
+        var nextWithHyphen = args.slice(start).findIndex(e => e[0] == '-')
+        nextWithHyphen === -1 ? -1 : nextWithHyphen = nextWithHyphen + start;
+
+        name = args.slice(start, nextWithHyphen == -1 ? args.length : nextWithHyphen).join(' ')
+        // console.log('args:', args, 'args.slice', args.slice(start), 'args[nextWithHyphen]', args[nextWithHyphen], 'name:', name, 'stuff', start, nextWithHyphen == -1 ? args.length : nextWithHyphen)
+    }
+
     var parts = finder(args, 'participants', 'p')
     var start = finder(args, 'start', 's') //HH:MM || now
     var reward = finder(args, 'reward', 'r')
