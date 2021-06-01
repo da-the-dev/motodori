@@ -182,7 +182,8 @@ class DBUser {
     /**@type {boolean} If toxic*/ toxic
     /**@type {boolean} If muted*/ mute
     /**@type {boolean} If bought pics role*/ pics
-    /**@type {boolean} If gameroles DISABLED*/ disGameRole
+    /**@type {boolean} If gameroles are DISABLED*/ disGameRole
+    /**@type {boolean} If activity roles are DISABLED*/ uact
     /**@type {string} Custom status*/ status
     /**@type {LoveRoom} Love room*/ loveroom
     /**@type {number} Timely streak*/ streak
@@ -215,7 +216,8 @@ class DBUser {
             this.mute = userData.mute
             this.pics = userData.pics
             this.status = userData.status
-            this.disGameRole = userData.disGameRole
+            this.disGameRole = userData.disGameRole || false
+            this.uact = userData.uact || false
             this.loveroom = userData.loveroom
             this.rewardTimestamp = userData.rewardTimestamp
             this.streak = userData.streak
@@ -242,6 +244,7 @@ class DBUser {
         this.pics ? userData.pics = this.pics : null
         this.status ? userData.status = this.status : null
         this.disGameRole ? userData.disGameRole = this.disGameRole : null
+        this.uact ? userData.uact = this.uact : null
         this.loveroom ? userData.loveroom = this.loveroom : null
         this.rewardTimestamp ? userData.rewardTimestamp = this.rewardTimestamp : null
         this.streak ? userData.streak = this.streak : null
@@ -316,6 +319,7 @@ function getGuild(guildID) {
         var guildData = await getConnection().getMany(guildID, { id: { $regex: /^\d+$/ } })
         guildData.forEach(u => {
             u._id ? delete u._id : null
+            u.uact ? null : u.uact = false
         })
         resolve(guildData)
     })
@@ -388,9 +392,13 @@ function getConnection() {
  * @property {boolean} ban If banned
  * @property {boolean} toxic If toxic
  * @property {boolean} mute If muted
+ * @property {boolean} pics If bought pics role
+ * @property {boolean} disGameRole If gameroles are DISABLED
+ * @property {boolean} uact If activity roles are DISABLED
  * @property {string} status Custom status
  * @property {LoveRoom} loveroom Love room
  * @property {number} streak Timely streak
  * @property {number} rewardTimestamp Timely reward timestamp
  * @property {number} invites Invites
+ * @property {number} discount Discount for custom roles
  */

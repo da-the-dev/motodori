@@ -16,20 +16,18 @@ const voiceAct = client => {
             getConnection().updateMany('836297404260155432', { $or: prepedVoiceActs }, update)
         }
 
-        const guild = await getGuild('836297404260155432')
-        guild.forEach(m => {
-            /**@type {Discord.GuildMember} */
-            const member = client.guild.member(m.id)
-            if(!member) return
+        getGuild('836297404260155432').then(guild => {
+            guild.forEach(m => {
+                /**@type {Discord.GuildMember} */
+                const member = client.guild.member(m.id)
+                if(!member) return
 
-            if(m.msgs >= 1000 || m.voiceTime >= 6000 && !member.roles.cache.has(constants.roles.active)) {
-                console.log(member.user.id, m.msgs, m.voiceTime)
+                // console.log(m.id, 'uact:', m.uact, '|', m.msgs >= 1000, m.voiceTime >= 6000, m.uact == false, !member.roles.cache.has(constants.roles.active))
 
-                member.roles.add(constants.roles.active)
-                    .then(() => {
-                        console.log(member.user.id, m.msgs, m.voiceTime)
-                    })
-            }
+                if((m.msgs >= 1000 || m.voiceTime >= 6000) && m.uact == false && !member.roles.cache.has(constants.roles.active)) {
+                    member.roles.add(constants.roles.active)
+                }
+            })
         })
     }, 60000)
 }
