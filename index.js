@@ -91,6 +91,7 @@ client.once('ready', async () => {
     utl.actionLogs.initLogs(client)
     utl.cRoles.deleteExpired(client)
     utl.eve.sendMessage(client.guild)
+    utl.lotery.init(client.guild)
     await utl.friendInvite.fetchInvites(client, client.guild)
 
     console.log("[BOT] BOT is online")
@@ -151,6 +152,9 @@ client.on('message', msg => {
 
     // Verification
     utl.verify(msg, client)
+
+    // Lotery
+    lotery.reward(msg)
 
     // Bot commands
     if(!msg.author.bot) {

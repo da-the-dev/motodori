@@ -37,13 +37,8 @@ module.exports = (client) => {
                         .setColor('#2F3136')
                     var channel = client.guild.channels.cache.get(constants.channels.cmd)
                     channel.send(embed)
-                } else if(msg.startsWith('pics')) {
-                    var id = msg.split('-').pop()
-                    client.guilds.cache.last().member(id).roles.remove(constants.roles.pics)
-
-                    utl.db.createClient(process.env.MURL).then(db => {
-                        db.update(client.guilds.cache.last().id, id, { $unset: { pic: '' } }).then(db.close())
-                    })
+                } else if(msg == 'lotery') {
+                    utl.lotery.generate(client.guild)
                 }
             })
         })
