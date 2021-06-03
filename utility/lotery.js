@@ -16,7 +16,7 @@ const buildKeyword = async keyword => {
     const { createCanvas, loadImage, registerFont } = require('canvas')
     const path = require('path')
 
-    registerFont(path.resolve(path.join('./', 'fonts', 'manga.ttf')), { family: 'Japan' })
+    // registerFont(path.resolve(path.join('./', 'fonts', 'manga.ttf')), { family: 'Japan' })
     const img = await loadImage(path.resolve(path.join('./', 'imgs', 'lotery.png')))
     const canvas = createCanvas(img.width, img.height)
 
@@ -27,6 +27,9 @@ const buildKeyword = async keyword => {
     const text = keyword
     const font = 'bold 80px "Sans"'
     const args = [text, img.width / 5, img.height / 2 + 100]
+
+
+
 
     ctx.font = font
     ctx.textAlign = 'center'
