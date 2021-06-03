@@ -2,6 +2,7 @@ require('dotenv').config()
 const { Client, Message, MessageEmbed } = require('discord.js')
 const { embed, db, redisConnection, lotery, redisUnmute } = require('./utility')
 const { getGuild, Connection } = db
+const { RedisConnection, getRedCon } = redisConnection
 const { parser } = require('./tests/events/events')
 
 const guildID = '836297404260155432'
