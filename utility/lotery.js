@@ -9,6 +9,10 @@ const delay = 5 * 60 * 60
 
 var loteryKeyword = ''
 
+const toRad = angle => {
+    return angle * Math.PI / 180
+}
+
 /**
  * @param {string} keyword 
  */
@@ -25,15 +29,37 @@ const buildKeyword = async keyword => {
     ctx.drawImage(img, 0, 0, img.width, img.height)
 
     const text = keyword
-    const font = 'bold 80px "Sans"'
-    const args = [text, img.width / 5, img.height / 2 + 100]
+    var font = 'bold 0px "Sans"'
+    const args = [text, 0, 0]
 
+    var cords = []
+    var rotation = 0
 
+    const random = Math.floor(Math.random() * 3) + 1
+    // const random = 3
+    switch(random) {
+        case 1:
+            font = font.replace('0px', '80px')
+            cords = [img.width / 5, img.height / 2 + 100]
+            rotation = toRad(0)
+            break
+        case 2:
+            font = font.replace('0px', '50px')
+            cords = [img.width / 1.4, img.height / 2 + 80]
+            rotation = toRad(25)
+            break
+        case 3:
+            font = font.replace('0px', '50px')
+            cords = [img.width / 1.07, img.height / 3]
+            rotation = toRad(85)
+            break
+    }
 
-
+    ctx.translate(...cords)
+    ctx.rotate(rotation)
     ctx.font = font
     ctx.textAlign = 'center'
-    ctx.lineWidth = 10
+    ctx.lineWidth = 8
     ctx.strokeStyle = 'black'
     ctx.strokeText(...args)
 
@@ -52,7 +78,7 @@ module.exports.buildKeyword = buildKeyword
  * @param {Guild} guild 
  */
 module.exports.generate = async guild => {
-    const keyword = Math.random().toString(36).toLocaleUpperCase().substring(2, 7)
+    const keyword = Math.random().toString(36).toLocaleLowerCase().substring(2, 7)
     const reward = Math.floor(Math.random() * 1000 - 200) + 200
     await getConnection().set(guild.id, 'loteryData',
         {
