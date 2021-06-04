@@ -73,7 +73,22 @@ process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
 process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
 
 //catches uncaught exceptions
-process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
+process.on('uncaughtException', err => {
+    exitHandler.bind(null, { exit: true })
+    lastMessages = lastMessages.reverse()
+    utl.errorReporter(lastMessages.find(m => !m.deleted), err)
+    lastMessages = lastMessages.reverse()
+    console.log(err)
+});
+
+process.on('unhandledRejection', err => {
+    lastMessages = lastMessages.reverse()
+    utl.errorReporter(lastMessages.find(m => !m.deleted), err)
+    lastMessages = lastMessages.reverse()
+    console.log(err)
+});
+
+
 
 // General events
 client.login(process.env.BOTTOKEN)
@@ -146,7 +161,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
     utl.eve.reaction(reaction, user)
     // utl.reportHandler.reportAssignmentHandler(reaction, user, client)
 })
+/**@type {Discord.Message[]} */
+var lastMessages = []
 client.on('message', msg => {
+    lastMessages.length < 3 ? lastMessages.push(msg) : null
     // Activity
     utl.activity.chatActivity(msg)
 
@@ -214,5 +232,4 @@ client.on('message', msg => {
         else
             msg.delete()
     }
-
 })
