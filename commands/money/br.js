@@ -3,18 +3,6 @@ const utl = require('../../utility')
 const { DBUser } = utl.db
 const { sweet } = require('../../constants.json').emojies
 const sMsg = 'Казино'
-
-/**
- * @param {DBUser} user 
- * @returns
- */
-const checkIfNan = (user) => {
-    if(Number.isNaN(user.money)) {
-        utl.embed(msg, sMsg, 'Произошла ошибка! Попробуйте еще раз')
-        return true
-    }
-}
-
 module.exports =
     /**
     * @param {Array<string>} args Command argument
@@ -36,23 +24,23 @@ module.exports =
         const user = await new DBUser(msg.guild.id, msg.author.id)
         if(!user.money) {
             utl.embed.ping(msg, sMsg, `у Вас нет денег чтобы играть!`)
+
             return
         }
         if(user.money < bet) {
             utl.embed.ping(msg, sMsg, 'ставка больше Вашего баланса!')
+
             return
         }
 
         if(Math.random() < 0.3) {
             user.money += bet * 2
-            if(checkIfNan(user)) return
             utl.embed.ping(msg, sMsg, `**Вы выиграли!** Ваш баланс: **${user.money}** ${sweet}`)
         }
         else {
             user.money -= bet
-            if(checkIfNan(user)) return
             utl.embed.ping(msg, sMsg, `**Вы проиграли!** Ваш баланс: **${user.money}** ${sweet}`)
         }
 
-        user.save()
+        await user.save()
     }
