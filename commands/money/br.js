@@ -25,7 +25,7 @@ module.exports =
     async (args, msg, client) => {
         var bet = args[1]
 
-        if(!bet || !Number.isInteger(amount)) {
+        if(!bet || !Number.isInteger(bet)) {
             utl.embed.ping(msg, sMsg, 'не указана ставка!')
             return
         }
