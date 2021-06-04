@@ -154,7 +154,7 @@ client.on('message', msg => {
     utl.verify(msg, client)
 
     // Lotery
-    utl.lotery.reward(msg)
+    lotery.reward(msg)
 
     // Bot commands
     if(!msg.author.bot) {

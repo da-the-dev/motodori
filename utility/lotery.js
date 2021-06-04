@@ -5,7 +5,7 @@ const { getConnection } = db
 const constants = require('../constants.json')
 const { sweet } = constants.emojies
 const { DBUser } = require('./db')
-const delay = 7 * 60 * 60
+const delay = 5 * 60 * 60
 
 var loteryKeyword = ''
 
