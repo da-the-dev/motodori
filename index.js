@@ -88,8 +88,6 @@ process.on('unhandledRejection', err => {
     console.log(err)
 });
 
-
-
 // General events
 client.login(process.env.BOTTOKEN)
 client.once('ready', async () => {
@@ -173,6 +171,9 @@ client.on('message', msg => {
 
     // Lotery
     utl.lotery.reward(msg)
+
+    // Link check
+    utl.linkRemover(msg)
 
     // Bot commands
     if(!msg.author.bot) {
