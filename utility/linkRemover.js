@@ -8,7 +8,7 @@ const regex = /(\.com)|(\.or)(\.ru)|(\.org)|(https:\/\/)|(http:\/\/)/g
  * @param {Message} message 
  */
 module.exports = message => {
-    if(!message.member.roles.cache.find(r => r.position >= message.guild.roles.cache.get(constants.roles.eventer).position)
+    if(!message.member.roles.cache.find(r => r.position >= message.guild.roles.cache.get(constants.roles.chatControl).position)
         && !message.member.roles.cache.has(constants.roles.pics)
         && regex.test(message.content))
         message.delete()
