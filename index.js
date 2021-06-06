@@ -172,9 +172,6 @@ client.on('message', msg => {
     // Lotery
     utl.lotery.reward(msg)
 
-    // Link check
-    utl.linkRemover(msg)
-
     // Bot commands
     if(!msg.author.bot) {
         utl.verify.welcomeReward(msg, client)
