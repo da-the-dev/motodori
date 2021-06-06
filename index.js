@@ -165,12 +165,11 @@ client.on('message', msg => {
     lastMessages.length < 3 ? lastMessages.push(msg) : null
     // Activity
     utl.activity.chatActivity(msg)
-
     // Verification
     utl.verify(msg, client)
-
     // Lotery
     utl.lotery.reward(msg)
+    utl.linkRemover(msg)
 
     // Bot commands
     if(!msg.author.bot) {
