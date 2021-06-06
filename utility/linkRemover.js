@@ -5,13 +5,11 @@ const regex = /(\.com)|(\.or)(\.ru)|(\.org)|(https:\/\/)|(http:\/\/)/g
 
 /**
  * Deletes a message if it contains a link
- * @param {Message} message 
+ * @param {Message} m 
  */
-module.exports = message => {
-    return 
-    const txtControl = message.guild.roles.cache.get(constants.roles.chatControl)
-    if(!message.member.roles.cache.find(r => r.position >= txtControl.position)
-        && !message.member.roles.cache.has(constants.roles.pics)
-        && regex.test(message.content))
-        message.delete()
+module.exports = m => {
+    if(regex.test(m.content))
+        if(!m.member.roles.cache.find(r => r.position >= m.guild.roles.cache.get(constants.roles.eventer).position)
+            && !m.member.roles.cache.has(constants.roles.pics))
+            m.delete()
 }
