@@ -8,7 +8,6 @@ const regex = /(\.com)|(\.or)(\.ru)|(\.org)|(https:\/\/)|(http:\/\/)/g
  * @param {Message} message 
  */
 module.exports = message => {
-    return
     const txtControl = message.guild.roles.cache.get(constants.roles.chatControl)
     if(txtControl &&
         !message.member.roles.cache.find(r => r.position >= txtControl.position)
