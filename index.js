@@ -161,7 +161,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
     // if(reaction.message.channel.id != client.verifyMsg)
     utl.shop(reaction, user, client)
     utl.eve.reaction(reaction, user)
-    utl.prmsRequestTracker(reaction, user, client)
+    utl.prmsTracker.requests(reaction, user, client)
 })
 /**@type {Discord.Message[]} */
 var lastMessages = []
