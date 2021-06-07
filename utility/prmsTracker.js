@@ -72,10 +72,15 @@ module.exports.requests = async (reaction, user, client) => {
                 }
                 break
             case "❌":
-                reaction.message.edit(new MessageEmbed({
-                    "description": `**Заявка ${requestUser} на создание личной комнаты была отвергнута ${user}**`,
-                    "color": 15406156
-                }))
+                if(user.id != client.user.id) {
+                    const embed = reaction.message.embeds[0]
+                    const requestUser = reaction.message.guild.member(embed.fields[0].value.slice(2, -1)).user
+
+                    reaction.message.edit(new MessageEmbed({
+                        "description": `**Заявка ${requestUser} на создание личной комнаты была отвергнута ${user}**`,
+                        "color": 15406156
+                    }))
+                }
                 reaction.message.reactions.removeAll()
                 break
         }
