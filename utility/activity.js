@@ -2,7 +2,26 @@ const Discord = require('discord.js')
 var voiceActs = []
 const utl = require('../utility')
 const constants = require('../constants.json')
-const { getConnection, getGuild } = require('../utility/db')
+const { getConnection, getGuild, DBServer } = require('../utility/db')
+
+var prmsVoiceActs = []
+/**
+ * 
+ * @param {Discord.Guild} guild 
+ */
+const prmsVoiceAct = guild => {
+    const exec = async () => {
+        const server = await new DBServer('836297404260155432')
+        guild.channels.cache.filter(c => c.parentID == constants.categories.personaRooms).forEach(c => {
+            const personaIndex = server.personaRooms.findIndex(r => r.id == c.id)
+            if(c.members.size != 0 && personaIndex != -1)
+                server.personaRooms[server.personaRooms.findIndex(r => r.id == c.id)].activity += c.members.size
+        })
+        server.save()
+    }
+    exec()
+    setInterval(exec, 60000)
+}
 
 /**
  * Increments money and time fields for all current active members every minute
@@ -75,6 +94,7 @@ module.exports.voiceActivityInit = async (client) => {
         }
     })
     voiceAct(client)
+    prmsVoiceAct(client.guild)
 }
 
 /**
