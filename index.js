@@ -107,6 +107,9 @@ client.once('ready', async () => {
     utl.lotery.init(client.guild)
     await utl.friendInvite.fetchInvites(client, client.guild)
 
+    utl.prmsTracker.reminder(client.guild)
+    utl.prmsTracker.remover(client.guild)
+
     console.log("[BOT] BOT is online")
 })
 
@@ -132,6 +135,7 @@ client.on('guildBanAdd', (guild, member) => {
 })
 client.on('guildMemberRemove', member => {
     console.log('-1 member :(')
+    utl.prmsTracker.requests(reaction, user, client)
     utl.loveroomMonitor.roomDeletion(member)
     utl.anticrash.monitorKicks(member)
 })

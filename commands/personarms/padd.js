@@ -1,5 +1,5 @@
 const { Message, MessageEmbed, Client } = require('discord.js')
-const { embed, db, reactionSelector } = require('../../utility')
+const { embed, db } = require('../../utility')
 const { DBServer } = db
 const sMsg = 'Личная комната'
 

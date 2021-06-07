@@ -1,8 +1,9 @@
 const { Client, User, MessageReaction, MessageEmbed, Guild } = require('discord.js')
-const { embed, fetch, db, time, prmsTracker } = require('../utility')
+const { fetch, db } = require('../utility')
 const { DBServer } = db
 const { scheduleJob } = require('node-schedule')
 const constants = require('../constants.json')
+const { timeCalculator } = require('./time')
 
 /**
  * Handles report reactions
@@ -85,9 +86,9 @@ module.exports.requests = async (reaction, user, client) => {
  * Remind personal rooms' owner if their rooms have not enough activity
  * @param {Guild} guild
  */
-module.exports.reminder = async (guild) => {
+module.exports.reminder = (guild) => {
     // Run every Friday
-    scheduleJob('* * * * * 5', () => {
+    scheduleJob('* * * * * 5', async () => {
         const server = await new DBServer(guild.id)
         if(server.personaRooms) {
             server.personaRooms.forEach(r => {
@@ -96,7 +97,7 @@ module.exports.reminder = async (guild) => {
                         dm.send(new MessageEmbed(
                             {
                                 "title": "Ваша личная комната скоро будет удалена!",
-                                "description": `Ваша комната пока не набрала необходимого количества актива и будет удалена менее, чем через **2 дня**! Если Вы считаете, что не сможете набрать недостающий актив *(а именно ${time.timeCalculator(21 * 60 - r.activity * 60)}*, то предлагаю выкуп за **${Math.ceil((21 * 60 - r.activity * 60) / 60) * 100}** *(1 час = 100, округление в большую сторону)*. Для выкупа, напишите \`.ppay\` в <#${constants.channels.cmd}>`,
+                                "description": `Ваша комната пока не набрала необходимого количества актива и будет удалена менее, чем через **2 дня**! Если Вы считаете, что не сможете набрать недостающий актив *(а именно ${timeCalculator(21 * 60 - r.activity * 60)}*, то предлагаю выкуп за **${Math.ceil((21 * 60 - r.activity * 60) / 60) * 100}** *(1 час = 100, округление в большую сторону)*. Для выкупа, напишите \`.ppay\` в <#${constants.channels.cmd}>`,
                                 "color": 15406156
                             }
                         ))
@@ -110,9 +111,9 @@ module.exports.reminder = async (guild) => {
  * Delete personal rooms if they have not enough activity
  * @param {Guild} guild 
  */
-module.exports.remover = async guild => {
+module.exports.remover = guild => {
     // Run every Sunday
-    scheduleJob('* * * * * 0', () => {
+    scheduleJob('* * * * * 0', async () => {
         const server = await new DBServer(guild.id)
         if(server.personaRooms) {
             server.personaRooms.forEach(r => {
