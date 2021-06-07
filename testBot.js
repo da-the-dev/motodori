@@ -4,7 +4,7 @@ const pcreate = require('./commands/personarms/pcreate')
 const pdelete = require('./commands/personarms/pdelete')
 const padd = require('./commands/personarms/padd')
 const pkick = require('./commands/personarms/pkick')
-const { prmsRequestTracker, fetch, db } = require('./utility')
+const { prmsTracker, fetch, db } = require('./utility')
 const { Connection } = db
 
 const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'] });
@@ -29,7 +29,7 @@ client.once('ready', async () => {
 })
 
 client.on('messageReactionAdd', async (reaction, user) => {
-    prmsRequestTracker(reaction, user, client)
+    prmsTracker.requests(reaction, user, client)
 })
 
 client.on('message', msg => {

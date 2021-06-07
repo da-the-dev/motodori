@@ -1,14 +1,14 @@
 const { Message, MessageEmbed, Client } = require('discord.js')
 const { embed, db, reactionSelector } = require('../../utility')
-const { DBServer } = db
-const sMsg = 'Личная комната'
+const { DBServer, DBUser } = db
+const sMsg = 'Выкуп личной комнаты'
 
 module.exports =
     /**
     * @param {Array<string>} args Command argument
     * @param {Message} msg Discord message object
     * @param {Client} client Discord client object
-    * Usage: .padd name  
+    * Usage: .ppay
     */
     async (args, msg, client) => {
         const server = await new DBServer(msg.guild.id)
@@ -18,15 +18,18 @@ module.exports =
             return
         }
 
-        const mMember = msg.mentions.members.first()
-        if(!mMember) {
-            embed.ping(msg, sMsg, 'не указан участник!')
+        const user = await new DBUser(msg.guild.id, msg.author.id)
+        const ransom = (21 * 60 - personaRoom.activity * 60) / 60
+        if(user.money < ransom * 100) {
+            embed.ping(msg, sMsg, 'у Вас не достаточно средств для выкупа приватной комнаты!')
             return
         }
 
-        const room = msg.guild.channels.cache.get(personaRoom.id)
-        room.updateOverwrite(mMember.id, { "CONNECT": true })
+        user.money -= ransom * 100
+        server.personaRooms[server.personaRooms.indexOf(personaRoom)].activity += ransom
+        user.save()
+        server.save()
 
-        embed.ping(msg, sMsg, `Вы успешно добавили ${mMember.user} в свою личную комнату!`)
+        embed.ping(msg, sMsg, 'комната успешно выкуплена!')
     }
 module.exports.allowedInGeneral = true
