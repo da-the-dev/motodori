@@ -269,6 +269,7 @@ class DBServer {
     /**@type {boolean}  - Defenses flag*/ def
     /**@type {Role[]}  - Array of shop roles*/ roles
     /**@type {CustomRole[]}  - Array of custom roles*/ customRoles
+    /**@type {PersonaRoom[]} - Array of personal rooms*/ personaRooms
 
     /**
     * Retrieves data about a server
@@ -286,6 +287,7 @@ class DBServer {
             this.def = serverData.def
             this.roles = serverData.roles || []
             this.customRoles = serverData.customRoles || []
+            this.personaRooms = serverData.personaRooms || []
 
             resolve(this)
         })
@@ -295,8 +297,9 @@ class DBServer {
         /**@type {ServerData}*/ var serverData = {}
 
         this.def ? serverData.def = this.def : null
-        this.roles ? serverData.roles = this.roles : null
-        this.customRoles ? serverData.customRoles = this.customRoles : null
+        this.roles && this.roles.length > 0 ? serverData.roles = this.roles : null
+        this.customRoles && this.customRoles.length > 0 ? serverData.customRoles = this.customRoles : null
+        this.personaRooms && this.personaRooms.length > 0 ? serverData.personaRooms = this.personaRooms : null
 
         return serverData
     }
@@ -372,13 +375,23 @@ function getConnection() {
  * @property {number} time - Timestamp of when the warn was given
  */
 /**
+ * Love room data
  * @typedef LoveRoom
  * @property {string} id - Love room's channel ID
  * @property {string} partner - ID of a partner
  * @property {number} creationDate - Creation date of a love room
  * @property {number} bal - Balance of a room
  */
-
+/**
+ * Personal room data
+ * @typedef PersonaRoom
+ * @property {string} id
+ * @property {string} creator - Creator user ID
+ * @property {number} createdTimestamp - Creation timestamp
+ * @property {string} approver - ID of the admin who approved the creation
+ * @property {number} activity - Minutes of voice activity
+ * @property {number} deletionTimestamp - Timestamp of the moment when the room must be deleted of inactivity
+ */
 // *User*
 /**
  * @typedef UserData User data
