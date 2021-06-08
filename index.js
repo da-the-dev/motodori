@@ -135,7 +135,7 @@ client.on('guildBanAdd', (guild, member) => {
 })
 client.on('guildMemberRemove', member => {
     console.log('-1 member :(')
-    utl.prmsTracker.requests(reaction, user, client)
+
     utl.loveroomMonitor.roomDeletion(member)
     utl.anticrash.monitorKicks(member)
 })
@@ -159,6 +159,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
     await utl.fetch.fetchReactions(reaction)
 
     // if(reaction.message.channel.id != client.verifyMsg)
+    utl.prmsTracker.requests(reaction, user, client)
     utl.shop(reaction, user, client)
     utl.eve.reaction(reaction, user)
     utl.prmsTracker.requests(reaction, user, client)
