@@ -13,6 +13,8 @@ const utl = require('./utility')
 // Client
 const prefix = "."
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
+require("discordjs-activity")(client)
+require('discord-buttons')(client);
 client.prefix = prefix
 
 // Commands
