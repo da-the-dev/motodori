@@ -31,7 +31,7 @@ module.exports =
                     user.pics = true
                     user.save()
                     msg.member.roles.add(constants.roles.pics)
-                    m.edit(utl.embed.build(msg, sMsg, `${msg.author}, Вы успешно купили роль <@&${constants.roles.pics}>`))
+                    m.edit({ embed: utl.embed.build(msg, sMsg, `${msg.author}, Вы успешно купили роль <@&${constants.roles.pics}>`) })
                     m.reactions.removeAll()
                 },
                 () => {

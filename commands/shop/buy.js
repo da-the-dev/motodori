@@ -53,16 +53,16 @@ module.exports =
                 user.save()
 
 
-                m.edit(utl.embed.ping(msg, sMsg, `Вы успешно приобрели роль <@&${selectedRole.id}>`))
+                m.edit({ embed: utl.embed.ping(msg, sMsg, `Вы успешно приобрели роль <@&${selectedRole.id}>`) })
                 m.reactions.removeAll()
                 return
             },
             () => {
-                m.edit(utl.embed.build(msg, sMsg, 'Покупка отменена'))
+                m.edit({ embed: utl.embed.build(msg, sMsg, 'Покупка отменена') })
                 m.reactions.removeAll()
             },
             () => {
-                m.edit(utl.embed.build(msg, sMsg, 'Покупка отменена про причине истечения времени'))
+                m.edit({ embed: utl.embed.build(msg, sMsg, 'Покупка отменена про причине истечения времени') })
                 m.reactions.removeAll()
             }
         )

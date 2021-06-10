@@ -77,17 +77,19 @@ function pairPerm(msg, member, reciever, gifs, question, description) {
         .then(async m => {
             utl.reactionSelector.yesNo(m, reciever,
                 () => {
-                    m.edit(utl.embed.build(msg, sMsg, `<@${member}> ${description} <@${reciever}>`)
-                        .setImage(gifs[rand])
-                        .setThumbnail())
+                    m.edit({
+                        embed: utl.embed.build(msg, sMsg, `<@${member}> ${description} <@${reciever}>`)
+                            .setImage(gifs[rand])
+                            .setThumbnail()
+                    })
                     m.reactions.removeAll()
                 },
                 () => {
-                    m.edit(utl.embed.build(msg, sMsg, `<@${reciever}> тебе отказал(-а)`))
+                    m.edit({ embed: utl.embed.build(msg, sMsg, `<@${reciever}> тебе отказал(-а)`) })
                     m.reactions.removeAll()
                 },
                 () => {
-                    m.edit(utl.embed.build(msg, sMsg, `<@${reciever}> тебя проигнорировал(-а)`))
+                    m.edit({ embed: utl.embed.build(msg, sMsg, `<@${reciever}> тебя проигнорировал(-а)`) })
                     m.reactions.removeAll()
                 }
             )
