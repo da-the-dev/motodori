@@ -112,6 +112,7 @@ async function msgLog(what, when, msg, msg2) {
             break
         case 'update':
             msg2.partial ? await msg2.fetch() : null
+            msg.partial ? await msg.fetch() : null
             if(msg.content == msg2.content)
                 return
             if(msg.author.id == msg.client.user.id)
