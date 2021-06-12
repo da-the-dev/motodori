@@ -12,7 +12,7 @@ const utl = require('./utility')
 
 // Client
 const prefix = "."
-const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
+const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] }, { ws: { intents: ['GUILDS', 'GUILD_MESSAGES'] } })
 require("discordjs-activity")(client)
 require('discord-buttons')(client);
 client.prefix = prefix
@@ -106,7 +106,6 @@ client.once('ready', async () => {
     utl.cRoles.deleteExpired(client)
     utl.eve.sendMessage(client.guild)
     utl.lotery.init(client.guild)
-    await utl.friendInvite.fetchInvites(client, client.guild)
 
     utl.prmsTracker.reminder(client.guild)
     utl.prmsTracker.remover(client.guild)
@@ -128,8 +127,6 @@ client.on('guildMemberAdd', async (member) => {
     await utl.verify.mark(member, client)
     if(member.user.bot)
         utl.anticrash.monitorBotInvites(member)
-
-    utl.friendInvite.invite(member)
 })
 client.on('guildBanAdd', (guild, member) => {
     utl.anticrash.monitorBans(guild, member)
@@ -157,13 +154,19 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 // Message events
 client.on('messageReactionAdd', async (reaction, user) => {
-    await utl.fetch.fetchReactions(reaction)
+    if(reaction.partial) {
+        try {
+            await reaction.fetch();
+        } catch(error) {
+            console.error('Something went wrong when fetching the message: ', error);
+            return;
+        }
+    }
 
     // if(reaction.message.channel.id != client.verifyMsg)
     utl.prmsTracker.requests(reaction, user, client)
     utl.shop(reaction, user, client)
     utl.eve.reaction(reaction, user)
-    utl.prmsTracker.requests(reaction, user, client)
 })
 /**@type {Discord.Message[]} */
 var lastMessages = []

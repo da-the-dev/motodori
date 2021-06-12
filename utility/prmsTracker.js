@@ -13,8 +13,8 @@ const { timeCalculator } = require('./time')
  */
 module.exports.requests = async (reaction, user, client) => {
     if(reaction.message.channel.id == constants.channels.prmsRequests) {
+        console.log('here up top')
         // Fetch the message
-        await fetch.fetchReactions(reaction)
         // If request is confirmed
         switch(reaction.emoji.name) {
             case "✅":
@@ -23,11 +23,14 @@ module.exports.requests = async (reaction, user, client) => {
                     const requestUser = reaction.message.guild.member(embed.fields[0].value.slice(2, -1)).user
                     const name = embed.fields[1].value.slice(3, -3)
 
+                    console.log(requestUser.username, name)
                     if(!user) {
-                        reaction.message.edit(new MessageEmbed({
-                            "title": "Участника больше нет на сервере!",
-                            "color": 15406156
-                        }))
+                        reaction.message.edit({
+                            embed: new MessageEmbed({
+                                "title": "Участника больше нет на сервере!",
+                                "color": 15406156
+                            })
+                        })
                         return
                     }
 
@@ -45,13 +48,16 @@ module.exports.requests = async (reaction, user, client) => {
                         ],
                         parent: reaction.message.guild.channels.cache.get('847850737710268456')
                     })
+                    console.log(c.id)
 
                     const dm = await user.createDM()
-                    dm.send(new MessageEmbed({
-                        "title": "Ваша заявка на создание личной комнаты была одобрена!",
-                        "description": `Ссылка на личную комнату:\n${(await c.createInvite()).url}`,
-                        "color": 53380
-                    }))
+                    dm.send({
+                        embed: new MessageEmbed({
+                            "title": "Ваша заявка на создание личной комнаты была одобрена!",
+                            "description": `Ссылка на личную комнату:\n${(await c.createInvite()).url}`,
+                            "color": 53380
+                        })
+                    })
 
                     const server = await new DBServer(reaction.message.guild.id)
                     server.personaRooms.push({
@@ -64,10 +70,12 @@ module.exports.requests = async (reaction, user, client) => {
                     })
                     server.save()
 
-                    reaction.message.edit(new MessageEmbed({
-                        "description": `**Заявка ${requestUser} на создание личной комнаты была одобрена ${user}**`,
-                        "color": 53380
-                    }))
+                    reaction.message.edit({
+                        embed: new MessageEmbed({
+                            "description": `**Заявка ${requestUser} на создание личной комнаты была одобрена ${user}**`,
+                            "color": 53380
+                        })
+                    })
                     reaction.message.reactions.removeAll()
                 }
                 break
@@ -76,12 +84,14 @@ module.exports.requests = async (reaction, user, client) => {
                     const embed = reaction.message.embeds[0]
                     const requestUser = reaction.message.guild.member(embed.fields[0].value.slice(2, -1)).user
 
-                    reaction.message.edit(new MessageEmbed({
-                        "description": `**Заявка ${requestUser} на создание личной комнаты была отвергнута ${user}**`,
-                        "color": 15406156
-                    }))
+                    reaction.message.edit({
+                        embed: new MessageEmbed({
+                            "description": `**Заявка ${requestUser} на создание личной комнаты была отвергнута ${user}**`,
+                            "color": 15406156
+                        })
+                    })
+                    reaction.message.reactions.removeAll()
                 }
-                reaction.message.reactions.removeAll()
                 break
         }
     }
