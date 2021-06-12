@@ -386,6 +386,7 @@ function getConnection() {
  * Personal room data
  * @typedef PersonaRoom
  * @property {string} id
+ * @property {string} name - Name of the room
  * @property {string} creator - Creator user ID
  * @property {number} createdTimestamp - Creation timestamp
  * @property {string} approver - ID of the admin who approved the creation

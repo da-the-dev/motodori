@@ -62,6 +62,7 @@ module.exports.requests = async (reaction, user, client) => {
                     const server = await new DBServer(reaction.message.guild.id)
                     server.personaRooms.push({
                         id: c.id,
+                        name: name,
                         creator: requestUser.id,
                         createdTimestamp: c.createdTimestamp,
                         approver: user.id,
