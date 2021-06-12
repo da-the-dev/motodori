@@ -100,7 +100,6 @@ client.once('ready', async () => {
     utl.scanServer(client)
     utl.redisUnmute(client)
     utl.activity.voiceActivityInit(client)
-    utl.elderlyRole(client.guilds.cache.first())
     utl.bannerUpdate(client.guilds.cache.first())
     utl.loveroomMonitor.initPayment(client)
     utl.actionLogs.initLogs(client)
