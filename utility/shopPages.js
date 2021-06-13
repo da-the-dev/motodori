@@ -36,7 +36,7 @@ const buildPage = async (page, msg, thumbnail) => {
     for(i = start; i < end; i++)
         embed.addField(`${i + 1}. — ${server.roles[i].price}${sweet}`, ` <@&${server.roles[i].id}>`, true)
 
-    return msg.edit(embed)
+    return msg.edit({ embed: embed })
 }
 
 /**
