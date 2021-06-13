@@ -104,7 +104,7 @@ module.exports.requests = async (reaction, user, client) => {
  */
 module.exports.reminder = (guild) => {
     // Run every Friday
-    scheduleJob('* * * * * 5', async () => {
+    scheduleJob('0 0 * * FRI', async () => {
         const server = await new DBServer(guild.id)
         if(server.personaRooms) {
             server.personaRooms.forEach(r => {
@@ -129,28 +129,28 @@ module.exports.reminder = (guild) => {
  */
 module.exports.remover = guild => {
     // Run every Sunday
-    scheduleJob('* * * * * 0', async () => {
-        // const server = await new DBServer(guild.id)
-        // if(server.personaRooms) {
-        //     server.personaRooms.forEach(r => {
-        //         if(r.activity < 21 * 60 && r.createdTimestamp >= 604800000) {
-        //             const channel = guild.channels.cache.get(r.id)
-        //             guild.member(r.creator).user.createDM()
-        //                 .then(dm => {
-        //                     dm.send(new MessageEmbed({
-        //                         "title": "Ваша личная комната была удалена за неактивность!"
-        //                     }))
-        //                 })
+    scheduleJob('0 0 * * SUN', async () => {
+        const server = await new DBServer(guild.id)
+        if(server.personaRooms) {
+            server.personaRooms.forEach(r => {
+                if(r.activity < 21 * 60 && Date.now() - r.createdTimestamp >= 604800000) {
+                    const channel = guild.channels.cache.get(r.id)
+                    guild.member(r.creator).user.createDM()
+                        .then(dm => {
+                            dm.send(new MessageEmbed({
+                                "title": "Ваша личная комната была удалена за неактивность!"
+                            }))
+                        })
 
-        //             guild.channels.cache.get(constants.channels.prmsRequests).send(new MessageEmbed({
-        //                 "title": `Личная комната ${channel.name} была удалена за неактивность!`,
-        //                 "description": `**Автор комнаты: ${r.creator}**`
-        //             }))
-        //             channel.delete()
-        //             server.personaRooms.splice(server.personaRooms.indexOf(r), 1)
-        //         }
-        //     })
-        //     server.save()
-        // }
+                    guild.channels.cache.get(constants.channels.prmsRequests).send(new MessageEmbed({
+                        "title": `Личная комната ${channel.name} была удалена за неактивность!`,
+                        "description": `**Автор комнаты: <@${r.creator}>**`
+                    }))
+                    channel.delete()
+                    server.personaRooms.splice(server.personaRooms.indexOf(r), 1)
+                }
+            })
+            server.save()
+        }
     })
 }
