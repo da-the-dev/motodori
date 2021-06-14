@@ -1,8 +1,8 @@
 require('dotenv').config()
 const { Client, Message, MessageEmbed } = require('discord.js')
-const psact = require('./commands/prs/psact.js')
+const pst = require('./commands/personarms/pst.js')
 
-const { prmsTracker, fetch, db } = require('./utility')
+const { prmsTracker, fetch, db, bannerUpdate } = require('./utility')
 const { Connection } = db
 
 const client = new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER'] });
@@ -27,17 +27,14 @@ client.once('ready', async () => {
     // await new Connection()
     client.guild = await client.guilds.fetch('836297404260155432')
     console.log('Test Bot standing by!')
-})
-
-client.on('messageReactionAdd', async (reaction, user) => {
-    prmsTracker.requests(reaction, user, client)
+    bannerUpdate(client.guild)
 })
 
 client.on('message', msg => {
-    if(!msg.author.bot && msg.author.id == process.env.MYID) {
-        var args = msg.content.slice(1).split(" ")
-        args.forEach(a => a.trim())
+    // if(!msg.author.bot && msg.author.id == process.env.MYID) {
+    //     var args = msg.content.slice(1).split(" ")
+    //     args.forEach(a => a.trim())
 
-        psact(args, msg, client)
-    }
+    //     pst(args, msg, client)
+    // }
 })
