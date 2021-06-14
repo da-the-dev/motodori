@@ -67,7 +67,7 @@ const updateBanner = async guild => {
     // Updating the banner
     // writeFileSync('test.png', primeCanvas.toBuffer())
     guild.setBanner(primeCanvas.toBuffer())
-        .then(() => console.log('set banner'))
+    // .then(() => console.log('set banner'))
 }
 
 /**
