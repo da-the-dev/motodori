@@ -12,10 +12,10 @@ var prmsVoiceActs = []
 const prmsVoiceAct = guild => {
     const exec = async () => {
         const server = await new DBServer('836297404260155432')
-        guild.channels.cache.filter(c => c.parentID == constants.categories.personaRooms).forEach(c => {
-            const personaIndex = server.personaRooms.findIndex(r => r.id == c.id)
+        guild.channels.cache.filter(c => c.parentID == constants.categories.personalRooms).forEach(c => {
+            const personaIndex = server.personalRooms.findIndex(r => r.id == c.id)
             if(c.members.size > 0 && personaIndex != -1)
-                server.personaRooms[server.personaRooms.findIndex(r => r.id == c.id)].activity += 1
+                server.personalRooms[server.personalRooms.findIndex(r => r.id == c.id)].activity += 1
         })
         server.save()
     }

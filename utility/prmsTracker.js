@@ -60,7 +60,7 @@ module.exports.requests = async (reaction, user, client) => {
                     })
 
                     const server = await new DBServer(reaction.message.guild.id)
-                    server.personaRooms.push({
+                    server.personalRooms.push({
                         id: c.id,
                         name: name,
                         creator: requestUser.id,
@@ -106,8 +106,8 @@ module.exports.reminder = (guild) => {
     // Run every Friday
     scheduleJob('0 0 * * FRI', async () => {
         const server = await new DBServer(guild.id)
-        if(server.personaRooms) {
-            server.personaRooms.forEach(r => {
+        if(server.personalRooms) {
+            server.personalRooms.forEach(r => {
                 if(r.deletionTimestamp - Date.now() <= 2 * 86400000 && r.activity < 21 * 60)
                     guild.member(r.creator).user.createDM().then(dm => {
                         dm.send(new MessageEmbed(
@@ -131,8 +131,8 @@ module.exports.remover = guild => {
     // Run every Sunday
     scheduleJob('0 0 * * SUN', async () => {
         const server = await new DBServer(guild.id)
-        if(server.personaRooms) {
-            server.personaRooms.forEach(r => {
+        if(server.personalRooms) {
+            server.personalRooms.forEach(r => {
                 if(r.activity < 21 * 60 && Date.now() - r.createdTimestamp >= 604800000) {
                     const channel = guild.channels.cache.get(r.id)
                     guild.member(r.creator).user.createDM()
@@ -147,7 +147,7 @@ module.exports.remover = guild => {
                         "description": `**Автор комнаты: <@${r.creator}>**`
                     }))
                     channel.delete()
-                    server.personaRooms.splice(server.personaRooms.indexOf(r), 1)
+                    server.personalRooms.splice(server.personalRooms.indexOf(r), 1)
                 }
             })
             server.save()

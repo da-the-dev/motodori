@@ -18,7 +18,7 @@ module.exports =
             return
         }
         const server = await new DBServer(msg.guild.id)
-        const personaRoom = server.personaRooms.find(r => r.name == name)
+        const personaRoom = server.personalRooms.find(r => r.name == name)
         if(!personaRoom) {
             embed.ping(msg, sMsg, 'Эта комната не является личной или её не существует!')
             return

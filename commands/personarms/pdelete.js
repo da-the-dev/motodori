@@ -12,7 +12,7 @@ module.exports =
     */
     async (args, msg, client) => {
         const server = await new DBServer(msg.guild.id)
-        const personaRoom = server.personaRooms.find(p => p.creator == msg.author.id)
+        const personaRoom = server.personalRooms.find(p => p.creator == msg.author.id)
         if(!personaRoom) {
             embed.ping(msg, sMsg, 'на Ваше имя не зарегистрирована личная комната!')
             return
@@ -22,7 +22,7 @@ module.exports =
         reactionSelector.yesNo(m, msg.author.id,
             () => {
                 msg.guild.channels.cache.get(personaRoom.id).delete()
-                server.personaRooms.splice(server.personaRooms.indexOf(personaRoom), 1)
+                server.personalRooms.splice(server.personalRooms.indexOf(personaRoom), 1)
                 server.save()
 
                 embed(msg, sMsg, 'Личная комната успешно удалена!')

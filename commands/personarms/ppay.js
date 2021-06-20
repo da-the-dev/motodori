@@ -12,7 +12,7 @@ module.exports =
     */
     async (args, msg, client) => {
         const server = await new DBServer(msg.guild.id)
-        const personaRoom = server.personaRooms.find(p => p.creator == msg.author.id)
+        const personaRoom = server.personalRooms.find(p => p.creator == msg.author.id)
         if(!personaRoom) {
             embed.ping(msg, sMsg, 'на Ваше имя не зарегистрирована личная комната!')
             return
@@ -26,7 +26,7 @@ module.exports =
         }
 
         user.money -= ransom * 100
-        server.personaRooms[server.personaRooms.indexOf(personaRoom)].activity += ransom
+        server.personalRooms[server.personalRooms.indexOf(personaRoom)].activity += ransom
         user.save()
         server.save()
 

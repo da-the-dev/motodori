@@ -13,7 +13,7 @@ module.exports =
     */
     async (args, msg, client) => {
         const server = await new DBServer(msg.guild.id)
-        if(server.personaRooms.find(p => p.creator == msg.author.id)) {
+        if(server.personalRooms.find(p => p.creator == msg.author.id)) {
             embed.ping(msg, sMsg, 'на Ваше имя уже зарегистрирована личная комната!')
             return
         }
