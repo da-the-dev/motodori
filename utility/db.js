@@ -43,7 +43,7 @@ class Connection {
             if(!guildID) reject('No guild ID [get]!')
             if(!uniqueID) reject('No unique ID [get]!')
 
-            var res = this.#connection.db('motodori').collection(guildID).findOne({ id: uniqueID })
+            var res = await this.#connection.db('motodori').collection(guildID).findOne({ id: uniqueID })
 
             res ? (
                 res._id ? delete res._id : null,
@@ -152,7 +152,7 @@ class Connection {
     /**
      * Deletes many document
      * @param {string} guildID - Guild ID
-     * @param {obj} query - Query to use a filter
+     * @param {any} query - Query to use a filter
      * @return {Promise<string>} 'OK' if deleted succesfully 
      */
     deleteMany(guildID, query) {
@@ -223,7 +223,6 @@ class DBUser {
             this.streak = userData.streak
             this.invites = userData.invites || 0
             this.discount = userData.discount || 0
-
             resolve(this)
         })
     }
@@ -269,12 +268,11 @@ class DBServer {
     /**@type {boolean}  - Defenses flag*/ def
     /**@type {Role[]}  - Array of shop roles*/ roles
     /**@type {CustomRole[]}  - Array of custom roles*/ customRoles
-    /**@type {PersonaRoom[]} - Array of personal rooms*/ personaRooms
+    /**@type {PersonalRoom[]} - Array of personal rooms*/ personalRooms
 
     /**
     * Retrieves data about a server
     * @param {string} guildID
-    * @param {Connection} con
     * @returns {Promise<DBServer>}
     */
     constructor(guildID) {
@@ -287,8 +285,8 @@ class DBServer {
             this.def = serverData.def
             this.roles = serverData.roles || []
             this.customRoles = serverData.customRoles || []
-            this.personaRooms = serverData.personaRooms || []
-
+            this.personalRooms = serverData.personalRooms || []
+            this.flags = serverData.flags || []
             resolve(this)
         })
     }
@@ -299,8 +297,8 @@ class DBServer {
         this.def ? serverData.def = this.def : null
         this.roles && this.roles.length > 0 ? serverData.roles = this.roles : null
         this.customRoles && this.customRoles.length > 0 ? serverData.customRoles = this.customRoles : null
-        this.personaRooms && this.personaRooms.length > 0 ? serverData.personaRooms = this.personaRooms : null
-
+        this.personalRooms && this.personalRooms.length > 0 ? serverData.personalRooms = this.personalRooms : null
+        this.flags && this.flags.length > 0 ? serverData.flags = this.flags : null
         return serverData
     }
 
@@ -366,6 +364,8 @@ function getConnection() {
  * @property {boolean} def - Defenses flag
  * @property {Array<Role>} roles - Array of shop roles
  * @property {Array<CustomRole>} customRoles - Array of custom roles
+ * @property {Array<PersonalRoom>} personalRooms - Array of personal rooms
+ * @property {string[]} flags - Flags
  */
 /**
  * Warn data
@@ -384,7 +384,7 @@ function getConnection() {
  */
 /**
  * Personal room data
- * @typedef PersonaRoom
+ * @typedef PersonalRoom
  * @property {string} id
  * @property {string} name - Name of the room
  * @property {string} creator - Creator user ID
