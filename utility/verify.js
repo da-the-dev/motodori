@@ -11,7 +11,7 @@ var currentTimeout = null
  * @param {Discord.Client} client 
  */
 module.exports = (msg, client) => {
-    if(msg.channel.type == 'dm') {
+    if(msg.channel.type == 'dm' && msg.author.id != client.user.id) {
         getConnection().get('836297404260155432', `verify-${msg.author.id}`).then(async captchaData => {
             if(captchaData) {
                 if(msg.content == captchaData.captcha) {
@@ -26,7 +26,7 @@ module.exports = (msg, client) => {
                         })
                 }
                 else {
-                    await msg.channel.send(new Discord.MessageEmbed().setDescription(`*Неверно введена капча, генерирую новую** . . . `).setColor('#2F3136'))
+                    await msg.channel.send(new Discord.MessageEmbed().setDescription(`*Неверно введена капча, генерирую новую* . . . `).setColor('#2F3136'))
                     const captcha = await formCaptcha()
                     await getConnection().set('836297404260155432', `verify-${msg.author.id}`, { captcha: captcha.text })
                     msg.channel.send(captcha.obj)
@@ -112,7 +112,6 @@ const formCaptcha = () => {
         ctx.font = font
         ctx.textAlign = 'center'
         ctx.fillText(...args)
-
 
         resolve({
             text: text,

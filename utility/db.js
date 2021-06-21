@@ -61,23 +61,13 @@ class Connection {
      * @returns {Promise<string>} Returns 'OK' if set succesfully
      */
     set(guildID, uniqueID, data) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             if(!guildID) reject('No guild ID [set]!')
             if(!uniqueID) reject('No unique ID [set]!')
             if(!data) reject('No data to set [set]!')
 
-            this.get(guildID, uniqueID).then(async res => {
-                const newData = { ...{ id: uniqueID }, ...data }
-                if(res) {
-                    this.#connection.db('motodori').collection(guildID).findOneAndReplace({ id: uniqueID }, newData).then(() => {
-                        resolve('OK')
-                    })
-                } else {
-                    this.#connection.db('motodori').collection(guildID).insertOne(newData).then(() => {
-                        resolve('OK')
-                    })
-                }
-            })
+            await this.#connection.db('motodori').collection(guildID).findOneAndReplace({ id: uniqueID }, { ...{ id: uniqueID }, ...data }, { upsert: true })
+            resolve('OK')
         })
     }
 
