@@ -18,7 +18,8 @@ module.exports =
             return
         }
 
-        const name = args[1]
+        args.shift()
+        const name = args.join(' ')
         if(!name) {
             embed.ping(msg, sMsg, 'не указано имя комнаты!')
             return

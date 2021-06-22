@@ -12,7 +12,8 @@ module.exports =
     * Usage: .pcreate name  
     */
     async (args, msg, client) => {
-        const name = args[1]
+        args.shift()
+        const name = args.join(' ')
         if(!name) {
             embed.ping(msg, sMsg, 'Вы не указали команату!')
             return
