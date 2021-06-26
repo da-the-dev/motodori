@@ -131,7 +131,7 @@ module.exports =
                 solo(msg, msg.author.id, reactions.tea, 'наслаждается чаем')
                 break
             case 'kiss':
-                checkForPartner(msg, mMember) ? pairPerm(msg, msg.author.id, mMember.id, reactions.kiss, 'хочет тебя поцеловать', 'целует') : null
+                checkForPartner(msg, mMember) ? pairPerm(msg, msg.author.id, mMember.id, reactions.kiss, 'тебя хочет поцеловать', 'целует') : null
                 break
 
             case 'seduce':
