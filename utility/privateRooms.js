@@ -43,7 +43,8 @@ module.exports.createRoom = (client) => {
 }
 
 /**
- * @description Handles private room deletion
+ * Handles private room deletion
+ * 
  * @param {Discord.VoiceState} oldState 
  * @param {Discord.VoiceState} newState  
  * @param {Discord.Client} client

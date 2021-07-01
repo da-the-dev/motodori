@@ -1,7 +1,7 @@
 const constants = require('../constants.json')
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { getConnection, DBUser } = utl.db
+const { DBUser } = utl.db
 
 /**
  * Reapply roles on server entry
@@ -35,6 +35,7 @@ module.exports.reapplyRoles = async (member) => {
  *
  * @param {Discord.GuildMember} member 
  * @param {Discord.Role} role 
+ * @returns
  */
 module.exports.privilage = (member, role) => {
     if(member.roles.cache.find(r => r.position >= role.position))

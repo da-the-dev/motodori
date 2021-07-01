@@ -104,10 +104,11 @@ function pairPerm(msg, member, reciever, gifs, question, description) {
 
 module.exports =
     /**
+     * Handles reaction commands
+     * 
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Handles reaction commands
      */
     (args, msg, client) => {
         const mMember = msg.mentions.members.first()
