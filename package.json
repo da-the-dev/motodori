@@ -1,5 +1,5 @@
 {
-  "name": "discord-bot",
+  "name": "kanto",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/da-the-dev/miku-bot.git"
+    "url": "git+https://github.com/da-the-dev/motodori"
   },
   "author": "da_the_dev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/da-the-dev/miku-bot/issues"
+    "url": "https://github.com/da-the-dev/motodoriissues"
   },
-  "homepage": "https://github.com/da-the-dev/miku-bot#readme",
+  "homepage": "https://github.com/da-the-dev/motodori#readme",
   "dependencies": {
     "canvas": "^2.7.0",
     "discord-buttons": "^3.2.1",
