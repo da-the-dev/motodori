@@ -107,7 +107,7 @@ module.exports.voiceActivityInit = async (client) => {
  * This map holds an array of MessageInfo for each user who sent
  * a message in a guild
  *
- * @type {Map<string, MessageInfo[]}
+ * @type {Map<string, MessageInfo[]>}
  */
 const messages = new Map()
 
