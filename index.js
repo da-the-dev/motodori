@@ -149,7 +149,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 // Message events
 client.on('messageReactionAdd', async (reaction, user) => {
-    console.log('reaction')
+    // console.log('reaction')
     if(reaction.partial) {
         try {
             await reaction.fetch()
