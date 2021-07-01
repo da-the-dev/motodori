@@ -18,11 +18,6 @@ require('discord-buttons')(client)
 client.prefix = prefix
 
 // Commands
-/**
- * 
- * @param {string} dir 
- * @returns {string[]}
- */
 function walk(dir) {
     let results = []
     const list = fs.readdirSync(dir)
@@ -154,6 +149,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 // Message events
 client.on('messageReactionAdd', async (reaction, user) => {
+    console.log('reaction')
     if(reaction.partial) {
         try {
             await reaction.fetch()
@@ -163,6 +159,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
         }
     }
 
+    utl.verify(client, reaction, user)
     // if(reaction.message.channel.id != client.verifyMsg)
     utl.prmsTracker.requests(reaction, user, client)
     utl.shop(reaction, user, client)
@@ -175,7 +172,7 @@ client.on('message', msg => {
     // Activity
     utl.activity.chatActivity(msg)
     // Verification
-    utl.verify(msg, client)
+    // utl.verify(msg, client)
     // Lotery
     utl.lotery.reward(msg)
 
