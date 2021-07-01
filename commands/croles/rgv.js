@@ -7,7 +7,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .rgv <member> <rolePos>
+     * @example Usage: .rgv <member> <rolePos>
      */
     async (args, msg, client) => {
         const mMember = msg.mentions.members.first()

@@ -87,7 +87,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .rcr <hex> <name>
+     * @example Usage: .rcr <hex> <name>
      */
     async (args, msg, client) => {
         let hex = args[1]

@@ -8,7 +8,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Message} msg Discord message object
      * @param {Client} client Discord client object
-     * @description Usage: .uact
+     * @example Usage: .uact
      */
     async (args, msg, client) => {
         const user = await new DBUser(msg.guild.id, msg.author.id)

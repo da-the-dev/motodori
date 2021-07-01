@@ -7,7 +7,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .bug <text>
+     * @example Usage: .bug <text>
      */
     (args, msg, client) => {
         args.shift()

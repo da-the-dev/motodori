@@ -7,7 +7,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .edit <id>\n<jsonData>
+     * @example Usage: .edit <id>\n<jsonData>
      */
     (args, msg, client) => {
         if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {

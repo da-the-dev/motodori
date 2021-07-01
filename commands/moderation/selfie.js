@@ -7,7 +7,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .selfie <member>
+     * @example Usage: .selfie <member>
      */
     (args, msg, client) => {
         const chatCRole = msg.guild.roles.cache.get(constants.roles.chatControl)

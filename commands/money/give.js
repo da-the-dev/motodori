@@ -8,7 +8,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .give <member> <ammount>
+     * @example Usage: .give <member> <ammount>
      */
     async (args, msg, client) => {
         // Check if admin

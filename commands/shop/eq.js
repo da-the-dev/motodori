@@ -37,7 +37,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .equip <rolePos>
+     * @example Usage: .equip <rolePos>
      */
     (args, msg, client) => {
         if(!args[1]) {

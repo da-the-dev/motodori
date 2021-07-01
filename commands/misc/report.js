@@ -32,7 +32,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .report <member> <reason> -possible attachments
+     * @example Usage: .report <member> <reason> -possible attachments
      */
     async (args, msg, client) => {
         const mMember = msg.mentions.members.first()

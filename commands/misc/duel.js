@@ -65,7 +65,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .br <bet> <?member>
+     * @example Usage: .br <bet> <?member>
      */
     async (args, msg, client) => {
         const bet = Number(args[1])

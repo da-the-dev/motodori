@@ -19,7 +19,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .bal
+     * @example Usage: .bal
      */
     async (args, msg, client) => {
         const mMember = msg.mentions.members.first()

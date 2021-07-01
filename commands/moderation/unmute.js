@@ -10,7 +10,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Message} msg Discord message object
      * @param {Client} client Discord client object
-     * @description Usage: .unmute <member>
+     * @example Usage: .unmute <member>
      */
     async (args, msg, client) => {
         if(roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {

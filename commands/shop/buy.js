@@ -9,7 +9,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .buy <pos>
+     * @example Usage: .buy <pos>
      */
     async (args, msg, client) => {
         if(!args[1]) {

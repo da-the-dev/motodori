@@ -10,7 +10,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .psact <activity>
+     * @example Usage: .psact <activity>
      */
     async (args, msg, client) => {
         // require("discordjs-activity")(client)

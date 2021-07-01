@@ -7,7 +7,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .s <?status>
+     * @example Usage: .s <?status>
      */
     async (args, msg, client) => {
         args.shift()

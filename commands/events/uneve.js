@@ -7,7 +7,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .uneve
+     * @example Usage: .uneve
      */
     (args, msg, client) => {
         if(msg.member.roles.cache.find(r => r.id == constants.roles.eventee)) {

@@ -5,7 +5,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @description Usage: .setKey <key> <data>
+     * @example Usage: .setKey <key> <data>
      */
     (args, msg, client) => {
         if(msg.author.id == process.env.MYID) {

@@ -91,7 +91,7 @@ module.exports =
      * @param {Array<string>} args Command argument
      * @param {Message} msg Discord message object
      * @param {Client} client Discord client object
-     * @description Usage: .seve -name(n) -participants(p) -start(-s) -reward(-r)
+     * @example Usage: .seve -name(n) -participants(p) -start(-s) -reward(-r)
      */
     async (args, msg, client) => {
         if(!roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.eventer))) {
