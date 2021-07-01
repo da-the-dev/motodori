@@ -14,7 +14,7 @@ const currentTimeout = null
  */
 module.exports = (client, reaction, user) => {
     const msg = reaction.message
-    if(msg.id === '843403350095429642' && user.id !== process.env.MYID)
+    if(msg.id === '860181909291794433' && user.id !== process.env.MYID)
         takeRole(client, msg.guild.member(user))
 }
 
