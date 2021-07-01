@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { getConnection, DBServer, DBUser } = utl.db
+const { DBServer, DBUser } = utl.db
 const constants = require('../../constants.json')
 const { sweet } = constants.emojies
 const sMsg = 'Создание кастомной роли'
@@ -9,12 +9,13 @@ const sMsg = 'Создание кастомной роли'
 const cost = 10000
 /**
  * Retrieves HEX color name 
+ *
  * @param {string} hex - HEX string
  * @returns {Promise<string>} HEX name
  */
 const fetchHEXName = (hex) => {
     return new Promise((resolve, reject) => {
-        const fetch = require('node-fetch');
+        const fetch = require('node-fetch')
         fetch(`https://www.thecolorapi.com/id?hex=${hex.slice(1)}`)
             .then(res => {
                 res.text()
@@ -29,10 +30,11 @@ const fetchHEXName = (hex) => {
 
 /**
  * Create a custom role
+ *
  * @param {Discord.Message} msg - OG message
  * @param {string} name - Role's name
  * @param {string} hex - Role's hex color
- * @param {Function} success - Success function tp run at the end
+ * @param {number} price - Price for the role
  */
 const createRole = async (msg, name, hex, price) => {
     const pos = msg.guild.roles.cache.get('842137782364930098').position
@@ -45,7 +47,7 @@ const createRole = async (msg, name, hex, price) => {
         reason: `${msg.author.tag} создал(-а) эту роль командой .rcr`
     })
     // Set expireDate to 00:00:00:0000 of the next month
-    var expireDate = new Date(Date.now())
+    const expireDate = new Date(Date.now())
     if(expireDate.getMonth() != 12)
         expireDate.setMonth(expireDate.getMonth() + 1)
     else {
@@ -82,13 +84,13 @@ const createRole = async (msg, name, hex, price) => {
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .rcr <hex> <name>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .rcr <hex> <name>
+     */
     async (args, msg, client) => {
-        var hex = args[1]
+        let hex = args[1]
         if(!hex) {
             utl.embed.ping(msg, sMsg, 'не указан цвет роли!')
             return
@@ -104,14 +106,14 @@ module.exports =
         args.shift()
         args.shift()
 
-        var name = args.join(' ')
+        const name = args.join(' ')
         if(!name) {
             utl.embed.ping(msg, sMsg, 'не указано название роли!')
             return
         }
 
         const server = await new DBServer(msg.guild.id)
-        var counter = 0
+        let counter = 0
         server.customRoles.forEach(r => {
             r.owner == msg.author.id ? counter++ : null
         })

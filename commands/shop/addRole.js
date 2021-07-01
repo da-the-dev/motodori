@@ -1,23 +1,23 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { getConnection, DBServer } = utl.db
+const { DBServer } = utl.db
 const sMsg = 'Добавление роли в магазин'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .addRole <role> <positon> <price>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .addRole <role> <positon> <price>
+     */
     async (args, msg, client) => {
         if(msg.member.roles.cache.find(r => r.permissions.has('ADMINISTRATOR'))) {
-            var mRole = msg.mentions.roles.first()
+            const mRole = msg.mentions.roles.first()
             if(!mRole) {
                 utl.embed.ping(msg, sMsg, 'не указана роль!')
                 return
             }
 
-            var pos = Number(args[2])
+            const pos = Number(args[2])
             if(!pos || !Number.isInteger(pos)) {
                 utl.embed.ping(msg, sMsg, 'не указана позиция роли!')
                 return
@@ -27,7 +27,7 @@ module.exports =
                 return
             }
 
-            var price = Number(args[3])
+            const price = Number(args[3])
             if(!price || !Number.isInteger(price)) {
                 utl.embed.ping(msg, sMsg, 'не указана цена роли!')
                 return

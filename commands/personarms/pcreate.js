@@ -6,11 +6,11 @@ const sMsg = 'Заявка на личную комнату'
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Message} msg Discord message object
-    * @param {Client} client Discord client object
-    * Usage: .pcreate name  
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Message} msg Discord message object
+     * @param {Client} client Discord client object
+     * Usage: .pcreate name  
+     */
     async (args, msg, client) => {
         const server = await new DBServer(msg.guild.id)
         if(server.personalRooms.find(p => p.creator == msg.author.id)) {
@@ -30,21 +30,21 @@ module.exports =
                 const requestID = Math.floor(Math.random() * (9999 - 1000) + 1000)
                 const request = new MessageEmbed(
                     {
-                        "title": "Новый запрос на создание личной комнаты",
-                        "color": 431075,
-                        "footer": {
-                            "text": `ID: ${requestID}`
+                        'title': 'Новый запрос на создание личной комнаты',
+                        'color': 431075,
+                        'footer': {
+                            'text': `ID: ${requestID}`
                         },
-                        "fields": [
+                        'fields': [
                             {
-                                "name": "Автор запроса:",
-                                "value": `${msg.author}`,
-                                "inline": true
+                                'name': 'Автор запроса:',
+                                'value': `${msg.author}`,
+                                'inline': true
                             },
                             {
-                                "name": "Название комнаты:",
-                                "value": `\`\`\`${name}\`\`\``,
-                                "inline": true
+                                'name': 'Название комнаты:',
+                                'value': `\`\`\`${name}\`\`\``,
+                                'inline': true
                             }
                         ]
                     }

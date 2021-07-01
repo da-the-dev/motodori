@@ -1,10 +1,9 @@
 const Discord = require('discord.js')
-const { dot } = require('../constants.json').emojies
-const utl = require('../utility')
 
 module.exports =
     /**
      * Standard embed reply
+     *
      * @param {Discord.Message} msg - Disord message
      * @param {string} title - Message title
      * @param {string} message - Text message to send
@@ -22,6 +21,7 @@ module.exports =
 module.exports.ping =
     /**
      * Standard embed reply plus member ping
+     *
      * @param {Discord.Message} msg - Disord message
      * @param {string} title - Message title
      * @param {string} message - Text message to send
@@ -38,29 +38,33 @@ module.exports.ping =
 
 /**
  * Calculate time when the message was sent
+ *
  * @param {(Discord.Message|Discord.GuildMember|number)} source
+ * @returns
  */
 module.exports.calculateTime = (source) => {
-    var time = 'Сегодня, в '
-    var date
+    let time = 'Сегодня, в '
+    let date
     if(typeof source == 'number')
-        date = new Date(new Date(source).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
+        date = new Date(new Date(source).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }))
     else if(source instanceof Discord.Message)
-        date = new Date(new Date(source.createdTimestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
+        date = new Date(new Date(source.createdTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }))
     else if(source instanceof Discord.GuildMember)
-        date = new Date(new Date(source.joinedTimestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
+        date = new Date(new Date(source.joinedTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }))
 
-    var hours = date.getHours().toString().padStart(2, '0')
-    var minutes = date.getMinutes().toString().padStart(2, '0')
+    const hours = date.getHours().toString().padStart(2, '0')
+    const minutes = date.getMinutes().toString().padStart(2, '0')
     time += `${hours}:${minutes}`
     return time
 }
 
 /**
  * Return MessageEmbeded embed reply
+ *
  * @param {Discord.Message} msg - Disord message
  * @param {string} title - Message title
  * @param {string} message - Text message to send
+ * @returns
  */
 module.exports.build = (msg, title, message = '') => {
     return new Discord.MessageEmbed()
@@ -72,9 +76,9 @@ module.exports.build = (msg, title, message = '') => {
 }
 
 module.exports.def = (msg, value) => {
-    var message = new Discord.MessageEmbed()
+    const message = new Discord.MessageEmbed()
         .setColor('#FF0000')
-        .setFooter(`${msg.author.tag} • ${new Date(msg.createdTimestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })} `, msg.author.avatarURL())
+        .setFooter(`${msg.author.tag} • ${new Date(msg.createdTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })} `, msg.author.avatarURL())
     if(value)
         message.setDescription(`Антикраш защита **включена**!`)
     else

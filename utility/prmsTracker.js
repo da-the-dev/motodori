@@ -1,5 +1,5 @@
 const { Client, User, MessageReaction, MessageEmbed, Guild } = require('discord.js')
-const { fetch, db } = require('../utility')
+const { db } = require('../utility')
 const { DBServer } = db
 const { scheduleJob } = require('node-schedule')
 const constants = require('../constants.json')
@@ -7,6 +7,7 @@ const { timeCalculator } = require('./time')
 
 /**
  * Handles report reactions
+ *
  * @param {MessageReaction} reaction - Reaction
  * @param {User} user - Reaction's user
  * @param {Client} client - Bot client
@@ -17,7 +18,7 @@ module.exports.requests = async (reaction, user, client) => {
         // Fetch the message
         // If request is confirmed
         switch(reaction.emoji.name) {
-            case "✅":
+            case '✅':
                 if(user.id != client.user.id) {
                     const embed = reaction.message.embeds[0]
                     const requestUser = reaction.message.guild.member(embed.fields[0].value.slice(2, -1)).user
@@ -27,8 +28,8 @@ module.exports.requests = async (reaction, user, client) => {
                     if(!user) {
                         reaction.message.edit({
                             embed: new MessageEmbed({
-                                "title": "Участника больше нет на сервере!",
-                                "color": 15406156
+                                'title': 'Участника больше нет на сервере!',
+                                'color': 15406156
                             })
                         })
                         return
@@ -53,9 +54,9 @@ module.exports.requests = async (reaction, user, client) => {
                     const dm = await user.createDM()
                     dm.send({
                         embed: new MessageEmbed({
-                            "title": "Ваша заявка на создание личной комнаты была одобрена!",
-                            "description": `Ссылка на личную комнату:\n${(await c.createInvite()).url}`,
-                            "color": 53380
+                            'title': 'Ваша заявка на создание личной комнаты была одобрена!',
+                            'description': `Ссылка на личную комнату:\n${(await c.createInvite()).url}`,
+                            'color': 53380
                         })
                     })
 
@@ -73,22 +74,22 @@ module.exports.requests = async (reaction, user, client) => {
 
                     reaction.message.edit({
                         embed: new MessageEmbed({
-                            "description": `**Заявка ${requestUser} на создание личной комнаты была одобрена ${user}**`,
-                            "color": 53380
+                            'description': `**Заявка ${requestUser} на создание личной комнаты была одобрена ${user}**`,
+                            'color': 53380
                         })
                     })
                     reaction.message.reactions.removeAll()
                 }
                 break
-            case "❌":
+            case '❌':
                 if(user.id != client.user.id) {
                     const embed = reaction.message.embeds[0]
                     const requestUser = reaction.message.guild.member(embed.fields[0].value.slice(2, -1)).user
 
                     reaction.message.edit({
                         embed: new MessageEmbed({
-                            "description": `**Заявка ${requestUser} на создание личной комнаты была отвергнута ${user}**`,
-                            "color": 15406156
+                            'description': `**Заявка ${requestUser} на создание личной комнаты была отвергнута ${user}**`,
+                            'color': 15406156
                         })
                     })
                     reaction.message.reactions.removeAll()
@@ -100,6 +101,7 @@ module.exports.requests = async (reaction, user, client) => {
 
 /**
  * Remind personal rooms' owner if their rooms have not enough activity
+ *
  * @param {Guild} guild
  */
 module.exports.reminder = (guild) => {
@@ -112,9 +114,9 @@ module.exports.reminder = (guild) => {
                     guild.member(r.creator).user.createDM().then(dm => {
                         dm.send(new MessageEmbed(
                             {
-                                "title": "Ваша личная комната скоро будет удалена!",
-                                "description": `Ваша комната пока не набрала необходимого количества актива и будет удалена менее, чем через **2 дня**! Если Вы считаете, что не сможете набрать недостающий актив *(а именно ${timeCalculator(21 * 60 - r.activity * 60)}*, то предлагаю выкуп за **${Math.ceil((21 * 60 - r.activity * 60) / 60) * 100}** *(1 час = 100, округление в большую сторону)*. Для выкупа, напишите \`.ppay\` в <#${constants.channels.cmd}>`,
-                                "color": 15406156
+                                'title': 'Ваша личная комната скоро будет удалена!',
+                                'description': `Ваша комната пока не набрала необходимого количества актива и будет удалена менее, чем через **2 дня**! Если Вы считаете, что не сможете набрать недостающий актив *(а именно ${timeCalculator(21 * 60 - r.activity * 60)}*, то предлагаю выкуп за **${Math.ceil((21 * 60 - r.activity * 60) / 60) * 100}** *(1 час = 100, округление в большую сторону)*. Для выкупа, напишите \`.ppay\` в <#${constants.channels.cmd}>`,
+                                'color': 15406156
                             }
                         ))
                     })
@@ -125,6 +127,7 @@ module.exports.reminder = (guild) => {
 
 /**
  * Delete personal rooms if they have not enough activity
+ *
  * @param {Guild} guild 
  */
 module.exports.remover = guild => {
@@ -138,13 +141,13 @@ module.exports.remover = guild => {
                     guild.member(r.creator).user.createDM()
                         .then(dm => {
                             dm.send(new MessageEmbed({
-                                "title": "Ваша личная комната была удалена за неактивность!"
+                                'title': 'Ваша личная комната была удалена за неактивность!'
                             }))
                         })
 
                     guild.channels.cache.get(constants.channels.prmsRequests).send(new MessageEmbed({
-                        "title": `Личная комната ${channel.name} была удалена за неактивность!`,
-                        "description": `**Автор комнаты: <@${r.creator}>**`
+                        'title': `Личная комната ${channel.name} была удалена за неактивность!`,
+                        'description': `**Автор комнаты: <@${r.creator}>**`
                     }))
                     channel.delete()
                     server.personalRooms.splice(server.personalRooms.indexOf(r), 1)

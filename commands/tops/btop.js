@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { getGuild, getConnection } = utl.db
+const { getGuild } = utl.db
 const constants = require('../../constants.json')
 const { sweet } = constants.emojies
 
@@ -13,7 +13,7 @@ module.exports =
      * @description Usage: .btop
      */
     async (args, msg, client) => {
-        var guild = await getGuild(msg.guild.id)
+        let guild = await getGuild(msg.guild.id)
 
         guild = guild.filter(u => u.money)
         guild.sort((a, b) => {
@@ -22,19 +22,19 @@ module.exports =
             return 0
         })
 
-        var embed = utl.embed.build(msg, 'Топ пользователей по балансу')
-        var description = ''
+        const embed = utl.embed.build(msg, 'Топ пользователей по балансу')
+        let description = ''
 
-        var valids = []
-        for(i = 0; i < guild.length; i++) {
+        const valids = []
+        for(let i = 0; i < guild.length; i++) {
             if(valids.length <= topAmount) {
-                var member = msg.guild.member(guild[i].id)
+                const member = msg.guild.member(guild[i].id)
                 if(member)
                     valids.push({ member: member, money: guild[i].money })
             }
         }
 
-        for(i = 0; i < topAmount; i++) {
+        for(let i = 0; i < topAmount; i++) {
             switch(i) {
                 case 0:
                     description += `\`🥇\` • <@${valids[i].member.id}> — **${valids[i].money}** ${sweet}\n`

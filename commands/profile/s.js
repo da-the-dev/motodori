@@ -1,14 +1,14 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { DBUser, getConnection } = utl.db
+const { DBUser } = utl.db
 const sMsg = 'Статус'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .s <?status>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .s <?status>
+     */
     async (args, msg, client) => {
         args.shift()
 
@@ -24,7 +24,7 @@ module.exports =
 
         const user = await new DBUser(msg.guild.id, msg.author.id)
 
-        var state = args.join(' ')
+        let state = args.join(' ')
         state = state.slice(0, state.length <= 60 ? state.length : 60)
         state = state.replace(/[\S]+(.com|.ru|.org|.net|.info)[\S]+/g, '')
 

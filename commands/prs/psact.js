@@ -7,11 +7,11 @@ const sMsg = `Приватные комнаты`
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .psact <activity>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .psact <activity>
+     */
     async (args, msg, client) => {
         // require("discordjs-activity")(client)
         if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
@@ -28,29 +28,29 @@ module.exports =
             return
         }
 
-        var button = new MessageButton()
-            .setLabel("Ссылка на активность")
+        const button = new MessageButton()
+            .setLabel('Ссылка на активность')
             .setStyle('url')
 
         switch(args[1]) {
             case 'youtube':
                 msg.channel.send('‎‎‎‎‏‏‎ ‎‏‏‎ ',
-                    button.setURL(`https://discord.com/invite/${(await room.activityInvite("755600276941176913")).code}`)
+                    button.setURL(`https://discord.com/invite/${(await room.activityInvite('755600276941176913')).code}`)
                 )
                 break
             case 'poker':
                 msg.channel.send('‎‎‎‎‏‏‎ ‎‏‏‎ ',
-                    button.setURL(`https://discord.com/invite/${(await room.activityInvite("755827207812677713")).code}`)
+                    button.setURL(`https://discord.com/invite/${(await room.activityInvite('755827207812677713')).code}`)
                 )
                 break
             case 'betray':
                 msg.channel.send('‎‎‎‎‏‏‎ ‎‏‏‎ ',
-                    button.setURL(`https://discord.com/invite/${(await room.activityInvite("773336526917861400")).code}`)
+                    button.setURL(`https://discord.com/invite/${(await room.activityInvite('773336526917861400')).code}`)
                 )
                 break
             case 'fish':
                 msg.channel.send('‎‎‎‎‏‏‎ ‎‏‏‎ ',
-                    button.setURL(`https://discord.com/invite/${(await room.activityInvite("814288819477020702")).code}`)
+                    button.setURL(`https://discord.com/invite/${(await room.activityInvite('814288819477020702')).code}`)
                 )
                 break
             default:

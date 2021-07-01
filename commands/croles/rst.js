@@ -4,11 +4,11 @@ const { getGuild, DBServer, DBUser } = utl.db
 const sMsg = 'Информация о роли'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .rst <rolePos>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .rst <rolePos>
+     */
     async (args, msg, client) => {
         if(!args[1]) {
             utl.embed.ping(msg, sMsg, 'не указан индекс роли!')
@@ -59,7 +59,7 @@ module.exports =
 
         const discordRole = msg.guild.roles.cache.get(roleID)
 
-        var embed = new Discord.MessageEmbed()
+        const embed = new Discord.MessageEmbed()
             .setTitle('Информация о роли')
             .setDescription(`
                 Роль: <@&${role.id}>
@@ -68,8 +68,8 @@ module.exports =
                 
                 ID роли: **${role.id}**\n
                 Цвет роли: **${discordRole.hexColor}**
-                Действует до: **${new Date(role.expireTimestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })}**
-                Куплена: **${new Date(role.createdTimestamp).toLocaleDateString("ru-RU", { timeZone: "Europe/Moscow" })}**, **${new Date(role.createdTimestamp).toLocaleTimeString("ru-RU", { timeZone: "Europe/Moscow" })}**
+                Действует до: **${new Date(role.expireTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}**
+                Куплена: **${new Date(role.createdTimestamp).toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' })}**, **${new Date(role.createdTimestamp).toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow' })}**
                 `)
             .setColor('#2F3136')
             .setThumbnail(msg.author.displayAvatarURL({ dynamic: true }))

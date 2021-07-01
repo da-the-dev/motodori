@@ -1,7 +1,9 @@
 const Discord = require('discord.js')
 /**
  * Fetches reactions to cache
+ *
  * @param {Discord.MessageReaction} reaction - Reaction that caused the fetching
+ * @param {Discord.User} user
  */
 module.exports.fetchReactions = async (reaction, user) => {
     if(reaction.partial) {

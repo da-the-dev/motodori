@@ -5,11 +5,11 @@ const sMsg = `Приватные комнаты`
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .vulock <member> 
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .vulock <member> 
+     */
     async (args, msg, client) => {
         if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
             return
@@ -20,7 +20,7 @@ module.exports =
         }
 
         /**@type {Discord.VoiceChannel} */
-        var room = msg.member.voice.channel
+        const room = msg.member.voice.channel
 
         if(!room) {
             utl.embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет приватной комнаты!`)
@@ -28,7 +28,7 @@ module.exports =
         }
 
         room.createOverwrite(msg.guild.id, {
-            "CONNECT": true
+            'CONNECT': true
         })
         utl.embed(msg, sMsg, `<@${msg.author.id}>, Вы **открыли доступ** в комнату для всех`)
     }

@@ -1,10 +1,11 @@
 const Discord = require('discord.js')
-const { getConnection, DBServer } = require('../utility/db')
-const { scheduleJob } = require("node-schedule")
+const { DBServer } = require('../utility/db')
+const { scheduleJob } = require('node-schedule')
 /**
-  * Deletes expired roles
-  * @param { Discord.Client } client - Bot client
-  */
+ * Deletes expired roles
+ *
+ * @param { Discord.Client } client - Bot client
+ */
 module.exports.deleteExpired = (client) => {
     scheduleJob('0 0 * * *', async () => {
         const server = await new DBServer(client.guild.id)

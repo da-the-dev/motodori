@@ -7,7 +7,7 @@ const { sweet } = constants.emojies
 const { DBUser } = require('./db')
 const delay = 7 * 60 * 60
 
-var loteryKeyword = ''
+let loteryKeyword = ''
 
 const toRad = angle => {
     return angle * Math.PI / 180
@@ -15,9 +15,10 @@ const toRad = angle => {
 
 /**
  * @param {string} keyword 
+ * @returns 
  */
 const buildKeyword = async keyword => {
-    const { createCanvas, loadImage, registerFont } = require('canvas')
+    const { createCanvas, loadImage } = require('canvas')
     const path = require('path')
 
     // registerFont(path.resolve(path.join('./', 'fonts', 'manga.ttf')), { family: 'Japan' })
@@ -29,11 +30,11 @@ const buildKeyword = async keyword => {
     ctx.drawImage(img, 0, 0, img.width, img.height)
 
     const text = keyword
-    var font = 'bold 0px "Sans"'
+    let font = 'bold 0px "Sans"'
     const args = [text, 0, 0]
 
-    var cords = []
-    var rotation = 0
+    let cords = []
+    let rotation = 0
 
     const random = Math.floor(Math.random() * 3) + 1
     // const random = 3
@@ -75,6 +76,7 @@ module.exports.buildKeyword = buildKeyword
 
 /**
  * Generate lotery itself
+ *
  * @param {Guild} guild 
  */
 module.exports.generate = async guild => {
@@ -90,17 +92,17 @@ module.exports.generate = async guild => {
     const attachment = new MessageAttachment(await buildKeyword(keyword), 'keyword.png')
     const emb = new MessageEmbed
         ({
-            "title": "Лотерея!",
-            "description": "Пиши ключевое слово в чат чтобы получить награду!",
-            "color": 15406156,
-            "fields": [
+            'title': 'Лотерея!',
+            'description': 'Пиши ключевое слово в чат чтобы получить награду!',
+            'color': 15406156,
+            'fields': [
                 {
-                    "name": "Разыгрывается:",
-                    "value": `\`\`\`${reward} Yen\`\`\``
+                    'name': 'Разыгрывается:',
+                    'value': `\`\`\`${reward} Yen\`\`\``
                 },
                 {
-                    "name": "Ключевое слово:",
-                    "value": '⠀⠀⠀⠀⠀⠀⠀'
+                    'name': 'Ключевое слово:',
+                    'value': '⠀⠀⠀⠀⠀⠀⠀'
                 }
             ]
         })
@@ -112,6 +114,7 @@ module.exports.generate = async guild => {
 
 /**
  * Start the lotery softy
+ *
  * @param {Guild} guild
  */
 module.exports.init = async guild => {
@@ -123,6 +126,7 @@ module.exports.init = async guild => {
 
 /**
  * Give the reward if lotery is active and the code is correct
+ *
  * @param {Message} msg 
  */
 module.exports.reward = async msg => {

@@ -1,5 +1,4 @@
 const Discord = require('discord.js')
-const utl = require('../utility')
 const constants = require('../constants.json')
 
 /**
@@ -8,16 +7,16 @@ const constants = require('../constants.json')
  * @returns 
  */
 function timeCalculator(time) {
-    var mmD = Math.floor(time / 60 / 60 / 24)
-    var mmH = Math.floor(time / 60 / 60) - (mmD * 24)
-    var mmM = Math.floor(time / 60) - (mmD * 60 * 24 + mmH * 60)
-    var mmS = Math.floor(time - (mmD * 60 * 60 * 24 + mmH * 60 * 60 + mmM * 60))
-    var msg = ''
+    const mmD = Math.floor(time / 60 / 60 / 24)
+    const mmH = Math.floor(time / 60 / 60) - (mmD * 24)
+    const mmM = Math.floor(time / 60) - (mmD * 60 * 24 + mmH * 60)
+    const mmS = Math.floor(time - (mmD * 60 * 60 * 24 + mmH * 60 * 60 + mmM * 60))
+    let msg = ''
 
-    if(mmD) msg += '**' + mmD.toString() + '**' + "d "
-    if(mmH) msg += '**' + mmH.toString() + '**' + "h "
-    if(mmM) msg += '**' + mmM.toString() + '**' + "m "
-    if(mmS) msg += '**' + mmS.toString() + '**' + "s "
+    if(mmD) msg += '**' + mmD.toString() + '**' + 'd '
+    if(mmH) msg += '**' + mmH.toString() + '**' + 'h '
+    if(mmM) msg += '**' + mmM.toString() + '**' + 'm '
+    if(mmS) msg += '**' + mmS.toString() + '**' + 's '
 
     return msg
 }
@@ -36,7 +35,7 @@ module.exports.log = (msg, action, who, acused, when, why = null, duration = nul
     const embed = new Discord.MessageEmbed()
     embed.setColor('#34cceb')
 
-    const date = new Date(new Date(when).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
+    const date = new Date(new Date(when).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }))
 
     switch(action) {
         case 'ban':

@@ -4,10 +4,10 @@
  * @returns 
  */
 module.exports.timeCalculator = (time) => {
-    var mmD = Math.floor(time / 24 / 60)
-    var mmH = Math.floor(time / 60) - (mmD * 24)
-    var mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
-    var msg = ''
+    const mmD = Math.floor(time / 24 / 60)
+    const mmH = Math.floor(time / 60) - (mmD * 24)
+    const mmM = Math.floor(time) - (mmD * 60 * 24 + mmH * 60)
+    let msg = ''
 
     if(mmD) msg += `**${mmD.toString()}**д `
     if(mmH) msg += `**${mmH.toString()}**ч `
@@ -22,14 +22,14 @@ module.exports.timeCalculator = (time) => {
  * @returns 
  */
 module.exports.timeCalculatorSec = (time) => {
-    const duration = require('moment').duration(time, 'seconds');
+    const duration = require('moment').duration(time, 'seconds')
 
     const mmD = duration.days()
     const mmH = duration.hours()
     const mmM = duration.minutes()
     const mmS = duration.seconds()
 
-    var msg = ''
+    let msg = ''
 
     if(mmD) msg += `**${mmD.toString()}**д `
     if(mmH) msg += `**${mmH.toString()}**ч `
@@ -40,9 +40,10 @@ module.exports.timeCalculatorSec = (time) => {
 }
 /**
  * Converts the timestampt into Moscow date
+ *
  * @param {number} timestamp 
  * @returns {Date}
  */
 module.exports.convertTime = timestamp => {
-    return new Date(new Date(timestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }))
+    return new Date(new Date(timestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }))
 }

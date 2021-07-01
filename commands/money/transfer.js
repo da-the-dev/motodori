@@ -1,18 +1,18 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { DBUser, getConnection } = utl.db
+const { DBUser } = utl.db
 const constants = require('../../constants.json')
 const sMsg = 'Передача валюты'
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .transfer <member> <ammount>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .transfer <member> <ammount>
+     */
     async (args, msg, client) => {
-        var mMember = msg.mentions.members.first()
+        const mMember = msg.mentions.members.first()
         if(!mMember) {
             utl.embed(msg, sMsg, 'Не указан участник!')
             return
@@ -21,7 +21,7 @@ module.exports =
             utl.embed(msg, sMsg, 'Не указана сумма!')
             return
         }
-        var amount = Number(args[2])
+        const amount = Number(args[2])
         if(!amount || !Number.isInteger(amount)) {
             utl.embed(msg, sMsg, 'Указана неверная сумма!')
             return

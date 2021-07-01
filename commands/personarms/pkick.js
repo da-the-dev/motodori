@@ -5,11 +5,11 @@ const sMsg = 'Личная комната'
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Message} msg Discord message object
-    * @param {Client} client Discord client object
-    * Usage: .padd name  
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Message} msg Discord message object
+     * @param {Client} client Discord client object
+     * Usage: .padd name  
+     */
     async (args, msg, client) => {
         const server = await new DBServer(msg.guild.id)
         const personaRoom = server.personalRooms.find(p => p.creator == msg.author.id)
@@ -25,7 +25,7 @@ module.exports =
         }
 
         const room = msg.guild.channels.cache.get(personaRoom.id)
-        room.updateOverwrite(mMember.id, { "CONNECT": null })
+        room.updateOverwrite(mMember.id, { 'CONNECT': null })
 
         if(mMember.voice.channelID == personaRoom.id)
             mMember.voice.setChannel(null)

@@ -1,15 +1,15 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { getConnection, DBServer, DBUser } = utl.db
+const { DBServer, DBUser } = utl.db
 const sMsg = 'Удаление кастомной роли'
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .rdel <rolePos>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .rdel <rolePos>
+     */
     async (args, msg, client) => {
         if(!args[1]) {
             utl.embed.ping(msg, sMsg, 'не указан индекс роли!')
@@ -20,12 +20,6 @@ module.exports =
             return
         }
         const pos = args[1].slice(1)
-
-        /*
-        Check:
-        if has roles at all
-        if owner
-        */
 
         const elements = await Promise.all([
             new DBServer(msg.guild.id),

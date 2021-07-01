@@ -5,11 +5,11 @@ const sMsg = `Приватные комнаты`
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .vname <name> 
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .vname <name> 
+     */
     async (args, msg, client) => {
         if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
             return
@@ -20,7 +20,7 @@ module.exports =
         }
 
         /**@type {Discord.VoiceChannel} */
-        var room = msg.member.voice.channel
+        const room = msg.member.voice.channel
 
         if(!room) {
             utl.embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет приватной комнаты!`)
@@ -28,7 +28,7 @@ module.exports =
         }
 
         args.shift()
-        var newName = args.join(` `)
+        const newName = args.join(` `)
 
         if(newName && newName.length <= 31) {
             room.setName(newName)

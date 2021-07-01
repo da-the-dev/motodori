@@ -1,5 +1,5 @@
 const utl = require('../../utility')
-const { getGuild, Connection } = utl.db
+const { Connection } = utl.db
 const { activity } = require('../newActivity/newActivity')
 
 beforeAll(async () => {

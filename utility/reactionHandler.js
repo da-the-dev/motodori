@@ -3,9 +3,13 @@ const utl = require('../utility')
 const reactions = require('./reactions')
 const sMsg = 'Реакции'
 
-var lastRandom = null
+const lastRandom = null
+/**
+ * @param {number} size
+ * @returns
+ */
 function random(size) {
-    var rand = Math.floor(Math.random() * size)
+    const rand = Math.floor(Math.random() * size)
     if(lastRandom == rand)
         rand(size)
     else {
@@ -16,8 +20,10 @@ function random(size) {
 
 /**
  * Checks for partner
+ *
  * @param {Discord.Message} msg - OG message
  * @param {Discord.GuildMember} member 
+ * @returns
  */
 function checkForPartner(msg, member) {
     if(!member || msg.author.id == member.id) {
@@ -28,11 +34,11 @@ function checkForPartner(msg, member) {
 }
 /**
  * Builds an embed for solo reactions
+ *
  * @param {Discord.Message} msg - OG message
  * @param {string} member - Who sent the messsage
  * @param {string[]} gifs - GIFs array
  * @param {string} description - Description
- * @returns {Discord.MessageEmbed}
  */
 function solo(msg, member, gifs, description) {
     const rand = random(gifs.length)
@@ -43,12 +49,12 @@ function solo(msg, member, gifs, description) {
 }
 /**
  * Builds an embed for paired reactions without permissinon
+ *
  * @param {Discord.Message} msg - OG message
  * @param {string} member - Who sent the messsage
  * @param {string} reciever - Who was pinged in the messsage
  * @param {string[]} gifs - GIFs array
  * @param {string} description - Description
- * @returns {Discord.MessageEmbed}
  */
 function pair(msg, member, reciever, gifs, description) {
     const rand = random(gifs.length)
@@ -58,13 +64,13 @@ function pair(msg, member, reciever, gifs, description) {
 }
 /**
  * Builds an embed for paired reactions with permissinon
+ *
  * @param {Discord.Message} msg - OG message
  * @param {string} member - Who sent the messsage
  * @param {string} reciever - Who was pinged in the messsage
  * @param {string[]} gifs - GIFs array
  * @param {string} question - Question before consent
  * @param {string} description - Description
- * @returns {Discord.MessageEmbed}
  */
 function pairPerm(msg, member, reciever, gifs, question, description) {
     const rand = random(gifs.length)
@@ -98,11 +104,11 @@ function pairPerm(msg, member, reciever, gifs, question, description) {
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Handles reaction commands
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Handles reaction commands
+     */
     (args, msg, client) => {
         const mMember = msg.mentions.members.first()
         switch(args[0]) {

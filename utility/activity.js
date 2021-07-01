@@ -1,10 +1,8 @@
 const Discord = require('discord.js')
-var voiceActs = []
-const utl = require('../utility')
+const voiceActs = []
 const constants = require('../constants.json')
 const { getConnection, getGuild, DBServer } = require('../utility/db')
 
-var prmsVoiceActs = []
 /**
  * 
  * @param {Discord.Guild} guild 
@@ -25,13 +23,14 @@ const prmsVoiceAct = guild => {
 
 /**
  * Increments money and time fields for all current active members every minute
+ *
  * @param {Discord.Client} client
  */
 const voiceAct = client => {
     setInterval(async () => {
-        var prepedVoiceActs = voiceActs.map(a => { return { id: a } })
+        const prepedVoiceActs = voiceActs.map(a => { return { id: a } })
         if(prepedVoiceActs.length > 0) {
-            var update = { $inc: { money: 1, voiceTime: 1 } }
+            const update = { $inc: { money: 1, voiceTime: 1 } }
             getConnection().updateMany('836297404260155432', { $or: prepedVoiceActs }, update)
         }
 
@@ -52,7 +51,8 @@ const voiceAct = client => {
 }
 
 /**
- * @desctiption Give user points every 1 minute in voicechat
+ * Give user points every 1 minute in voicechat
+ *
  * @param {Discord.VoiceState} oldState
  * @param {Discord.VoiceState} newState
  */
@@ -83,6 +83,7 @@ module.exports.voiceActivity = (oldState, newState) => {
 
 /**
  * Give voice activity money when the bot restarts
+ *
  * @param {Discord.Client} client
  */
 module.exports.voiceActivityInit = async (client) => {
@@ -105,14 +106,15 @@ module.exports.voiceActivityInit = async (client) => {
 /**
  * This map holds an array of MessageInfo for each user who sent
  * a message in a guild
- * @type {Map<string, Array<MessageInfo>}
+ *
+ * @type {Map<string, MessageInfo[]}
  */
-var messages = new Map()
-var messagesCounter = 0
-const amountOfMessages = 10
+const messages = new Map()
+
 /**
  * Give user 1 point every 5 messages, save the message in
  * DB as regular, day and night message accordingly
+ *
  * @param {Discord.Message} msg - Message
  */
 module.exports.chatActivity = async (msg) => {
@@ -122,7 +124,7 @@ module.exports.chatActivity = async (msg) => {
         messages.set(msg.author.id, messages.get(msg.author.id) + 1 || 1)
 
         const entrified = Array.from(messages.entries())
-        for(i = 0; i < messages.size; i++)
+        for(let i = 0; i < messages.size; i++)
             if(entrified[i][1] == 5) {
                 messages.delete(entrified[i][0])
                 getConnection().update('836297404260155432', msg.author.id, { $inc: { money: 1 } })

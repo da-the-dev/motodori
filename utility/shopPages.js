@@ -2,18 +2,20 @@ const Discord = require('discord.js')
 const emojies = ['⬅️', '➡️']
 const { sweet } = require('../constants.json').emojies
 const utl = require('../utility')
-const { DBServer, getConnection } = utl.db
+const { DBServer } = utl.db
 
 /** 
  * Build and edit shop message
+ *
  * @param {number} page - Page to switch to
  * @param {Discord.Message} msg - Message to edit
  * @param {string} thumbnail - Thumbnail
+ * @returns
  */
 const buildPage = async (page, msg, thumbnail) => {
     msg = await msg.channel.messages.fetch(msg.id)
 
-    var embed = new Discord.MessageEmbed()
+    const embed = new Discord.MessageEmbed()
         .setTitle(`Магазин`)
         .setFooter(`Страница ${page}/3 • ${msg.embeds[0].footer.text.slice(msg.embeds[0].footer.text.indexOf('•') + 2)}`)
         .setThumbnail(thumbnail)
@@ -27,13 +29,7 @@ const buildPage = async (page, msg, thumbnail) => {
 
     console.log(start, end)
 
-    var desc = ''
-    // for(i = 0; i < 20; i++)
-    //     server.roles[i] ? desc += `<@&${server.roles[i].id}>` : null
-    // msg.channel.send(desc)
-
-
-    for(i = start; i < end; i++)
+    for(let i = start; i < end; i++)
         embed.addField(`${i + 1}. — ${server.roles[i].price}${sweet}`, ` <@&${server.roles[i].id}>`, true)
 
     return msg.edit({ embed: embed })
@@ -41,18 +37,19 @@ const buildPage = async (page, msg, thumbnail) => {
 
 /**
  * Manages "shop" page reactions
+ *
  * @param {Discord.MessageReaction} reaction - Reaction
  * @param {Discord.User} user - Reaction's user
  * @param {Discord.Client} client - Bot client
  */
 module.exports = (reaction, user, client) => {
-    var msg = reaction.message
+    const msg = reaction.message
     if(!(!msg.embeds[0] || !msg.embeds[0].footer || !msg.embeds[0].footer.text.includes('Страница') || user.id == client.user.id || user.bot)) {
-        var thumbnail = msg.embeds[0].thumbnail.url
+        const thumbnail = msg.embeds[0].thumbnail.url
 
         const text = msg.embeds[0].footer.text
-        var user = text.slice(text.indexOf('•') + 2)
-        var index = text.slice(text.indexOf('/') - 1, text.indexOf('/'))
+        const user = text.slice(text.indexOf('•') + 2)
+        const index = text.slice(text.indexOf('/') - 1, text.indexOf('/'))
 
         console.log(text, user, index)
 

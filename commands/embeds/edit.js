@@ -4,25 +4,25 @@ const constants = require('../../constants.json')
 const sMsg = 'Редактирование эмбеда'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .edit <id>\n<jsonData>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .edit <id>\n<jsonData>
+     */
     (args, msg, client) => {
         if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {
             args.shift()
             args = args.join(' ').split('\n')
 
-            var messageID = args[0]
+            const messageID = args[0]
             args.shift()
             if(!messageID) {
                 utl.embed.ping(msg, sMsg, 'не указан ID эмбеда!')
                 return
             }
 
-            var stringData = args.join('\n').trim()
-            var jsonData = {}
+            const stringData = args.join('\n').trim()
+            let jsonData = {}
             if(!stringData) {
                 utl.embed.ping(msg, sMsg, 'Вы не указали данные для эмбеда!')
                 return

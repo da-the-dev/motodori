@@ -2,9 +2,10 @@ const utl = require('../../utility')
 const { getGuild } = utl.db
 /**
  * @param {string} id
+ * @returns {any[]}
  */
 module.exports.activity = async id => {
-    var total = [];
+    const total = []
     const guild = await getGuild('836297404260155432')
     guild.forEach(m => {
         const member = guild.member(m.id)

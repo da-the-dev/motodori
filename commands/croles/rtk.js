@@ -4,13 +4,13 @@ const { getGuild, DBUser, DBServer } = utl.db
 const sMsg = 'Конфискация кастомной роли'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .rtk <member> <rolePos>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .rtk <member> <rolePos>
+     */
     async (args, msg, client) => {
-        var mMember = msg.mentions.members.first()
+        const mMember = msg.mentions.members.first()
         if(!mMember) {
             utl.embed.ping(msg, sMsg, 'не указан пользователь!')
             return

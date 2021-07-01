@@ -1,5 +1,4 @@
 require('dotenv').config()
-const assert = require('assert')
 const { DBUser, Connection, DBServer, getGuild } = require('../utility/db')
 const guildID = '836297404260155432'
 const myID = '315339158912761856'

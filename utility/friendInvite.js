@@ -1,7 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
 const { DBUser } = utl.db
-const constants = require('../constants.json')
 
 /**
  * @param {Discord.Client} client
@@ -18,7 +17,7 @@ module.exports.fetchInvites = async (client, guild) => {
 module.exports.invite = async member => {
     const freshInvites = await member.guild.fetchInvites()
 
-    const invite = freshInvites.find(i => member.client.invites.get(i.code).uses < i.uses);
+    const invite = freshInvites.find(i => member.client.invites.get(i.code).uses < i.uses)
     member.client.invites = freshInvites
 
     const inviter = await new DBUser(member.guild.id, invite.inviter.id)

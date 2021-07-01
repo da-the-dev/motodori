@@ -4,11 +4,11 @@ const constants = require('../../constants.json')
 const sMsg = 'Баг'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .bug <text>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .bug <text>
+     */
     (args, msg, client) => {
         args.shift()
         if(args.length <= 0) {
@@ -17,7 +17,7 @@ module.exports =
         }
 
         utl.embed(msg, sMsg, 'Баг репорт отправлен, спасибо!').then(m => {
-            var embed = new Discord.MessageEmbed()
+            const embed = new Discord.MessageEmbed()
                 .setTitle(`Новый баг от: ${msg.member.displayName}`)
                 .setDescription(args.join(' ') + `\n[Ссылка на сообщение](${m.url})`)
                 .setColor('#42cbf5')

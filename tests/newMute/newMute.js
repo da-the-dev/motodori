@@ -1,5 +1,4 @@
-const { Message, Client } = require('discord.js')
-const { db, embed, redisConnection } = require('../../utility')
+const { db, redisConnection } = require('../../utility')
 const { DBUser } = db
 const { getRedCon } = redisConnection
 const moment = require('moment')
@@ -7,14 +6,16 @@ const moment = require('moment')
 
 /** 
  * Input: .mute member 5s 10s 5m some reason
+ *
  * @param {string[]} args
+ * @returns
  */
 module.exports.parser = (args) => {
     args.shift()
 
     const regex = /\d+s|\d+m|\d+h|\d+d/
 
-    var time = 0
+    let time = 0
     const timeArgs = args.filter(e => regex.test(e))
     const reason = args.filter(e => !regex.test(e)).join(' ')
     timeArgs.forEach(e => {
@@ -39,6 +40,7 @@ module.exports.parser = (args) => {
 
 /**
  * Adds a shadow key for .mute
+ *
  * @param {string} id 
  * @param {number} time in seconds
  */
@@ -49,8 +51,9 @@ module.exports.saveToRedis = async (id, time) => {
 
 /**
  * Adds mute flag in MongoDB
+ *
  * @param {string} id 
- * @param {string} guildIDы
+ * @param {string} guildID
  * @param {boolean} value
  */
 module.exports.saveToMongo = async (id, guildID, value) => {
@@ -61,17 +64,19 @@ module.exports.saveToMongo = async (id, guildID, value) => {
 
 /**
  * Calculates time from seconds into s,m,h,d
+ *
  * @param {number} time 
+ * @returns
  */
 module.exports.timeCalculator = (time) => {
-    const duration = moment.duration(time, 'seconds');
+    const duration = moment.duration(time, 'seconds')
 
     const mmD = duration.days()
     const mmH = duration.hours()
     const mmM = duration.minutes()
     const mmS = duration.seconds()
 
-    var msg = ''
+    let msg = ''
 
     if(mmD) msg += `**${mmD.toString()}**д `
     if(mmH) msg += `**${mmH.toString()}**ч `

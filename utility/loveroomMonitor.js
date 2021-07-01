@@ -5,6 +5,7 @@ const schedule = require('node-schedule')
 
 /**
  * Monitors when a loveroom member left the server
+ *
  * @param {Discord.GuildMember} member 
  */
 module.exports.roomDeletion = async (member) => {
@@ -13,8 +14,8 @@ module.exports.roomDeletion = async (member) => {
         utl.db.createClient(process.env.MURL).then(db => {
             db.get(member.guild.id, member.id).then(userData => {
                 if(userData) {
-                    var partnerID = userData.loveroom.partner
-                    var id = userData.loveroom.id
+                    const partnerID = userData.loveroom.partner
+                    const id = userData.loveroom.id
                     member.guild.channels.cache.get(id).delete()
                     delete userData.loveroom
                     db.set(member.guild.id, member.id, userData).then(() => {
@@ -44,9 +45,9 @@ const payment = (guild) => {
         db.updateMany('836297404260155432', { loveroom: { $exists: true } }, { $inc: { 'loveroom.bal': -3000 } })
             .then(() => {
                 db.getMany('836297404260155432', { loveroom: { $exists: true } }).then(async data => {
-                    for(i = 0; i < data.length; i++) {
+                    for(let i = 0; i < data.length; i++) {
                         if(data[i].loveroom.bal <= 0) {
-                            var channel = guild.channels.cache.get(data[i].loveroom.id)
+                            const channel = guild.channels.cache.get(data[i].loveroom.id)
                             channel ? channel.delete() : null
                             guild.member(data[i].id).roles.remove(constants.roles.loveroom)
 

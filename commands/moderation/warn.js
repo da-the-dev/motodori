@@ -1,19 +1,19 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { DBUser, Connection, getConnection } = utl.db
+const { DBUser } = utl.db
 const { getRedCon } = utl.redisConnection
 const constants = require('../../constants.json')
 const sMsg = 'Выдача предупреждения'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .warn <member> <reason>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .warn <member> <reason>
+     */
     async (args, msg, client) => {
         if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
-            var mMember = msg.mentions.members.first()
+            const mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed(msg, sMsg, 'Вы не указали пользователя для варна!')
                 return
@@ -22,7 +22,7 @@ module.exports =
             args.shift()
             args.shift()
 
-            var reason = args.join(" ").trim()
+            const reason = args.join(' ').trim()
             if(!reason) {
                 utl.embed(msg, sMsg, 'Вы не указали причину варна!')
                 return

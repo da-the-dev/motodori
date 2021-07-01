@@ -5,6 +5,7 @@ const { getConnection, DBUser } = utl.db
 
 /**
  * Reapply roles on server entry
+ *
  * @param {Discord.GuildMember} member 
  */
 module.exports.reapplyRoles = async (member) => {
@@ -12,7 +13,7 @@ module.exports.reapplyRoles = async (member) => {
     const user = await new DBUser(member.guild.id, member.id)
 
     if(user) {
-        var collectedRoles = []
+        const collectedRoles = []
         // Reapply roles
         if(user.mute)
             collectedRoles.push(constants.roles.muted)
@@ -31,6 +32,7 @@ module.exports.reapplyRoles = async (member) => {
 
 /**
  * Checks if member has role or one above it in hierarchy
+ *
  * @param {Discord.GuildMember} member 
  * @param {Discord.Role} role 
  */

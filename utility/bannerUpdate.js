@@ -3,6 +3,7 @@ const { scheduleJob } = require('node-schedule')
 
 /**
  * Updated the banner every hour
+ *
  * @param {Guild} guild
  */
 const updateBanner = async guild => {
@@ -22,14 +23,14 @@ const updateBanner = async guild => {
     const membersCanvas = createCanvas(img.width, img.height)
     const mcCtx = membersCanvas.getContext('2d')
 
-    var members = 0
+    let members = 0
     guild.channels.cache.filter(c => c.type == 'voice')
         .forEach(c => {
             members += c.members.size
         })
 
     const memberText = members.toString()
-    var args = [memberText, 0, 0]
+    let args = [memberText, 0, 0]
 
     mcCtx.font = memberFont
     mcCtx.textAlign = 'left'
@@ -51,7 +52,7 @@ const updateBanner = async guild => {
     tcCtx.font = timeFont
     tcCtx.textAlign = 'left'
 
-    const time = new Date(Date.now()).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" }).slice(12, 17)
+    const time = new Date(Date.now()).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' }).slice(12, 17)
     args = [time, 0, 0]
 
     tcCtx.translate(img.width / 1.39, img.height / 1.09)
@@ -72,7 +73,8 @@ const updateBanner = async guild => {
 
 /**
  * Updated the banner every hour
- * @param {Discord.Guild} guild 
+ *
+ * @param {Guild} guild 
  */
 module.exports = (guild) => {
     updateBanner(guild)

@@ -14,7 +14,7 @@ module.exports =
      */
     async (args, msg, client) => {
         if(roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
-            var mMember = msg.mentions.members.first()
+            const mMember = msg.mentions.members.first()
             if(!mMember) {
                 embed(msg, sMsg, 'Вы не указали пользователя для мута!')
                 return

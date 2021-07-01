@@ -4,26 +4,26 @@ const { DBUser } = utl.db
 const { sweet } = require('../../constants.json').emojies
 const sMsg = 'Казино'
 
-/**
- * @param {DBUser} user 
- * @returns
- */
-const checkIfNan = (user) => {
-    if(Number.isNaN(user.money)) {
-        utl.embed(msg, sMsg, 'Произошла ошибка! Попробуйте еще раз')
-        return true
-    }
-}
+// /**
+//  * @param {DBUser} user 
+//  * @returns
+//  */
+// const checkIfNan = (user) => {
+//     if(Number.isNaN(user.money)) {
+//         utl.embed(msg, sMsg, 'Произошла ошибка! Попробуйте еще раз')
+//         return true
+//     }
+// }
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .br <bet>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .br <bet>
+     */
     async (args, msg, client) => {
-        var bet = args[1]
+        const bet = args[1]
 
         if(!bet || !Number.isInteger(Number(bet))) {
             utl.embed.ping(msg, sMsg, 'не указана ставка!')
@@ -46,12 +46,12 @@ module.exports =
 
         if(Math.random() < 0.3) {
             user.money += bet * 2
-            if(checkIfNan(user)) return
+            // if(checkIfNan(user)) return
             utl.embed.ping(msg, sMsg, `**Вы выиграли!** Ваш баланс: **${user.money}** ${sweet}`)
         }
         else {
             user.money -= bet
-            if(checkIfNan(user)) return
+            // if(checkIfNan(user)) return
             utl.embed.ping(msg, sMsg, `**Вы проиграли!** Ваш баланс: **${user.money}** ${sweet}`)
         }
 

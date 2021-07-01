@@ -16,7 +16,8 @@ module.exports.initLogs = client => {
 
 /**
  * Logs moderator actions
- * @param {Discord.Message} msg - OG message 
+ *
+ * @param {Discord.Guild} guild - Guild ID
  * @param {('mute'|'unmute'|'ban'|'unban'|'toxic'|'untoxic'|'warn'|'unwarn')} action - Type of action
  * @param {Discord.GuildMember} who - Who
  * @param {Discord.GuildMember} acused - Acused
@@ -25,7 +26,7 @@ module.exports.initLogs = client => {
  * @param {number} duration - Duration in seconds
  */
 module.exports.modLog = (guild, action, who, acused, when, why = null, duration = null) => {
-    const date = new Date(when).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })
+    const date = new Date(when).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
 
     const embed = new Discord.MessageEmbed()
         .setFooter(`${date}`)
@@ -93,7 +94,7 @@ module.exports.modLog = (guild, action, who, acused, when, why = null, duration 
  * @param {Discord.Message} [msg2]
  */
 async function msgLog(what, when, msg, msg2) {
-    const date = new Date(when).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })
+    const date = new Date(when).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })
     const embed = new Discord.MessageEmbed()
         .setFooter(`${date}`)
         .setImage('https://i.stack.imgur.com/Fzh0w.png')

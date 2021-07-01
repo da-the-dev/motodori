@@ -4,7 +4,6 @@ const constants = require('../constants.json')
 const { getConnection } = utl.db
 /**
  * 
- * @param {Discord.Client} client 
  * @param {Discord.Guild} guild 
  */
 module.exports.sendMessage = async guild => {

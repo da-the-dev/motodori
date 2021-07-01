@@ -5,11 +5,11 @@ const sMsg = 'Выкуп личной комнаты'
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Message} msg Discord message object
-    * @param {Client} client Discord client object
-    * Usage: .ppay
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Message} msg Discord message object
+     * @param {Client} client Discord client object
+     * Usage: .ppay
+     */
     async (args, msg, client) => {
         const server = await new DBServer(msg.guild.id)
         const personaRoom = server.personalRooms.find(p => p.creator == msg.author.id)

@@ -1,5 +1,4 @@
-
-package-lock.js
+package-lock.json
 node_modules
 
 test.*
@@ -7,4 +6,3 @@ test.*
 index.js
 
 .vscode
-.eslintrc.json

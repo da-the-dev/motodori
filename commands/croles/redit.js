@@ -6,11 +6,11 @@ const sMsg = 'Изменение роли'
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .redit <pos> <edit|name> <value>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .redit <pos> <edit|name> <value>
+     */
     async (args, msg, client) => {
         if(!args[1]) {
             utl.embed.ping(msg, sMsg, 'не указана роль!')
@@ -68,13 +68,13 @@ module.exports =
                 args.shift()
                 args.shift()
 
-                var name = args.join(' ')
+                const name = args.join(' ')
                 if(!name) {
                     utl.embed.ping(msg, sMsg, 'не указано название роли!')
                     return
                 }
 
-                var discordRole = msg.guild.roles.cache.get(role)
+                const discordRole = msg.guild.roles.cache.get(role)
                 const oldName = discordRole.name
                 discordRole.setName(name, `Изменено ${msg.author} командой .redit`)
                 utl.embed.ping(msg, sMsg, `название роли **${oldName}** изменено на **${name}**`)
@@ -85,7 +85,7 @@ module.exports =
                 args.shift()
                 args.shift()
 
-                var hex = args[0]
+                let hex = args[0]
                 if(!hex) {
                     utl.embed.ping(msg, sMsg, 'не указан цвет роли!')
                     return
@@ -98,8 +98,7 @@ module.exports =
                 hex = hex.toUpperCase()
                 hex == '#000000' ? hex == '#010101' : null
 
-                var discordRole = msg.guild.roles.cache.get(role)
-                const oldHex = discordRole.hexColor
+                const discordRole = msg.guild.roles.cache.get(role)
                 discordRole.setColor(hex, `Изменено ${msg.author} командой .redit`)
                 utl.embed.ping(msg, sMsg, `цвет роли изменен c **${discordRole.hexColor}** на **${hex}**`)
                 break
@@ -152,7 +151,7 @@ module.exports =
 
             default:
                 utl.embed.ping(msg, sMsg,
-                    `не указано неизвестное действие!
+                    `указано неизвестное действие!
                     \`\`\`Доступные действия:\n1.name новое имя роли\n2.hex #hex\`\`\``)
                 break
         }

@@ -1,10 +1,11 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { DBUser, DBServer, Connection, getConnection } = utl.db
+const { DBUser } = utl.db
 const sMsg = 'Экипировка роли'
 
 /**
  * Equips a role
+ *
  * @param {Discord.GuildMember} member - Member who wants to equip a role
  * @param {number} index - Index of the role
  * @param {boolean} isCustom - If the role is custom
@@ -18,7 +19,7 @@ const unequipRole = async (member, index, isCustom, msg) => {
         return
     }
 
-    var field = isCustom ? 'customInv' : 'inv'
+    const field = isCustom ? 'customInv' : 'inv'
 
     if(!user[field][index - 1]) {
         utl.embed.ping(msg, sMsg, 'у Вас нет такой роли!')
@@ -33,11 +34,11 @@ const unequipRole = async (member, index, isCustom, msg) => {
 }
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .unequip <rolePos>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .unequip <rolePos>
+     */
     (args, msg, client) => {
         if(!args[1]) {
             utl.embed.ping(msg, sMsg, 'не указан индекс роли!')

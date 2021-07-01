@@ -1,19 +1,19 @@
 const Discord = require('discord.js')
 const constants = require('../../constants.json')
 const utl = require('../../utility')
-const { DBUser, Connection, getConnection } = utl.db
+const { DBUser } = utl.db
 const sMsg = 'Снятие локальной блокировки'
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .unban <member>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .unban <member>
+     */
     async (args, msg, client) => {
         if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {
-            var mMember = msg.mentions.members.first()
+            const mMember = msg.mentions.members.first()
             if(!mMember) {
                 utl.embed(msg, sMsg, 'Не указан участник!')
                 return

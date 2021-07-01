@@ -1,22 +1,21 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const constants = require('../../constants.json')
 const sMsg = 'Эмбед-билдер'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .say <jsonData>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .say <jsonData>
+     */
     (args, msg, client) => {
         // if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.curator))) {
         args = args.join(' ').split('\n')
         args.shift()
 
-        var stringData = args.join('\n')
-        var jsonData = {}
-        if(stringData == "") {
+        const stringData = args.join('\n')
+        let jsonData = {}
+        if(stringData == '') {
             utl.embed(msg, sMsg, '\n[EmbedBuilder](https://embedbuilder.nadekobot.me/)\n\n\n\n')
             return
         }

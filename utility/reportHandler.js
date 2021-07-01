@@ -5,6 +5,7 @@ const { dot } = require('../constants.json').emojies
 
 /**
  * Handles report reactions
+ *
  * @param {Discord.MessageReaction} reaction - Reaction
  * @param {Discord.User} user - Reaction's user
  * @param {Discord.Client} client - Bot client
@@ -23,9 +24,9 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
 
         // If report is being taken 
         switch(reaction.emoji.name) {
-            case "☑️":
+            case '☑️':
                 if(user.id != client.user.id) {
-                    var reportID = reaction.message.embeds[0].footer.text
+                    let reportID = reaction.message.embeds[0].footer.text
                     reportID = Number(reportID.slice(reportID.indexOf('ID: ') + 4, reportID.length))
                     console.log(reportID)
 
@@ -34,7 +35,7 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                             console.log(reportInfo)
                             db.delete(reaction.message.guild.id, `report-${reportID}`).then(() => db.close())
 
-                            var description = `\n— За жалобу взялся(-ась) <@${user.id}>\n`
+                            let description = `\n— За жалобу взялся(-ась) <@${user.id}>\n`
                             reportInfo.reportVoiceChannel ? description += `— [Канал пожаловавшегося](${reportInfo.reportVoiceChannel})\n` : null
                             reportInfo.guiltyVoiceChannel ? description += `— [Канал виновника](${reportInfo.guiltyVoiceChannel})` : null
 
@@ -42,8 +43,8 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                             const takenReport = reaction.message.embeds[0]
                             takenReport.setTitle(`${dot}Жалоба от ${reaction.message.guild.member(reportInfo.caller).user.tag || 'неизвестный'}`)
                             takenReport.setDescription(description)
-                            takenReport.addField("Жалоба на", `<@${reportInfo.guilty}>`, true)
-                            takenReport.addField("Содержимое жалобы", `${reportInfo.description}`, true)
+                            takenReport.addField('Жалоба на', `<@${reportInfo.guilty}>`, true)
+                            takenReport.addField('Содержимое жалобы', `${reportInfo.description}`, true)
 
                             reaction.message.edit(takenReport)
                                 .then(m => {
@@ -59,13 +60,13 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                 break
 
             // If report closed with success
-            case "✅":
-                var moderID = reaction.message.embeds[0].description.slice(reaction.message.embeds[0].description.indexOf('<@') + 2, reaction.message.embeds[0].description.indexOf('>'))
+            case '✅': {
+                const moderID = reaction.message.embeds[0].description.slice(reaction.message.embeds[0].description.indexOf('<@') + 2, reaction.message.embeds[0].description.indexOf('>'))
 
                 if(user.id != client.user.id && user.id == moderID) {
-                    var name = reaction.message.embeds[0].title
+                    let name = reaction.message.embeds[0].title
                     name = name.slice(name.indexOf('от') + 3)
-                    var successEmbed = new Discord.MessageEmbed()
+                    const successEmbed = new Discord.MessageEmbed()
                         .setTitle(`${dot}Вердикт жалобы • ${name}`)
                         .setDescription(`<@${user.id}> закрыл репорт с пометкой **выполнен**`)
                         .setThumbnail(reaction.message.embeds[0].thumbnail.url)
@@ -77,15 +78,15 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                     return
                 }
                 break
-
+            }
             // If report closed with fail
-            case "❌":
-                var moderID = reaction.message.embeds[0].description.slice(reaction.message.embeds[0].description.indexOf('<@') + 2, reaction.message.embeds[0].description.indexOf('>'))
+            case '❌': {
+                const moderID = reaction.message.embeds[0].description.slice(reaction.message.embeds[0].description.indexOf('<@') + 2, reaction.message.embeds[0].description.indexOf('>'))
 
                 if(user.id != client.user.id && user.id == moderID) {
-                    var name = reaction.message.embeds[0].title
+                    let name = reaction.message.embeds[0].title
                     name = name.slice(name.indexOf('от') + 3)
-                    var successEmbed = new Discord.MessageEmbed()
+                    const successEmbed = new Discord.MessageEmbed()
                         .setTitle(`${dot}Вердикт жалобы • ${name}`)
                         .setDescription(`<@${user.id}> закрыл репорт с пометкой **не выполнен**`)
                         .setThumbnail(reaction.message.embeds[0].thumbnail.url)
@@ -96,6 +97,7 @@ module.exports.reportAssignmentHandler = async (reaction, user, client) => {
                         })
                 }
                 break
+            }
         }
     }
 }

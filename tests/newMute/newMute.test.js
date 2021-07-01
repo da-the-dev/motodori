@@ -1,12 +1,11 @@
-const { Message, Client } = require('discord.js')
-const { db, embed, redisConnection } = require('../../utility')
-const { DBUser, Connection } = db
-const { getRedCon, RedisConnection } = redisConnection
+const { db, redisConnection } = require('../../utility')
+const { DBUser } = db
+const { getRedCon } = redisConnection
 
 const { parser, saveToMongo, saveToRedis, timeCalculator } = require('../newMute/newMute')
 
 const messageParser = (msg) => {
-    var args = msg.trim().slice(1).split(" ")
+    const args = msg.trim().slice(1).split(' ')
     args.forEach(a => a.trim())
     args.shift()
 

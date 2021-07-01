@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { getGuild, getConnection } = utl.db
+const { getGuild } = utl.db
 
 const topAmount = 10
 
@@ -12,7 +12,7 @@ module.exports =
      * @description Usage: .ctop
      */
     async (args, msg, client) => {
-        var guild = await getGuild(msg.guild.id)
+        let guild = await getGuild(msg.guild.id)
 
         guild = guild.filter(u => u.msgs)
         guild.sort((a, b) => {
@@ -21,19 +21,19 @@ module.exports =
             return 0
         })
 
-        var embed = utl.embed.build(msg, 'Топ пользователей по текстовому активу')
-        var description = ''
+        const embed = utl.embed.build(msg, 'Топ пользователей по текстовому активу')
+        let description = ''
 
-        var valids = []
-        for(i = 0; i < guild.length; i++) {
+        const valids = []
+        for(let i = 0; i < guild.length; i++) {
             if(valids.length <= topAmount) {
-                var member = msg.guild.member(guild[i].id)
+                const member = msg.guild.member(guild[i].id)
                 if(member)
                     valids.push({ member: member, msgs: guild[i].msgs })
             }
         }
 
-        for(i = 0; i < topAmount; i++) {
+        for(let i = 0; i < topAmount; i++) {
             switch(i) {
                 case 0:
                     description += `\`🥇\` • <@${valids[i].member.id}> — **${valids[i].msgs}**\n`

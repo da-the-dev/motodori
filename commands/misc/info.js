@@ -1,12 +1,17 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
 
-/**@param {Discord.Client} */
+/**
+ * Retrieves time 
+ * 
+ * @param {Discord.Client} client - Discord client
+ * @returns {string} - Stringified time
+ */
 const getTime = (client) => {
-    var date = new Date(client.uptime)
-    var hours = date.getHours() + date.getTimezoneOffset() / 60
-    var minutes = date.getMinutes()
-    var seconds = date.getSeconds()
+    const date = new Date(client.uptime)
+    let hours = date.getHours() + date.getTimezoneOffset() / 60
+    let minutes = date.getMinutes()
+    let seconds = date.getSeconds()
 
     if(hours < 10)
         hours = '0' + hours.toString()
@@ -32,11 +37,11 @@ module.exports =
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
      * @description Usage: .info
-    */
+     */
     (args, msg, client) => {
-        var memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
+        const memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
 
-        var info =
+        const info =
             utl.embed.build(msg, 'Информация о боте')
                 .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
                 .addField('Автор бота', `\`\`\`${client.users.cache.find(u => u.id == process.env.MYID).tag}\`\`\``, true)

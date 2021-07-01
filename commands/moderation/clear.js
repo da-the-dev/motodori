@@ -4,14 +4,14 @@ const constants = require('../../constants.json')
 const sMsg = 'Удаление сообщений'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .clear <amount>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .clear <amount>
+     */
     async (args, msg, client) => {
         if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
-            var msgAmount = Number(args[1])
+            const msgAmount = Number(args[1])
             if(!msgAmount) {
                 utl.embed(msg, sMsg, 'Не указано количество сообщений!')
                 return
@@ -21,10 +21,10 @@ module.exports =
                 return
             }
 
-            var hundreds = Math.floor(msgAmount / 100)
-            var rest = msgAmount % 100
+            const hundreds = Math.floor(msgAmount / 100)
+            const rest = msgAmount % 100
 
-            for(i = 0; i < hundreds; i++)
+            for(let i = 0; i < hundreds; i++)
                 msg.channel.bulkDelete(100)
 
             rest > 0 ? await msg.channel.bulkDelete(rest) : null

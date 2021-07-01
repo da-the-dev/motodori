@@ -3,8 +3,11 @@ const redis = require('redis')
 const { promisify } = require('util')
 
 /**@type {RedisConnection[]} */
-var connections = []
+const connections = []
 
+/**
+ * @returns {RedisConnection}
+ */
 function getRedCon() {
     return connections.find(c => c.isAvalible())
 }
@@ -30,6 +33,7 @@ class RedisConnection {
 
     /**
      * Get data from redis DB
+     *
      * @param {string} key 
      * @returns {any}
      */
@@ -39,6 +43,7 @@ class RedisConnection {
     }
     /**
      * Set data to redis DB
+     *
      * @param {string} key 
      * @param {string} data
      */
@@ -49,7 +54,9 @@ class RedisConnection {
 
     /**
      * Get key's lifespan (Time To Live)
-     * @param {string} key 
+     *
+     * @param {string} key
+     * @returns
      */
     async ttl(key) {
         const ttl = promisify(this.#connection.ttl).bind(this.#connection)
@@ -57,6 +64,7 @@ class RedisConnection {
     }
     /**
      * Set key's lifespan (expiration date)
+     *
      * @param {string} key 
      * @param {number} duration - in seconds
      */
@@ -67,6 +75,7 @@ class RedisConnection {
 
     /**
      * Delete key
+     *
      * @param {string} key 
      */
     async delete(key) {

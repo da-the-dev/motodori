@@ -1,18 +1,18 @@
 const Discord = require('discord.js')
 const utl = require('../../utility')
-const { DBUser, getConnection } = utl.db
+const { DBUser } = utl.db
 const constants = require('../../constants.json')
 const sMsg = 'Снятие предупреждений'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .unwarn <member> <index>
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .unwarn <member> <index>
+     */
     async (args, msg, client) => {
         if(utl.roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.chatControl))) {
-            var mMember = msg.mentions.members.first()
+            const mMember = msg.mentions.members.first()
 
             if(!mMember) {
                 utl.embed.ping(msg, sMsg, 'не указан пользователь!')
@@ -29,8 +29,6 @@ module.exports =
 
             const user = await new DBUser(msg.guild.id, mMember.id)
             const index = Number(args[2]) - 1
-
-
 
             if(!user.warns) {
                 utl.embed.ping(msg, sMsg, `у пользователя <@${mMember.user.id}> нет предупреждений`)

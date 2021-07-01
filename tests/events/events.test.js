@@ -1,12 +1,8 @@
 require('dotenv').config()
-const { Client, Message, MessageEmbed } = require('discord.js')
 const { parser } = require('../events/events')
 
-const guildID = '836297404260155432'
-const myID = '315339158912761856'
-
 const messageParser = (msg) => {
-    var args = msg.trim().slice(1).split(" ")
+    const args = msg.trim().slice(1).split(' ')
     args.forEach(a => a.trim())
     args.shift()
 

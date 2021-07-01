@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const utl = require('../utility')
-const { DBServer, getConnection } = require('../utility/db')
+const { DBServer } = require('../utility/db')
 const constants = require('../constants.json')
 
 // Me, collector & felix
@@ -8,18 +8,22 @@ const whitelist = [process.env.MYID, '820196535940939806', '677923814914523144',
 
 /**
  * Checks is "defenses" key value is "true" and then runs "func"
+ *
+ * @param {Function} func - Function to run
+ * @returns
  */
 const getDef = async (func) => {
     return (await new DBServer('836297404260155432')).def
 }
 
 /**
- * @description Takes away all admin roles from member and notifies in dms
+ * Takes away all admin roles from member and notifies in dms
+ *
  * @param {Discord.GuildMember} member 
- * @param {Discord.Collection<string, Discord.Role>} roles 
+ * @param {string} reason
  */
 const takeAndNotify = (member, reason) => {
-    var roles = member.roles.cache.filter(r => r.permissions.has("ADMINISTRATOR"))
+    const roles = member.roles.cache.filter(r => r.permissions.has('ADMINISTRATOR'))
     roles.forEach(r => {
         member.roles.remove(r, `Подозрительная деятельность: ${reason}`)
             .catch(err => {
@@ -35,7 +39,8 @@ const takeAndNotify = (member, reason) => {
 }
 
 /**
- * @description Kicks an unautorised bot if protection wasn't lowered
+ * Kicks an unautorised bot if protection wasn't lowered
+ *
  * @param {Discord.GuildMember} member 
  */
 module.exports.monitorBotInvites = async member => {
@@ -45,8 +50,8 @@ module.exports.monitorBotInvites = async member => {
             member.kick('Бот был добавлен, пока антикраш защита была включена')
             member.guild.fetchAuditLogs({ type: 28 })
                 .then(audit => {
-                    var executorID = Array.from(audit.entries.values())[0].executor.id
-                    var executor = member.guild.members.cache.get(executorID)
+                    const executorID = Array.from(audit.entries.values())[0].executor.id
+                    const executor = member.guild.members.cache.get(executorID)
 
                     if(whitelist.includes(executorID))
                         return
@@ -59,15 +64,16 @@ module.exports.monitorBotInvites = async member => {
 
 
 /**
- * @description Remove admin privilages from a role if one was updated with them
+ * Remove admin privilages from a role if one was updated with them
+ *
  * @param {Discord.Role} oldRole
  * @param {Discord.Role} newRole
  */
 module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
     if(await getDef()) {
         if(!oldRole.permissions.has('ADMINISTRATOR') && newRole.permissions.has('ADMINISTRATOR')) {
-            var audit = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' })
-            var executor = Array.from(audit.entries.values())[0].executor
+            const audit = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE' })
+            const executor = Array.from(audit.entries.values())[0].executor
 
             if(whitelist.includes(executor.id))
                 return
@@ -82,21 +88,22 @@ module.exports.monitorRoleAdminPriviligeUpdate = async (oldRole, newRole) => {
 }
 
 /**
- * @description Prevents admins from baning too many people in a short period of time
- * @param {Discord.GuildMember}
+ * Prevents admins from baning too many people in a short period of time
+ *
  * @param {Discord.Guild} guild
+ * @param {Discord.GuildMember} member
  */
 module.exports.monitorBans = async (guild, member) => {
     const banPool = 10
     if(await getDef()) {
         guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' })
             .then(audit => {
-                var executor = audit.entries.first().executor
+                const executor = audit.entries.first().executor
                 if(whitelist.includes(executor.id))
                     return
 
                 // Executor Ban Entries
-                var eBE = audit.entries.filter(e => e.executor.id == executor.id)
+                let eBE = audit.entries.filter(e => e.executor.id == executor.id)
                 eBE = eBE.sort((a, b) => { // Sort from OLD to NEW
                     if(a.createdTimestamp > b.createdTimestamp) return -1
                     if(a.createdTimestamp < b.createdTimestamp) return 1
@@ -105,10 +112,10 @@ module.exports.monitorBans = async (guild, member) => {
 
                 // Save only 'banPool' last entries
                 /**@type {Array<Discord.GuildAuditLogsEntry>} */
-                var lastEBEs = Array.from(eBE.values()).slice(0, banPool)
+                const lastEBEs = Array.from(eBE.values()).slice(0, banPool)
 
-                var eBEOld = lastEBEs[banPool - 1]
-                var eBENew = lastEBEs[0]
+                const eBEOld = lastEBEs[banPool - 1]
+                const eBENew = lastEBEs[0]
 
                 if(eBEOld)
                     if(eBENew.createdTimestamp - eBEOld.createdTimestamp < 120000)
@@ -118,21 +125,22 @@ module.exports.monitorBans = async (guild, member) => {
 }
 
 /**
- * @description Prevents admins from kicking too many people in a short period of time
+ * Prevents admins from kicking too many people in a short period of time
+ *
  * @param {Discord.GuildMember} member
  */
 module.exports.monitorKicks = async (member) => {
     const kickPool = 10
     if(await getDef()) {
-        var guild = member.guild
+        const guild = member.guild
         guild.fetchAuditLogs({ type: 'MEMBER_KICK' })
             .then(audit => {
-                var executor = audit.entries.first().executor
+                const executor = audit.entries.first().executor
                 if(whitelist.includes(executor.id))
                     return
 
                 // Executor Kick Entries
-                var eKE = audit.entries.filter(e => e.executor.id == executor.id)
+                let eKE = audit.entries.filter(e => e.executor.id == executor.id)
                 eKE = eKE.sort((a, b) => { // Sort from OLD to NEW
                     if(a.createdTimestamp > b.createdTimestamp) return -1
                     if(a.createdTimestamp < b.createdTimestamp) return 1
@@ -141,10 +149,10 @@ module.exports.monitorKicks = async (member) => {
 
                 // Save only 'kickPool' last entries
                 /**@type {Array<Discord.GuildAuditLogsEntry>} */
-                var lastEKEs = Array.from(eKE.values()).slice(0, kickPool)
+                const lastEKEs = Array.from(eKE.values()).slice(0, kickPool)
 
-                var eKEOld = lastEKEs[kickPool - 1]
-                var eKENew = lastEKEs[0]
+                const eKEOld = lastEKEs[kickPool - 1]
+                const eKENew = lastEKEs[0]
 
                 if(eKEOld)
                     if(eKENew.createdTimestamp - eKEOld.createdTimestamp < 120000)
@@ -155,20 +163,21 @@ module.exports.monitorKicks = async (member) => {
 
 /**
  * Prevents admins from deleting too many roles
+ *
  * @param {Discord.Role} role 
  */
 module.exports.monitorRoleDelete = async role => {
     const kickPool = 2
     if(await getDef()) {
-        var guild = role.guild
+        const guild = role.guild
         guild.fetchAuditLogs({ type: 'ROLE_DELETE' })
             .then(audit => {
-                var executor = audit.entries.first().executor
+                const executor = audit.entries.first().executor
                 if(whitelist.includes(executor.id))
                     return
 
                 // Executor Role Delete Entries
-                var eRDE = audit.entries.filter(e => e.executor.id == executor.id)
+                let eRDE = audit.entries.filter(e => e.executor.id == executor.id)
                 eRDE = eRDE.sort((a, b) => { // Sort from OLD to NEW
                     if(a.createdTimestamp > b.createdTimestamp) return -1
                     if(a.createdTimestamp < b.createdTimestamp) return 1
@@ -177,11 +186,11 @@ module.exports.monitorRoleDelete = async role => {
 
                 // Save only 'kickPool' of entries
                 /**@type {Array<Discord.GuildAuditLogsEntry>} */
-                var lastERDEs = Array.from(eRDE.values()).slice(0, kickPool)
+                const lastERDEs = Array.from(eRDE.values()).slice(0, kickPool)
 
 
-                var eRDEOld = lastERDEs[kickPool - 1]
-                var eRDENew = lastERDEs[0]
+                const eRDEOld = lastERDEs[kickPool - 1]
+                const eRDENew = lastERDEs[0]
 
                 if(eRDEOld)
                     if(eRDENew.createdTimestamp - eRDEOld.createdTimestamp < 120000) {
@@ -194,21 +203,22 @@ module.exports.monitorRoleDelete = async role => {
 
 /**
  * Prevents admins from deleting too many channels
+ *
  * @param {Discord.GuildChannel} channel 
  */
 module.exports.monitorChannelDelete = async channel => {
     const kickPool = 2
     if(channel.parent && channel.parentID != constants.categories.privateRooms)
         if(await getDef()) {
-            var guild = channel.guild
+            const guild = channel.guild
             guild.fetchAuditLogs({ type: 'CHANNEL_DELETE' })
                 .then(audit => {
-                    var executor = audit.entries.first().executor
+                    const executor = audit.entries.first().executor
                     if(whitelist.includes(executor.id))
                         return
 
                     // Executor Role Delete Entries
-                    var eCDE = audit.entries.filter(e => e.executor.id == executor.id)
+                    let eCDE = audit.entries.filter(e => e.executor.id == executor.id)
                     eCDE = eCDE.sort((a, b) => { // Sort from OLD to NEW
                         if(a.createdTimestamp > b.createdTimestamp) return -1
                         if(a.createdTimestamp < b.createdTimestamp) return 1
@@ -217,10 +227,10 @@ module.exports.monitorChannelDelete = async channel => {
 
                     // Save only 'kickPool' of entries
                     /**@type {Array<Discord.GuildAuditLogsEntry>} */
-                    var lastECDEs = Array.from(eCDE.values()).slice(0, kickPool)
+                    const lastECDEs = Array.from(eCDE.values()).slice(0, kickPool)
 
-                    var eCDEOld = lastECDEs[kickPool - 1]
-                    var eCDENew = lastECDEs[0]
+                    const eCDEOld = lastECDEs[kickPool - 1]
+                    const eCDENew = lastECDEs[0]
 
                     if(eCDEOld)
                         if(eCDENew.createdTimestamp - eCDEOld.createdTimestamp < 120000)

@@ -7,6 +7,7 @@ const sMsg = 'Выдача мута'
 
 /**
  * New mute command
+ *
  * @param {string[]} args 
  * @param {Message} msg 
  * @param {Client} client 
@@ -22,7 +23,7 @@ module.exports = async (args, msg, client) => {
 
             const regex = /\d+s|\d+m|\d+h|\d+d/
 
-            var time = 0
+            let time = 0
             const timeArgs = args.filter(e => regex.test(e))
             const reason = args.filter(e => !regex.test(e)).join(' ')
             timeArgs.forEach(e => {
@@ -48,13 +49,13 @@ module.exports = async (args, msg, client) => {
 
             mMember.roles.add(constants.roles.muted)
 
-            const duration = require('moment').duration(time, 'seconds');
+            const duration = require('moment').duration(time, 'seconds')
             const mmD = duration.days()
             const mmH = duration.hours()
             const mmM = duration.minutes()
             const mmS = duration.seconds()
 
-            var muteMsg = ''
+            let muteMsg = ''
 
             if(mmD) muteMsg += `**${mmD.toString()}**д `
             if(mmH) muteMsg += `**${mmH.toString()}**ч `

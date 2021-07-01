@@ -20,14 +20,14 @@ module.exports =
         }
 
         /**@type {Discord.VoiceChannel} */
-        var room = msg.member.voice.channel
+        const room = msg.member.voice.channel
 
         if(!room) {
             utl.embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет приватной комнаты!`)
             return
         }
 
-        var limit = Number(args[1])
+        const limit = Number(args[1])
         if(limit == null) {
             utl.embed(msg, sMsg, `<@${msg.author.id}>, Вы не указали лимит!`)
             return

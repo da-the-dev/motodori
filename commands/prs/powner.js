@@ -20,18 +20,18 @@ module.exports =
         }
 
         /**@type {Discord.VoiceChannel} */
-        var room = msg.member.voice.channel
+        const room = msg.member.voice.channel
 
         if(!room) {
             utl.embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет приватной комнаты!`)
             return
         }
-        var mMember = msg.mentions.members.first()
+        const mMember = msg.mentions.members.first()
 
         if(mMember) { // Member mentioned
             if(mMember.voice.channelID == room.id) {
-                var oldOwner = msg.member
-                var mMember = msg.mentions.members.first()
+
+                const mMember = msg.mentions.members.first()
 
                 if(room.permissionOverwrites.find(o => o.id == msg.member.id && o.allow.has(`CREATE_INSTANT_INVITE`))) {// If creator
                     room.permissionOverwrites.delete(msg.author.id)

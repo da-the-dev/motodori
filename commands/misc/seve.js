@@ -5,14 +5,16 @@ const sMsg = 'Создание эвента'
 
 /**
  * Command chain: .seve -name(n) -participants(p) -start(-s) -reward(-r)
+ *
  * @param {string[]} args
+ * @returns {string[]} 
  */
 const parser = (args) => {
     args.shift()
     if(args.length <= 0)
         throw 'no args'
     const finder = (args, long, short) => {
-        var res = null
+        let res = null
         // console.log(long, args.indexOf(`- ${ long }`), args.indexOf(` - ${ short }`))
         if(args.indexOf(`-${long}`) != -1)
             res = args[args.indexOf(`-${long}`) + 1]
@@ -23,27 +25,27 @@ const parser = (args) => {
         return res
     }
 
-    var name = null
+    let name = null
     if(args.indexOf(`-name`) != -1) {
         const start = args.indexOf(`-name`) + 1
-        var nextWithHyphen = args.slice(start).findIndex(e => e[0] == '-')
-        nextWithHyphen === -1 ? -1 : nextWithHyphen = nextWithHyphen + start;
+        let nextWithHyphen = args.slice(start).findIndex(e => e[0] == '-')
+        nextWithHyphen === -1 ? -1 : nextWithHyphen = nextWithHyphen + start
 
         name = args.slice(start, nextWithHyphen == -1 ? args.length : nextWithHyphen).join(' ')
         // console.log('args:', args, 'args[nextWithHyphen]', args[nextWithHyphen], 'name:', name, 'stuff', start, nextWithHyphen == -1 ? args.length : nextWithHyphen)
     }
     else if(args.indexOf(`-n`) != -1) {
         const start = args.indexOf(`-n`) + 1
-        var nextWithHyphen = args.slice(start).findIndex(e => e[0] == '-')
-        nextWithHyphen === -1 ? -1 : nextWithHyphen = nextWithHyphen + start;
+        let nextWithHyphen = args.slice(start).findIndex(e => e[0] == '-')
+        nextWithHyphen === -1 ? -1 : nextWithHyphen = nextWithHyphen + start
 
         name = args.slice(start, nextWithHyphen == -1 ? args.length : nextWithHyphen).join(' ')
         // console.log('args:', args, 'args.slice', args.slice(start), 'args[nextWithHyphen]', args[nextWithHyphen], 'name:', name, 'stuff', start, nextWithHyphen == -1 ? args.length : nextWithHyphen)
     }
 
-    var parts = finder(args, 'participants', 'p')
-    var start = finder(args, 'start', 's') //HH:MM || now
-    var reward = finder(args, 'reward', 'r')
+    let parts = finder(args, 'participants', 'p')
+    const start = finder(args, 'start', 's') //HH:MM || now
+    let reward = finder(args, 'reward', 'r')
 
 
     parts ? parts = Number(parts) : null
@@ -86,11 +88,11 @@ const buildEmb = (evData) => {
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Message} msg Discord message object
-    * @param {Client} client Discord client object
-    * @description Usage: .seve -name(n) -participants(p) -start(-s) -reward(-r)
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Message} msg Discord message object
+     * @param {Client} client Discord client object
+     * @description Usage: .seve -name(n) -participants(p) -start(-s) -reward(-r)
+     */
     async (args, msg, client) => {
         if(!roles.privilage(msg.member, msg.guild.roles.cache.get(constants.roles.eventer))) {
             embed.ping(msg, sMsg, 'у Вас нет права на эту команду!')
@@ -102,13 +104,13 @@ module.exports =
             msg.channel.send(emb)
         } catch(err) {
             if(err == 'no args') {
-                var name = null
-                var parts = null
-                var start = null
-                var reward = null
+                let name = null
+                let parts = null
+                let start = null
+                let reward = null
 
                 /**@type {Message[]} */
-                var messages = []
+                const messages = []
 
                 const deleteMessages = () => {
                     messages.forEach(m => {
@@ -141,10 +143,10 @@ module.exports =
                                 throw 'invalid parts'
                             }
                         })
-                        .catch(() => {
-                            msg.channel.send(incorrect)
-                            throw 'invalid parts'
-                        })
+                    // .catch(() => {
+                    //     msg.channel.send(incorrect)
+                    //     throw 'invalid parts'
+                    // })
 
                     messages.push(await embed(msg, sMsg, 'Укажите время'))
                     await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
@@ -158,10 +160,10 @@ module.exports =
                                 throw 'invalid time'
                             }
                         })
-                        .catch(() => {
-                            msg.channel.send(incorrect)
-                            throw 'invalid time'
-                        })
+                    // .catch(() => {
+                    //     msg.channel.send(incorrect)
+                    //     throw 'invalid time'
+                    // })
 
                     messages.push(await embed(msg, sMsg, 'Укажите награду или `-`'))
                     await msg.channel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
@@ -169,16 +171,15 @@ module.exports =
                             messages.push(collected.first())
 
                             reward = collected.first().content
-                            const incorrect = embed.build(msg, sMsg, 'Неверная награда!')
                             if(reward == '-') reward = null
                             else if(Number.isInteger(Number(reward))) {
                                 reward += ' Yen'
                             }
                         })
-                        .catch(() => {
-                            msg.channel.send(incorrect)
-                            throw 'invalid time'
-                        })
+                    // .catch(() => {
+                    //     msg.channel.send(incorrect)
+                    //     throw 'invalid time'
+                    // })
                     deleteMessages()
                     msg.channel.send(buildEmb([name, parts, start, reward]))
                 } catch(err) {

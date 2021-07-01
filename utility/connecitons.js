@@ -3,14 +3,15 @@ const { RedisConnection } = require('../utility/redisConnection')
 
 /**
  * Starts a few connections
+ *
  * @param {number} amount 
  */
 module.exports.startconnections = async (amount) => {
-    var connectionPromises = []
-    for(i = 0; i < amount; i++)
+    const connectionPromises = []
+    for(let i = 0; i < amount; i++)
         connectionPromises.push(new Connection())
-    var rConnectionPromises = []
-    for(i = 0; i < 1; i++)
+    const rConnectionPromises = []
+    for(let i = 0; i < 1; i++)
         rConnectionPromises.push(new RedisConnection())
 
 

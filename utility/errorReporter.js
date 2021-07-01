@@ -9,12 +9,12 @@ module.exports = (lastMessage, err) => {
     try {
         const embed = new MessageEmbed(
             {
-                "title": `Ошибка с сервера ${lastMessage.guild.name}`,
-                "description": `Бот: ${lastMessage.client.user.tag}\nСсылка на последнее сообщение: [ссылка](${lastMessage.url})\n\nСодержание ошибки:\n\`\`\`\n${err}\n\`\`\`\n`,
-                "color": 15406156,
-                "footer": {
-                    "text": lastMessage.client.user.tag,
-                    "icon_url": lastMessage.client.user.displayAvatarURL({ dynamic: true })
+                'title': `Ошибка с сервера ${lastMessage.guild.name}`,
+                'description': `Бот: ${lastMessage.client.user.tag}\nСсылка на последнее сообщение: [ссылка](${lastMessage.url})\n\nСодержание ошибки:\n\`\`\`\n${err}\n\`\`\`\n`,
+                'color': 15406156,
+                'footer': {
+                    'text': lastMessage.client.user.tag,
+                    'icon_url': lastMessage.client.user.displayAvatarURL({ dynamic: true })
                 }
             }
         )

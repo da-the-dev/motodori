@@ -1,8 +1,8 @@
 const Discord = require('discord.js')
-const constants = require('../constants.json')
 const utl = require('../utility')
 /**
  * Scans the server to make sure that all nessesary channels/messages etc are in place
+ *
  * @param {Discord.Client} client - Bot client
  */
 module.exports = async (client) => {

@@ -1,37 +1,37 @@
 const Discord = require('discord.js')
 const constants = require('../constants.json')
-const utl = require('../utility')
 const sMsg = 'Приватные комнаты'
 
 /**
- * @description Create the "creator" voice channel
+ * Create the "creator" voice channel
+ * 
  * @param {Discord.Client} client
  */
 module.exports.createRoom = (client) => {
-    var privateRoomCategory = client.guild.channels.cache.get(constants.categories.privateRooms)
+    const privateRoomCategory = client.guild.channels.cache.get(constants.categories.privateRooms)
     client.guild.channels.create('Tap to Create +꙳',
         {
-            type: "voice",
+            type: 'voice',
             permissionOverwrites: [
                 {
                     id: constants.roles.muted,
-                    deny: ["CONNECT"]
+                    deny: ['CONNECT']
                 },
                 {
                     id: constants.roles.toxic,
-                    allow: ['VIEW_CHANNEL', "CONNECT"]
+                    allow: ['VIEW_CHANNEL', 'CONNECT']
                 },
                 {
                     id: constants.roles.localban,
-                    deny: ['VIEW_CHANNEL', "CONNECT"]
+                    deny: ['VIEW_CHANNEL', 'CONNECT']
                 },
                 {
                     id: client.guild.id,
-                    allow: ['VIEW_CHANNEL', "CONNECT"]
+                    allow: ['VIEW_CHANNEL', 'CONNECT']
                 },
                 {
                     id: constants.roles.verify,
-                    deny: ['VIEW_CHANNEL', "CONNECT"]
+                    deny: ['VIEW_CHANNEL', 'CONNECT']
                 }
             ],
             parent: privateRoomCategory,
@@ -46,6 +46,7 @@ module.exports.createRoom = (client) => {
  * @description Handles private room deletion
  * @param {Discord.VoiceState} oldState 
  * @param {Discord.VoiceState} newState  
+ * @param {Discord.Client} client
  */
 module.exports.roomDeletion = (oldState, newState, client) => {
     // Ignore if channel didn't change
@@ -54,9 +55,9 @@ module.exports.roomDeletion = (oldState, newState, client) => {
 
     // Create private room
     if(newState.channel && newState.member.voice.channel.id == client.creator) {
-        var guild = newState.member.guild
+        const guild = newState.member.guild
         /**@type {Discord.CategoryChannel} */
-        var category = guild.channels.cache.get(constants.categories.privateRooms)
+        const category = guild.channels.cache.get(constants.categories.privateRooms)
         guild.channels.create(newState.member.user.username,
             {
                 type: 'voice',
@@ -96,17 +97,17 @@ module.exports.roomDeletion = (oldState, newState, client) => {
     }
 
     if(oldState.channel && oldState.channel.id != client.creator && oldState.channel.parentID == constants.categories.privateRooms) {
-        var channel = oldState.channel
+        const channel = oldState.channel
         if(channel.members.size <= 0 && !channel.deleted) {
             channel.delete()
             return
         }
-        var oldOwner = oldState.member
+        const oldOwner = oldState.member
 
         if(oldOwner.permissionsIn(channel).has('CREATE_INSTANT_INVITE') && channel.permissionOverwrites.get(oldOwner.id)) {
             channel.permissionOverwrites.get(oldOwner.id).delete() // Delete old owner perms
 
-            var newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
+            let newOwner = channel.members.find(m => !m.permissionsIn(channel).has('CREATE_INSTANT_INVITE'))
             !newOwner ? newOwner = channel.members.first() : null
 
             channel.updateOverwrite(newOwner.id, { 'CREATE_INSTANT_INVITE': true })

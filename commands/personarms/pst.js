@@ -1,16 +1,15 @@
-const { Message, MessageEmbed, Client } = require('discord.js')
-const { embed, db, reactionSelector, time } = require('../../utility')
+const { Message, Client } = require('discord.js')
+const { embed, db, time } = require('../../utility')
 const { DBServer } = db
-const constants = require('../../constants.json')
 const sMsg = 'Статистика личной комнаты'
 
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Message} msg Discord message object
-    * @param {Client} client Discord client object
-    * Usage: .pcreate name  
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Message} msg Discord message object
+     * @param {Client} client Discord client object
+     * Usage: .pcreate name  
+     */
     async (args, msg, client) => {
         args.shift()
         const name = args.join(' ')
@@ -33,7 +32,7 @@ module.exports =
             Владелец: <@${personaRoom.creator}>
             Участников: **${discordPRm.permissionOverwrites.filter(p => p.id != msg.guild.id).size}**
             ID комнаты: **${personaRoom.id}**\n
-            Создана: ${new Date(personaRoom.createdTimestamp).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" })}
+            Создана: ${new Date(personaRoom.createdTimestamp).toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' })}
             Одобрена: <@${personaRoom.approver}>
             Активность: ${time.timeCalculator(personaRoom.activity) || '**0** мин'}
             `

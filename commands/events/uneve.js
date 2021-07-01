@@ -4,11 +4,11 @@ const utl = require('../../utility')
 const sMsg = 'Прочие роли'
 module.exports =
     /**
-    * @param {Array<string>} args Command argument
-    * @param {Discord.Message} msg Discord message object
-    * @param {Discord.Client} client Discord client object
-    * @description Usage: .uneve
-    */
+     * @param {Array<string>} args Command argument
+     * @param {Discord.Message} msg Discord message object
+     * @param {Discord.Client} client Discord client object
+     * @description Usage: .uneve
+     */
     (args, msg, client) => {
         if(msg.member.roles.cache.find(r => r.id == constants.roles.eventee)) {
             msg.member.roles.remove(constants.roles.eventee)
