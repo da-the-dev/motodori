@@ -28,7 +28,7 @@ module.exports = (client) => {
                     if(!member) return
 
                     const user = await new utl.db.DBUser(member.guild.id, member.id)
-                    user.mute = true
+                    user.mute = false
                     user.save()
 
                     member ? member.roles.remove(constants.roles.muted) : null
