@@ -176,7 +176,8 @@ class DBUser {
     /**@type {boolean} If gameroles are DISABLED*/ disGameRole
     /**@type {boolean} If activity roles are DISABLED*/ uact
     /**@type {string} Custom status*/ status
-    /**@type {LoveRoom} Love room*/ loveroom
+    /**@type {LoveRoom} Love room */ loveroom
+    /**@type {string} Significant other*/ mate
     /**@type {number} Timely streak*/ streak
     /**@type {number} Timely reward timestamp*/ rewardTimestamp
     /**@type {number} Invites*/ invites
@@ -210,6 +211,7 @@ class DBUser {
             this.disGameRole = userData.disGameRole || false
             this.uact = userData.uact || false
             this.loveroom = userData.loveroom
+            this.mate = userData.mate
             this.rewardTimestamp = userData.rewardTimestamp
             this.streak = userData.streak
             this.invites = userData.invites || 0
@@ -236,6 +238,7 @@ class DBUser {
         this.disGameRole ? userData.disGameRole = this.disGameRole : null
         this.uact ? userData.uact = this.uact : null
         this.loveroom ? userData.loveroom = this.loveroom : null
+        this.mate ? userData.mate = this.mate : null
         this.rewardTimestamp ? userData.rewardTimestamp = this.rewardTimestamp : null
         this.streak ? userData.streak = this.streak : null
         this.invites ? userData.invites = this.invites : null
@@ -376,7 +379,6 @@ function getConnection() {
  * @property {string} id - Love room's channel ID
  * @property {string} partner - ID of a partner
  * @property {number} creationDate - Creation date of a love room
- * @property {number} bal - Balance of a room
  */
 /**
  * Personal room data

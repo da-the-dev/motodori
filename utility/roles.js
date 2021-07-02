@@ -23,6 +23,8 @@ module.exports.reapplyRoles = async (member) => {
             collectedRoles.push(constants.roles.localban)
         if(user.pics)
             collectedRoles.push(constants.roles.pics)
+        if(user.mate)
+            collectedRoles.push(constants.roles.loveroom)
 
         member.roles.add(collectedRoles).then(() => {
             console.log(member.displayName, 'applied roles:', collectedRoles != [] ? collectedRoles : 'none')
