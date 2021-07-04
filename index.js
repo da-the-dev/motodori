@@ -200,14 +200,14 @@ client.on('message', msg => {
                         })
                 }
 
-                else if(args[0] == 'duel' && msg.channel.id == constants.channels.duels) {
-                    msg.delete()
-                        .then(() => {
-                            command.foo(args, msg, client)
-                        })
-                    return
-                }
-                else if(args[0] != 'duel' && msg.channel.id != constants.channels.general) {
+                // else if(args[0] == 'duel' && msg.channel.id == constants.channels.duels) {
+                //     msg.delete()
+                //         .then(() => {
+                //             command.foo(args, msg, client)
+                //         })
+                //     return
+                // }
+                else if(msg.channel.id != constants.channels.general) {
                     msg.delete()
                         .then(() => {
                             command.foo(args, msg, client)

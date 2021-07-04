@@ -1,119 +1,83 @@
 const Discord = require('discord.js')
-const utl = require('../../utility')
+const { embed, reactionSelector, db } = require('../../utility')
+const { DBUser } = db
 const { sweet } = require('../../constants.json').emojies
+const words = ['атеист', 'атропа', 'ачинец', 'башлык', 'блесна', 'вармяк', 'вейник', 'взвизг', 'вивинг', 'витраж', 'гарпии', 'герман', 'геррес', 'гефест', 'глумец', 'гоголь', 'горбач', 'горжет', 'гренка', 'дауцин', 'деисус', 'европа', 'жасмин', 'желтяк', 'жеруха', 'забота', 'запись', 'зараза', 'иодизм', 'кабель', 'калита', 'каллус', 'карачи', 'каёмка', 'кетоза', 'кумпол', 'купрей', 'курцит', 'логгер', 'лялиус', 'мантра', 'маоизм', 'мастин', 'межняк', 'миасец', 'миорец', 'нерест', 'нсутит', 'одрина', 'осетин', 'песета', 'пихина', 'повеса', 'подвох', 'полуют', 'прядка', 'путное', 'ректор', 'рубрен', 'сахаит', 'сделка', 'серапе', 'серпок', 'сигмин', 'сирекс', 'скупит', 'снохач', 'соттии', 'спитам', 'страус', 'стювер', 'суфист', 'тайрон', 'тарань', 'таурин', 'терины', 'терцет', 'тинцит', 'толика', 'учение', 'фамудс', 'фиорит', 'флоппи', 'фразил', 'фуроат', 'фуэрос', 'хрящик', 'худрук', 'циклоп', 'черкес', 'чилига', 'шассер', 'шпинат', 'шпорец', 'экотип', 'энемон', 'юбилей', 'юморок', 'яловец', 'ятанин']
 const sMsg = 'Дуэли'
-
-/**
- * Checks the balance of dueilers
- *
- * @param {string} guildID - Guild ID
- * @param {string} caller - Caller ID
- * @param {string} dueiler - Second dueiler ID
- * @param {number} bet - Bet to check for
- * @returns {Promise<boolean>} If balances are valid
- */
-const checkBal = async (guildID, caller, dueiler, bet) => {
-    const db = await utl.db.createClient(process.env.MURL)
-    const users = await Promise.all([db.get(guildID, caller), db.get(guildID, dueiler)])
-    if(!users.every(u => u.money && u.money >= bet)) {
-        db.close()
-        return false
-    }
-    db.close()
-    return true
-}
-
-/**
- * Start a duel
- *
- * @param {Discord.Message} m - Response message
- * @param {Discord.Message} msg - Original message
- * @param {Discord.GuildMember} caller - Original duelist
- * @param {Discord.GuildMember} duelist - Duelist who responded
- * @param {number} bet - Bet that was placed
- */
-const startDuel = (m, msg, caller, duelist, bet) => {
-    const roll = Math.random()
-    if(roll < 0.5) {
-        m.edit(utl.embed.build(msg, sMsg, `В **дуэли** одержал победу <@${caller.id}> и получил **${bet}**${sweet}\n\n**Вызов принял:** <@${duelist.id}>`))
-        utl.db.createClient(process.env.MURL).then(async db => {
-            const users = await Promise.all([db.get(msg.guild.id, caller.id), db.get(msg.guild.id, duelist.id)])
-            users[0].money += bet
-            users[1].money -= bet
-            await Promise.all([db.set(msg.guild.id, caller.id, users[0]), db.set(msg.guild.id, duelist.id, users[1])])
-            db.close()
-        })
-    }
-    if(roll == 0.5) {
-        m.edit(utl.embed.build(msg, sMsg, `**Дуэль** окончилась ничьей\n\n**Вызов принял:** <@${duelist.id}>`))
-    }
-    if(roll > 0.5) {
-        m.edit(utl.embed.build(msg, sMsg, `В **дуэли** одержал победу <@${duelist.id}> и получил **${bet}**${sweet}\n\n**Вызов принял:** <@${duelist.id}>`))
-        utl.db.createClient(process.env.MURL).then(async db => {
-            const users = await Promise.all([db.get(msg.guild.id, caller.id), db.get(msg.guild.id, duelist.id)])
-            users[0].money -= bet
-            users[1].money += bet
-            await Promise.all([db.set(msg.guild.id, caller.id, users[0]), db.set(msg.guild.id, duelist.id, users[1])])
-            db.close()
-        })
-    }
-    m.reactions.removeAll()
-}
-
 module.exports =
     /**
      * @param {Array<string>} args Command argument
      * @param {Discord.Message} msg Discord message object
      * @param {Discord.Client} client Discord client object
-     * @example Usage: .br <bet> <?member>
+     * @example Usage: .duel <?member> <bet>
      */
     async (args, msg, client) => {
+        args.shift()
+        const mMember = msg.mentions.members.first()
+        if(!mMember) {
+            embed(msg, sMsg, 'Вы не указали противника!')
+            return
+        }
         const bet = Number(args[1])
-
-        if(!Number.isInteger(bet) || bet < 50 || bet > 50000) {
-            utl.embed.ping(msg, sMsg, `укажите **количество** ${sweet}, которое **не** меньше **50**${sweet} и **не** больше **50000**${sweet}`)
+        if(!bet || !Number.isInteger(bet) || Number.isNaN(bet)) {
+            embed(msg, sMsg, 'Неверная ставка!')
             return
         }
 
-        const mMember = msg.mentions.members.first()
-        if(mMember) {
-            if(!await checkBal(msg.guild.id, msg.author.id, mMember.id, bet)) {
-                utl.embed.ping(msg, sMsg, `дуэль с <@${mMember.id}> **не может** состояться, так как у вас недостаточно ${sweet}!`)
-                return
-            }
-            const m = await utl.embed(msg, sMsg, `<@${mMember.id}>, <@${msg.author.id}> **вызывает** Вас на **дуэль** за **${bet}**${sweet}\nДля **согласия** нажмите на ✅, а для **отмены** ❌`)
-            utl.reactionSelector.yesNo(m, mMember.id,
-                () => {
-                    startDuel(m, msg, msg.member, mMember, bet)
-                },
-                () => {
-                    m.edit(utl.embed.build(msg, sMsg, `<@${msg.author.id}>, ><@${mMember.id}> **струсил**\n\n**Вызов принял:** <@${mMember.id}>`))
-                    m.reactions.removeAll()
-                },
-                () => {
-                    m.edit(utl.embed.build(msg, sMsg, `<@${msg.author.id}>, <@${mMember.id}> **струсил** и **не ответил** на Ваш вызов`))
-                    m.reactions.removeAll()
-                }
-            )
-        } else {
-            const m = await utl.embed(msg, sMsg, `<@${msg.author.id}> хочет с кем-то **сразится** за **${bet}**${sweet}\n`)
-            await m.react('✅')
-            const filter = (reaction, user) => {
-                return ['✅'].includes(reaction.emoji.name) && user.id != msg.author.id
-            }
-            m.awaitReactions(filter, { max: 1, time: 60000, errors: 'time' })
-                .then(async reactions => {
-                    const reaction = reactions.first()
-                    const member = msg.guild.member(reaction.users.cache.last())
-
-                    if(!await checkBal(msg.guild.id, msg.author.id, member.id, bet)) {
-                        m.edit(utl.embed.build(msg, sMsg, `<@${msg.author.id}>, дуэль с <@${member.id}> **не может** состояться, так как у вас недостаточно ${sweet}!`))
-                        m.reactions.removeAll()
-                        return
-                    }
-
-                    startDuel(m, msg, msg.member, member, bet)
-                })
+        const duelers = await Promise.all([
+            new DBUser(msg.guild.id, msg.author.id),
+            new DBUser(msg.guild.id, mMember.id)
+        ])
+        if(!duelers.every(d => d.money >= bet)) {
+            embed.ping(msg, sMsg, `у дуэлянтов недостаточно ${sweet}!`)
+            return
         }
 
+        const m = await embed(msg, sMsg, `<@${mMember.id}>, <@${msg.author.id}> вызывает тебя на дуэль на ${bet}${sweet}. Струсишь или согласишься?`)
+        reactionSelector.yesNo(m, mMember.id,
+            async () => {
+                m.reactions.removeAll()
+
+                duelers.forEach(d => d.money -= bet)
+
+                m.edit({ embed: embed.build(msg, `${sMsg}: ${msg.member.displayName} vs ${mMember.displayName}`, `<@${msg.author.id}>, <@${mMember.id}> начинается дуэль! Ждите кодовое слово. . .`) })
+                const randomTime = Math.floor((Math.random() * (10 - 3) + 3) * 1000)
+                setTimeout(async () => {
+                    const keyWord = words[Math.floor(Math.random() * 100)]
+                    m.edit({ embed: embed.build(msg, `СТРЕЛЯЙ`, `<@${msg.author.id}>, <@${mMember.id}>\nОГОНЬ! КОДОВОЕ СЛОВО: ${keyWord}`) })
+                    const filter = (mm) => mm.author.id == mMember.id || mm.author.id == msg.author.id
+                    const collected = await m.channel.awaitMessages(filter, { time: 10000, max: 1 })
+                    if(collected.size <= 0) {
+                        m.edit({ embed: embed.build(msg, `${sMsg}: ${msg.member.displayName} vs ${mMember.displayName}`, `Никто не решился стрелять, дуэль отменена`) })
+                        return
+                    }
+                    const firstShot = collected.first().content == keyWord
+                    const winnerID = collected.first().author.id
+                    const loserID = duelers.find(d => d.id != winnerID).id
+                    if(firstShot) {
+                        m.edit({ embed: embed.build(msg, `${sMsg}: ${msg.member.displayName} vs ${mMember.displayName}`, `<@${winnerID}> выиграл!`) })
+
+                        duelers.find(d => d.id == winnerID).money += bet
+                        duelers.find(d => d.id != winnerID).money -= bet
+
+                        await Promise.all(duelers.map(d => d.save()))
+                    } else {
+                        m.edit({ embed: embed.build(msg, `${sMsg}: ${msg.member.displayName} vs ${mMember.displayName}`, `<@${winnerID}> промахнулся! <@${loserID}> побеждает!`) })
+
+                        duelers.find(d => d.id == loserID).money += bet
+                        duelers.find(d => d.id != loserID).money -= bet
+
+                        await Promise.all(duelers.map(d => d.save()))
+                    }
+                }, randomTime)
+            },
+            () => {
+                m.reactions.removeAll()
+                m.edit({ embed: embed.build(msg, sMsg, `<@${mMember.id}> струсил!`) })
+            },
+            () => {
+                m.reactions.removeAll()
+                m.edit({ embed: embed.build(msg, sMsg, `<@${mMember.id}> струсил!`) })
+            }
+        )
     }
