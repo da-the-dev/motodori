@@ -160,8 +160,8 @@ class Connection {
 
 class DBUser {
     /**@type {Connection} DB connection*/ #connection
-    /**@type {string} User's guild ID*/ #guildID
-    /**@type {string} User's ID*/ #id
+    /**@type {string} User's guild ID*/ guildID
+    /**@type {string} User's ID*/ id
 
     /**@type {number} Money */ money
     /**@type {number} Amount of messages in general*/ msgs
@@ -190,8 +190,8 @@ class DBUser {
     */
     constructor(guildID, id) {
         return new Promise(async (resolve, reject) => {
-            this.#guildID = guildID
-            this.#id = id
+            this.guildID = guildID
+            this.id = id
 
             this.#connection = getConnection()
             const userData = await this.#connection.get(guildID, id) || {}
@@ -221,7 +221,7 @@ class DBUser {
     get() {
         /**@type {UserData}*/ var userData = {}
 
-        this.#id ? userData.id = this.#id : null
+        this.id ? userData.id = this.id : null
         if(this.money && this.money > 0) userData.money = this.money
         if(this.msgs && this.msgs > 0) userData.msgs = this.msgs
         if(this.voiceTime && this.voiceTime > 0) userData.voiceTime = this.voiceTime
@@ -246,7 +246,7 @@ class DBUser {
 
     save() {
         return new Promise(async (resolve, reject) => {
-            await this.#connection.set(this.#guildID, this.#id, this.get())
+            await this.#connection.set(this.guildID, this.id, this.get())
             resolve('OK')
         })
     }
