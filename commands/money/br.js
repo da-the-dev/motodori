@@ -30,7 +30,7 @@ module.exports =
             return
         }
         if(bet < 50) {
-            utl.embed.ping(msg, sMsg, `ставка должна быть больше **50**<${sweet}>`)
+            utl.embed.ping(msg, sMsg, `ставка должна быть больше **50** ${sweet}`)
             return
         }
 
