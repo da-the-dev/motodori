@@ -13,7 +13,8 @@ module.exports =
      * @example Usage: .psact <activity>
      */
     async (args, msg, client) => {
-        if(!msg.member.voice || msg.member.voice.channel.parentID != constants.categories.privateRooms) {
+        // require("discordjs-activity")(client)
+        if(!msg.member.voice.channel || msg.member.voice.channel.parentID != constants.categories.privateRooms) {
             embed(msg, sMsg, `<@${msg.author.id}>, для начала создайте приватную комнату!`)
             return
         }
