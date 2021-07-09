@@ -21,7 +21,7 @@
     "canvas": "^2.7.0",
     "discord-buttons": "^3.2.1",
     "discord.js": "^12.5.2",
-    "discordjs-activity": "^1.1.0",
+    "discordjs-activity": "1.1.0",
     "dotenv": "^8.2.0",
     "eslint-plugin-jsdoc": "^35.4.1",
     "moment": "^2.29.1",
