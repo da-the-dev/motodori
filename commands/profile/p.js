@@ -27,7 +27,7 @@ module.exports =
                 },
                 {
                     'name': '> Voice activity:',
-                    'value': `\`\`\`${utl.time.timeCalculator(user.voiceTime || 0).replace(/[**]/g, '')}\`\`\``,
+                    'value': `\`\`\`${utl.time.timeCalculator(user.voiceTime || 0).replace(/[**]/g, '') || '0 м'}\`\`\``,
                     'inline': true
                 },
 
