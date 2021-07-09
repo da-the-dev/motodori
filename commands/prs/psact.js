@@ -14,8 +14,10 @@ module.exports =
      */
     async (args, msg, client) => {
         // require("discordjs-activity")(client)
-        if(msg.member.voice.channel.parentID != constants.categories.privateRooms)
+        if(msg.member.voice.channel || msg.member.voice.channel.parentID != constants.categories.privateRooms) {
+            embed(msg, sMsg, `<@${msg.author.id}>, для начала создайте приватную комнату!`)
             return
+        }
 
         if(!msg.member.permissionsIn(msg.member.voice.channel).has(`CREATE_INSTANT_INVITE`)) {
             embed(msg, sMsg, `<@${msg.author.id}>, у Вас нет прав на эту команду!`)
