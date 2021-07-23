@@ -3,6 +3,7 @@ const { db, embed, redisConnection, actionLogs, roles } = require('../../utility
 const { DBUser } = db
 const { getRedCon } = redisConnection
 const constants = require('../../constants.json')
+const { allowedInGeneral } = require('../embeds/say')
 const sMsg = 'Выдача мута'
 
 /**
@@ -80,3 +81,4 @@ module.exports = async (args, msg, client) => {
             }
         }
 }
+module.exports.allowedInGeneral = true
