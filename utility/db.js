@@ -260,7 +260,7 @@ class DBServer {
     /**@type {Role[]}  - Array of shop roles*/ roles
     /**@type {CustomRole[]}  - Array of custom roles*/ customRoles
     /**@type {PersonalRoom[]} - Array of personal rooms*/ personalRooms
-    /**@type {any} - Server settings*/ settings
+    /**@type {any} - Server settings*/ constants
 
     /**
     * Retrieves data about a server
@@ -279,7 +279,7 @@ class DBServer {
             this.customRoles = serverData.customRoles || []
             this.personalRooms = serverData.personalRooms || []
             this.flags = serverData.flags || []
-            this.settings = serverData.settings
+            this.constants = serverData.constants
 
             resolve(this)
         })
@@ -293,7 +293,7 @@ class DBServer {
         this.customRoles && this.customRoles.length > 0 ? serverData.customRoles = this.customRoles : null
         this.personalRooms && this.personalRooms.length > 0 ? serverData.personalRooms = this.personalRooms : null
         this.flags && this.flags.length > 0 ? serverData.flags = this.flags : null
-        this.settings ? serverData.settings = this.settings : null
+        this.constants ? serverData.constants = this.constants : null
 
         return serverData
     }
