@@ -261,6 +261,8 @@ class DBServer {
     /**@type {CustomRole[]}  - Array of custom roles*/ customRoles
     /**@type {PersonalRoom[]} - Array of personal rooms*/ personalRooms
     /**@type {any} - Server settings*/ constants
+    /**@type {any[]} - Array of ranks (for saiko)*/ ranks
+
 
     /**
     * Retrieves data about a server
@@ -278,7 +280,7 @@ class DBServer {
             this.roles = serverData.roles || []
             this.customRoles = serverData.customRoles || []
             this.personalRooms = serverData.personalRooms || []
-            this.flags = serverData.flags || []
+            this.ranks = serverData.ranks || []
             this.constants = serverData.constants
 
             resolve(this)
@@ -292,7 +294,7 @@ class DBServer {
         this.roles && this.roles.length > 0 ? serverData.roles = this.roles : null
         this.customRoles && this.customRoles.length > 0 ? serverData.customRoles = this.customRoles : null
         this.personalRooms && this.personalRooms.length > 0 ? serverData.personalRooms = this.personalRooms : null
-        this.flags && this.flags.length > 0 ? serverData.flags = this.flags : null
+        this.ranks && this.ranks.length > 0 ? serverData.ranks = this.ranks : null
         this.constants ? serverData.constants = this.constants : null
 
         return serverData
