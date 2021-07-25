@@ -164,6 +164,7 @@ class DBUser {
     /**@type {string} User's ID*/ id
 
     /**@type {number} Money */ money
+    /**@type {number} Experience */ xp
     /**@type {number} Amount of messages in general*/ msgs
     /**@type {number} Minutes spent in voice channels*/ voiceTime
     /**@type {number[]} Inventory of shop roles' IDs*/ inv
@@ -197,6 +198,7 @@ class DBUser {
             const userData = await this.#connection.get(guildID, id) || {}
 
             this.money = userData.money || 0
+            this.xp = userData.xp || 0
             this.msgs = userData.msgs || 0
             this.voiceTime = userData.voiceTime || 0
             this.inv = userData.inv || []
@@ -223,6 +225,7 @@ class DBUser {
 
         this.id ? userData.id = this.id : null
         if(this.money && this.money > 0) userData.money = this.money
+        if(this.xp && this.xp > 0) userData.xp = this.xp
         if(this.msgs && this.msgs > 0) userData.msgs = this.msgs
         if(this.voiceTime && this.voiceTime > 0) userData.voiceTime = this.voiceTime
         if(this.inv && this.inv.length > 0) userData.inv = this.inv
