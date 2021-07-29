@@ -81,7 +81,7 @@ module.exports.buildKeyword = buildKeyword
  */
 module.exports.generate = async guild => {
     const keyword = Math.random().toString(36).toLocaleLowerCase().substring(2, 7)
-    const reward = Math.floor(Math.random() * 1000 - 200) + 200
+    const reward = Math.floor(Math.random() * 400 - 50) + 50
     await getConnection().set(guild.id, 'loteryData',
         {
             keyword: keyword,
